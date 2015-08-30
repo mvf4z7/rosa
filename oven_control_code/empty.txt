@@ -1,0 +1,4 @@
+This file was added so that the oven_control_code directory could be committed to git.
+Once project files have been added to this directory, please delete this file.
+
+-Mike Fanger

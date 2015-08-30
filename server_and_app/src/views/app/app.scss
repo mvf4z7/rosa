@@ -1,0 +1,32 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
+
+html {
+    background-color: lime;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: yellow;
+}
+
+header, h1, h2, h3, h4, h5, div {
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    display: table;
+    height: inherit;
+    width: 100%;
+    background-color: red;
+}
+
+
+.app-wrapper {
+    display: table-cell;
+    background-color: tomato;
+}

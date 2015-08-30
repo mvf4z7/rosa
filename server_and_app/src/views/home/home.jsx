@@ -1,0 +1,82 @@
+import React from 'react';
+import { Link } from 'react-router';
+
+import { FlatButton, Dialog } from 'material-ui';
+
+require('./home.scss');
+
+
+export default class Home extends React.Component {
+    constructor() {
+        super();
+        this.standardActions = [
+          { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
+          { text: 'Submit', onClick: this._onDialogSubmit.bind(this), ref: 'submit' }
+        ];
+    }
+
+    _onDialogCancel() {
+        this.refs.dialog.dismiss();
+    }
+
+    _onDialogSubmit() {
+        console.log('i dont do anything!');
+    }
+
+    _clickedButton() {
+        console.log('button was clicked');
+    }
+
+    render() {
+        return (
+    	 	<div className='home-wrapper'>
+    			<h1>Insert Home Page Content Here</h1>
+                <FlatButton
+                    label="open the dialog box"
+                    onClick={ this._onButtonClicked.bind(this) }
+                    style={{
+                        margin: '2em',
+                    }}/>
+                <div onClick={ this._onDialogCancel.bind(this) }>
+                    <Dialog
+                        ref='dialog'
+                        title='Dialog with actions'
+                        actions={this.standardActions}
+                        actionFocus='submit'>
+                        This is a dialog box
+                    </Dialog>
+                </div>
+
+
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+                <br /><br /><br />
+                <h1>filler content</h1>
+    		</div>
+        );
+    }
+
+    _onButtonClicked() {
+        this.refs.dialog.show();
+    }
+
+    _closeModal() {
+        this.refs.dialog.dismiss();
+    }
+}
