@@ -15,11 +15,16 @@ let styles = {
         top: 0,
         left: 0,
         backgroundColor: Colors.greenA700,
+    },
+
+    LeftNav: {
+        color: Colors.greenA700
     }
 };
 
 let menuItems = [
-    { route: 'info', text: 'info' }
+    { route: '/', text: 'home' },
+    { route: '/info', text: 'info' }
 ]
 
 require('./app.scss');
@@ -27,7 +32,10 @@ require('./app.scss');
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this._toggleNav.bind(this);
+        this.state = { selectedIndex: 0 };
+
+        this._toggleNav = this._toggleNav.bind(this);
+        this._onLeftNavChange = this._onLeftNavChange.bind(this);
     }
 
     getChildContext() {
@@ -38,24 +46,40 @@ class App extends React.Component {
 
     render() {
         return (
-    		<div className="app-wrapper">
+    		<div id="app-wrapper">
                 <AppBar
                     title='ROSA'
                     style={styles.AppBar}
-                    onLeftIconButtonTouchTap={this._toggleNav.bind(this)}/>
-                <LeftNav ref='leftNav' docked={false} menuItems={menuItems} />
+                    onLeftIconButtonTouchTap={this._toggleNav}/>
+                <LeftNav
+                    ref='leftNav'
+                    docked={false}
+                    menuItems={menuItems}
+                    selectedIndex={this.state.selectedIndex}
+                    onChange={this._onLeftNavChange}
+                    style={styles.LeftNav} />
                 <RouteHandler />
     		</div>
         );
     }
 
-    _toggleNav() {
+    _toggleNav(e) {
+        e.preventDefault();
         this.refs.leftNav.toggle();
+    }
+
+    _onLeftNavChange(e, selectedIndex, menuItem) {
+        this.context.router.transitionTo(menuItem.route);
+        this.setState({selectedIndex: selectedIndex})
     }
 }
 
 App.childContextTypes = {
     muiTheme: React.PropTypes.object
+};
+
+App.contextTypes = {
+    router: React.PropTypes.func
 };
 
 export default App;
