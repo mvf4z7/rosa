@@ -1,18 +1,33 @@
 import React from 'react';
 import { RouteHandler, Link } from 'react-router';
 
-import Header from '../../components/header/header';
+//import Header from '../../components/header/header';
 
 import mui from 'material-ui';
+let Colors = mui.Styles.Colors;
 let ThemeManager = new mui.Styles.ThemeManager();
 
+import { AppBar, LeftNav } from 'material-ui';
+
+let styles = {
+    AppBar: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        backgroundColor: Colors.greenA700,
+    }
+};
+
+let menuItems = [
+    { route: 'info', text: 'info' }
+]
 
 require('./app.scss');
 
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { shrink: false };
+        this._toggleNav.bind(this);
     }
 
     getChildContext() {
@@ -21,33 +36,21 @@ class App extends React.Component {
         }
     }
 
-    handleScroll() {
-        let distanceY = window.pageYOffset,
-            shrinkOn = 300;
-
-        console.log('scroll event captured: ', distanceY);
-        if(!this.state.shrink && distanceY > shrinkOn) {
-            this.setState({ shrink: true });
-        } else if (this.state.shrink && distanceY < shrinkOn) {
-            this.setState({ shrink: false });
-        }
-    }
-
-    componentDidMount() {
-        window.addEventListener('scroll', this.handleScroll.bind(this));
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
-
     render() {
         return (
     		<div className="app-wrapper">
-                <Header shrink={ this.state.shrink }/>
+                <AppBar
+                    title='ROSA'
+                    style={styles.AppBar}
+                    onLeftIconButtonTouchTap={this._toggleNav.bind(this)}/>
+                <LeftNav ref='leftNav' docked={false} menuItems={menuItems} />
                 <RouteHandler />
     		</div>
         );
+    }
+
+    _toggleNav() {
+        this.refs.leftNav.toggle();
     }
 }
 
