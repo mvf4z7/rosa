@@ -2,8 +2,6 @@ import React from 'react';
 import { LeftNav } from 'material-ui';
 import styles from './styles';
 
-console.log('styles: ', styles);
-
 class NavDrawer extends React.Component {
     constructor(props) {
         super(props);
