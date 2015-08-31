@@ -6,10 +6,9 @@ import Home from './views/home/home';
 import Info from './views/info/info';
 
 var routes = (
-  <Route name='app' path='/' handler={ App }>
-    <Route name='home' path='/' handler={ Home }/>
+  <Route path='/' handler={ App }>
+    <DefaultRoute name='home' handler={ Home }/>
     <Route name='info' path='/info' handler={ Info }/>
-    <DefaultRoute handler={ Home }/>
   </Route>
 );
 
