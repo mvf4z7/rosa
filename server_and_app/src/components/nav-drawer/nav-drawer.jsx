@@ -4,8 +4,6 @@ import styles from './styles';
 
 console.log('styles: ', styles);
 
-
-
 class NavDrawer extends React.Component {
     constructor(props) {
         super(props);
