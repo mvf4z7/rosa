@@ -6,9 +6,10 @@ import { AppBar } from 'material-ui';
 import NavDrawer from '../../components/nav-drawer/nav-drawer';
 
 import styles from './styles';
-require('./app.scss');
+import theme from './theme';
 
 let ThemeManager = new mui.Styles.ThemeManager();
+ThemeManager.setTheme(theme);
 
 let menuItems = [
     { route: '/', text: 'home' },
@@ -33,6 +34,7 @@ class App extends React.Component {
                 <AppBar
                     title='ROSA'
                     style={styles.AppBar}
+                    className='no-select'
                     onLeftIconButtonTouchTap={this._toggleNav} />
                 <NavDrawer ref='navDrawer' menuItems={menuItems}/>
                 <RouteHandler />
