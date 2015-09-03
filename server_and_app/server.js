@@ -5,6 +5,7 @@ var url = require('url');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
 
 var app = express();
@@ -27,4 +28,6 @@ app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(3000);
+app.io = io;
+
+module.exports = app;

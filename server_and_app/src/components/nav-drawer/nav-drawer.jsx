@@ -36,7 +36,7 @@ class NavDrawer extends React.Component {
 }
 
 NavDrawer.contextTypes = {
-    router: React.PropTypes.func
+    router: React.PropTypes.func,
 };
 
 export default NavDrawer;

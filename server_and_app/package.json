@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Boilerplate for ReactJS project with hot code reloading and an ExpressJS server",
   "scripts": {
-    "start": "npm run build && NODE_ENV=production node server.js",
-    "start-dev": "nodemon server.js",
+    "start": "npm run build && NODE_ENV=production node bin/www",
+    "start-dev": "nodemon bin/www",
     "start-hot": "node hot-server.js",
     "build": "webpack",
     "lint": "node_modules/eslint/bin/eslint.js src/*"
@@ -29,12 +29,15 @@
   "dependencies": {
     "body-parser": "^1.13.3",
     "cookie-parser": "^1.3.5",
+    "debug": "^2.2.0",
     "express": "^4.13.2",
     "material-ui": "^0.11.0",
     "morgan": "^1.6.1",
     "proxy-middleware": "^0.13.0",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
-    "react-tap-event-plugin": "^0.1.7"
+    "react-tap-event-plugin": "^0.1.7",
+    "socket.io": "^1.3.6",
+    "socket.io-client": "^1.3.6"
   }
 }

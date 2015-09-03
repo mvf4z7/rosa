@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteHandler } from 'react-router';
+import socket from '../../socket-client';
 import mui from 'material-ui';
 
 import { AppBar } from 'material-ui';
@@ -14,7 +15,9 @@ ThemeManager.setTheme(theme);
 let menuItems = [
     { route: '/', text: 'home' },
     { route: '/info', text: 'info' }
-]
+];
+
+socket.emit('hello', {number: 30});
 
 class App extends React.Component {
     constructor(props) {
@@ -24,13 +27,14 @@ class App extends React.Component {
 
     getChildContext() {
         return {
-            muiTheme: ThemeManager.getCurrentTheme()
+            muiTheme: ThemeManager.getCurrentTheme(),
+            socket: socket
         }
     }
 
     render() {
         return (
-    		<div id="app-wrapper">
+    		<div id='app-wrapper'>
                 <AppBar
                     title='ROSA'
                     style={styles.AppBar}
@@ -49,7 +53,8 @@ class App extends React.Component {
 }
 
 App.childContextTypes = {
-    muiTheme: React.PropTypes.object
+    muiTheme: React.PropTypes.object,
+    socket: React.PropTypes.object
 };
 
 export default App;
