@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router';
+import request from 'superagent';
 
-import { FlatButton, Dialog } from 'material-ui';
+import { Link } from 'react-router';
+import { FlatButton, Dialog, RaisedButton } from 'material-ui';
 
 require('./home.scss');
 
@@ -13,6 +14,7 @@ export default class Home extends React.Component {
           { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
           { text: 'Submit', onClick: this._onDialogSubmit.bind(this), ref: 'submit' }
         ];
+        this._startOvenSim = this._startOvenSim.bind(this);
     }
 
     _onDialogCancel() {
@@ -32,11 +34,16 @@ export default class Home extends React.Component {
     	 	<div className='home-wrapper'>
     			<h1>Insert Home Page Content Here</h1>
                 <FlatButton
-                    label="open the dialog box"
+                    label='open the dialog box'
                     onClick={ this._onButtonClicked.bind(this) }
                     style={{
-                        margin: '2em',
+                        margin: '2em'
                     }}/>
+                <RaisedButton
+                    label='click to start oven sim'
+                    primary={true}
+                    onTouchTap={this._startOvenSim}
+                    style={{ margin: '2em' }} />
                 <div onClick={ this._onDialogCancel.bind(this) }>
                     <Dialog
                         ref='dialog'
@@ -78,5 +85,14 @@ export default class Home extends React.Component {
 
     _closeModal() {
         this.refs.dialog.dismiss();
+    }
+
+    _startOvenSim() {
+        console.log('starting oven sim');
+        request
+            .get('/api')
+            .end(function(err, res) {
+                console.log(res.body);
+            })
     }
 }

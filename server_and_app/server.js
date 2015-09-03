@@ -21,7 +21,23 @@ if(isProduction) {
 }
 
 app.get('/api', function(req, res, next) {
-    res.send({data: 5});
+    //res.send({data: 5});
+    var testLength = 60; // in seconds
+    var interval = 5; // in seconds
+
+    var f = function(time) {
+        setTimeout(function() {
+            var tempData = {
+                time: time,
+                temp: 23
+            }
+            io.emit('tempData', tempData);
+        },time * 1000);
+    }
+
+    for(var i = 1; i * interval  <= testLength; i++) {
+        f(i*interval);
+    }
 });
 
 app.get('/*', function(req, res) {

@@ -7,7 +7,7 @@ socket.on('connect', function() {
 });
 
 socket.on('tempData', function(data) {
-    console.log('temp data', data.temp);
+    console.log('temp data', data);
 });
 
 export default socket;
