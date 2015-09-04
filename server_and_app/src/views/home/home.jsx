@@ -3,6 +3,7 @@ import request from 'superagent';
 
 import { Link } from 'react-router';
 import { FlatButton, Dialog, RaisedButton } from 'material-ui';
+import LiveChart from '../../components/live-chart/live-chart';
 
 require('./home.scss');
 
@@ -53,6 +54,8 @@ export default class Home extends React.Component {
                         This is a dialog box
                     </Dialog>
                 </div>
+
+                <LiveChart />
 
 
                 <h1>filler content</h1>
