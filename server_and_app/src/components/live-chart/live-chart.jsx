@@ -2,8 +2,8 @@ import React from 'react';
 import Chart from 'chart.js';
 import styles from './styles';
 
-var data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+var chartData = {
+    labels: [],
     datasets: [
         {
             label: "My First dataset",
@@ -13,7 +13,7 @@ var data = {
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [65, 59, 80, 81, 56, 55, 40]
+            data: []
         },
         {
             label: "My Second dataset",
@@ -23,7 +23,7 @@ var data = {
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [28, 48, 40, 19, 86, 27, 90]
+            data: []
         }
     ]
 };
@@ -31,14 +31,20 @@ var data = {
 class LiveChart extends React.Component {
     constructor(props) {
         super(props);
+        this._tempDataCb = this._tempDataCb.bind(this);
         this.state = { chart: null};
     }
 
     componentDidMount() {
         var el = React.findDOMNode(this.refs.chart);
         var ctx = el.getContext('2d');
-        var chart = new Chart(ctx).Line(data);
+        var chart = new Chart(ctx).Line(chartData, {
+            responsive: true,
+            animationSteps: 10,
+            maintainAspectRation: false
+        });
         this.setState({ chart: chart });
+        this.context.socket.on('tempData', this._tempDataCb);
     }
 
     render() {
@@ -49,6 +55,15 @@ class LiveChart extends React.Component {
             </div>
         );
     }
+
+    _tempDataCb(data) {
+        console.log('inside callback: ', data)
+        this.state.chart.addData([data.temp, data.temp + 3], data.time);
+    }
 }
+
+LiveChart.contextTypes = {
+    socket: React.PropTypes.object,
+};
 
 export default LiveChart;
