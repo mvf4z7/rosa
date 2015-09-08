@@ -23,13 +23,17 @@ if(isProduction) {
 app.get('/api', function(req, res, next) {
     //res.send({data: 5});
     var testLength = 60; // in seconds
-    var interval = 5; // in seconds
+    var interval = 1; // in seconds
 
     var f = function(time) {
+        var min = 0;
+        var max = 100;
+        var randTemp = Math.floor(Math.random() * (max - min + 1)) + min;
+
         setTimeout(function() {
             var tempData = {
                 time: time,
-                temp: 23
+                temp: randTemp
             }
             io.emit('tempData', tempData);
         },time * 1000);
@@ -38,6 +42,8 @@ app.get('/api', function(req, res, next) {
     for(var i = 1; i * interval  <= testLength; i++) {
         f(i*interval);
     }
+
+    res.send({status: 'ok'});
 });
 
 app.get('/*', function(req, res) {
