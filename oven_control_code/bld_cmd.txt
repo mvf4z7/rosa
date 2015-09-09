@@ -1,0 +1,20 @@
+*****************************************
+COMPILING & LINKING
+*****************************************
+compiler command:
+clpru --silicon_version=3 -o1 pru0_main.c pru_print.c -z PRU_lnk.cmd -o pru_test.out -m pru_test.map --search_path=%PRU_RTS%
+
+
+gcc mpu_main.c -o mpu_test.out -lpthread -lprussdrv
+
+******************************************
+OVERLAYS:
+******************************************
+Build Device Tree Overlay:
+dtc -O dtb -o overlay-ooAo.dtbo -b 0 -@ overlay.dts
+
+Copy overlay to /lib/firmware:
+cp *.dtbo /lib/firmware
+
+Enable Device Tree Overlay:
+echo overlay:ooAo > /sys/devices/bone_capemgr.*/slots
