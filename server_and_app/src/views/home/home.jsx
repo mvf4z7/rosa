@@ -95,6 +95,9 @@ export default class Home extends React.Component {
         request
             .get('/api')
             .end(function(err, res) {
+                if(res.body.error) {
+                    alert('Error: ' + res.body.error);
+                }
                 console.log(res.body);
             })
     }

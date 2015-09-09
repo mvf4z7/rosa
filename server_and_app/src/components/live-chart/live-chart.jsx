@@ -32,7 +32,7 @@ class LiveChart extends React.Component {
     constructor(props) {
         super(props);
         this._tempDataCb = this._tempDataCb.bind(this);
-        this.state = { chart: null};
+        this.state = { chart: null };
     }
 
     componentDidMount() {
@@ -50,14 +50,16 @@ class LiveChart extends React.Component {
     render() {
         return (
             <div>
-                <h1>Im a chart component!</h1>
-                <canvas ref='chart' width='400' height='400'></canvas>
+                <h1 style={styles.header}>Im a chart component!</h1>
+                <div style={styles.canvasWrapper}>
+                    <canvas ref='chart'></canvas>
+                </div>
             </div>
         );
     }
 
     _tempDataCb(data) {
-        console.log('inside callback: ', data)
+        console.log('inside callback: ', data);
         this.state.chart.addData([data.temp, data.temp + 3], data.time);
     }
 }

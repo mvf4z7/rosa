@@ -1,10 +1,11 @@
 let styles = {
-    wrapper: {
-        padding: '2em',
-        height: '2em',
-        width: '100%'
-    }
-
+    header: {
+        textAlign: 'center'
+    },
+    canvasWrapper: {
+        width: '90%',
+        margin: '0 auto'
+    },
 };
 
 export default styles;
