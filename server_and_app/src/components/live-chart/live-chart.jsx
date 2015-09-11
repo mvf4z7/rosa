@@ -41,7 +41,7 @@ class LiveChart extends React.Component {
         var chart = new Chart(ctx).Line(chartData, {
             responsive: true,
             animationSteps: 10,
-            maintainAspectRation: false
+            maintainAspectRatio: false
         });
         this.setState({ chart: chart });
         this.context.socket.on('tempData', this._tempDataCb);
@@ -49,7 +49,7 @@ class LiveChart extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={styles.parent}>
                 <h1 style={styles.header}>Im a chart component!</h1>
                 <div style={styles.canvasWrapper}>
                     <canvas ref='chart'></canvas>
