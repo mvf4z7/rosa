@@ -1,9 +1,14 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
 
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 html {
     height: 100%;
     margin: 0;
     background-color: lime;
+    box-sizing: border-box;
 }
 
 body {
@@ -19,14 +24,13 @@ header, h1, h2, h3, h4, h5, div {
 }
 
 #content {
-    display: table;
-    height: inherit;
+    height: 100%;
     width: 100%;
     background-color: red;
 }
 
  #app-wrapper {
-    display: table-cell;
+    height: 100%;
     background-color: #FFFFFF;
 }
 

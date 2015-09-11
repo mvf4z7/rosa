@@ -56,28 +56,6 @@ export default class Home extends React.Component {
                 </div>
 
                 <LiveChart />
-
-
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
-                <br /><br /><br />
-                <h1>filler content</h1>
     		</div>
         );
     }
@@ -95,6 +73,9 @@ export default class Home extends React.Component {
         request
             .get('/api')
             .end(function(err, res) {
+                if(res.body.error) {
+                    alert('Error: ' + res.body.error);
+                }
                 console.log(res.body);
             })
     }

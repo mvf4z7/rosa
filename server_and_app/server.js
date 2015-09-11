@@ -20,9 +20,16 @@ if(isProduction) {
     app.use('/build', proxy(url.parse('http://localhost:3001/build')));
 }
 
+var simInProgress = false;
 app.get('/api', function(req, res, next) {
-    //res.send({data: 5});
-    var testLength = 60; // in seconds
+    if(simInProgress) {
+        res.send({error: 'There is already an oven sim in progress'});
+        return;
+    }
+
+    simInProgress = true;
+
+    var testLength = 10; // in seconds
     var interval = 1; // in seconds
 
     var f = function(time) {
@@ -42,6 +49,10 @@ app.get('/api', function(req, res, next) {
     for(var i = 1; i * interval  <= testLength; i++) {
         f(i*interval);
     }
+
+    setTimeout(function() {
+        simInProgress = false;
+    }, testLength*1000 + 5000);
 
     res.send({status: 'ok'});
 });
