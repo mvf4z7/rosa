@@ -5,8 +5,8 @@ import { Link } from 'react-router';
 import { FlatButton, Dialog, RaisedButton } from 'material-ui';
 import LiveChart from '../../components/live-chart/live-chart';
 
+import styles from './styles';
 require('./home.scss');
-
 
 export default class Home extends React.Component {
     constructor() {
@@ -33,18 +33,22 @@ export default class Home extends React.Component {
     render() {
         return (
     	 	<div className='home-wrapper'>
-    			<h1>Insert Home Page Content Here</h1>
-                <FlatButton
-                    label='open the dialog box'
-                    onClick={ this._onButtonClicked.bind(this) }
-                    style={{
-                        margin: '2em'
-                    }}/>
-                <RaisedButton
-                    label='click to start oven sim'
-                    primary={true}
-                    onTouchTap={this._startOvenSim}
-                    style={{ margin: '2em' }} />
+                <LiveChart />
+
+                <div style={{textAlign:'center'}}>
+                    <RaisedButton
+                        label='open&#13;&#10;dialog box'
+                        linkButton={true}
+                        onClick={ this._onButtonClicked.bind(this) }
+                        style={styles.button}
+                    />
+                    <RaisedButton
+                        label='start oven sim'
+                        primary={true}
+                        linkButton={true}
+                        onTouchTap={this._startOvenSim}
+                        style={styles.button} />
+                </div>
                 <div onClick={ this._onDialogCancel.bind(this) }>
                     <Dialog
                         ref='dialog'
@@ -54,8 +58,6 @@ export default class Home extends React.Component {
                         This is a dialog box
                     </Dialog>
                 </div>
-
-                <LiveChart />
     		</div>
         );
     }

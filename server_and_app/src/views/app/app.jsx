@@ -17,8 +17,6 @@ let menuItems = [
     { route: '/info', text: 'info' }
 ];
 
-socket.emit('hello', {number: 30});
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +32,7 @@ class App extends React.Component {
 
     render() {
         return (
-    		<div id='app-wrapper'>
+    		<div style={styles.appWrapper}>
                 <AppBar
                     title='ROSA'
                     style={styles.AppBar}

@@ -2,6 +2,10 @@ import mui from 'material-ui';
 let Colors = mui.Styles.Colors;
 
 let styles = {
+    appWrapper: {
+        height: '100%',
+        backgroundColor: '#FFFFFF'
+    },
     AppBar: {
         position: 'fixed',
         top: 0,

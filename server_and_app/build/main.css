@@ -9,6 +9,8 @@ html {
     margin: 0;
     background-color: lime;
     box-sizing: border-box;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
 }
 
 body {
@@ -27,11 +29,6 @@ header, h1, h2, h3, h4, h5, div {
     height: 100%;
     width: 100%;
     background-color: red;
-}
-
- #app-wrapper {
-    height: 100%;
-    background-color: #FFFFFF;
 }
 
 .no-select {

@@ -49,11 +49,8 @@ class LiveChart extends React.Component {
 
     render() {
         return (
-            <div style={styles.parent}>
-                <h1 style={styles.header}>Im a chart component!</h1>
-                <div style={styles.canvasWrapper}>
-                    <canvas ref='chart'></canvas>
-                </div>
+            <div style={styles.canvasWrapper}>
+                <canvas ref='chart'></canvas>
             </div>
         );
     }
