@@ -13,6 +13,9 @@ exclusive-use = "P9.11", "P9.13", "P9.27", "P9.28", "pru0";
             <
             0x070 0x07 // P9_11 MODE7 // GPIO output pull-down
             0x074 0x27 // P9_13 MODE7 // GPIO input pull-down Wrong mode???
+			
+			/* OUTPUT  GPIO(mode7) 0x07 pulldown, 0x17 pullup, 0x?f no pullup/down */
+			/* INPUT   GPIO(mode7) 0x27 pulldown, 0x37 pullup, 0x?f no pullup/down */
             >;
         };
         
