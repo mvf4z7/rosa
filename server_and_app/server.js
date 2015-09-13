@@ -20,6 +20,8 @@ if(isProduction) {
     app.use('/build', proxy(url.parse('http://localhost:3001/build')));
 }
 
+app.use('/styles', express.static(path.join(__dirname, 'styles')));
+
 var simInProgress = false;
 app.get('/api', function(req, res, next) {
     if(simInProgress) {
