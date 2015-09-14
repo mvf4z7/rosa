@@ -7,7 +7,6 @@ import NavigationStore from '../../stores/NavigationStore';
 import NavigationActions from '../../actions/NavigationActions';
 
 import { AppBar, LeftNav } from 'material-ui';
-import NavDrawer from '../../components/nav-drawer/nav-drawer';
 
 import styles from './styles';
 import theme from './theme';
