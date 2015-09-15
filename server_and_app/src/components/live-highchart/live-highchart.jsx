@@ -20,12 +20,12 @@ chartConfig.series = [{
 class LiveHighchart extends React.Component {
     constructor(props) {
         super(props);
-
-        this._tempDataCb = this._tempDataCb.bind(this);
+        this.addPoint = this.addPoint.bind(this);
+        //this._tempDataCb = this._tempDataCb.bind(this);
     }
 
     componentDidMount() {
-        this.context.socket.on('tempData', this._tempDataCb);
+        //this.context.socket.on('tempData', this._tempDataCb);
     }
 
     render() {
@@ -34,6 +34,11 @@ class LiveHighchart extends React.Component {
                 <Highcharts style={styles.highChart} ref='chart' config={chartConfig}></Highcharts>
             </div>
         );
+    }
+
+    addPoint(data) {
+        let chart = this.refs.chart.getChart();
+        chart.series[0].addPoint(data.temp);
     }
 
     _tempDataCb(data) {
