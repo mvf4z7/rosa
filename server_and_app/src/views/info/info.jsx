@@ -1,7 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 
-import LiveHighChart from '../../components/live-highchart/live-highchart';
+import LiveHighchart from '../../components/live-highchart/live-highchart';
 import { RaisedButton } from 'material-ui';
 
 import styles from './styles';
@@ -19,7 +19,7 @@ class Info extends React.Component {
         return (
     	 	<div className='info-wrapper'>
     			<h1>Insert Info Page Content Here</h1>
-                <LiveHighChart />
+                <LiveHighchart />
                 <div style={styles.buttonContainer}>
                     <RaisedButton
                         label='start oven sim'

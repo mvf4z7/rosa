@@ -4,8 +4,8 @@ import LocationStore from '../../stores/LocationStore';
 import LocationActions from '../../actions/LocationActions';
 
 import { Link } from 'react-router';
-import { FlatButton, Dialog, RaisedButton } from 'material-ui';
-import LiveChart from '../../components/live-chart/live-chart';
+import { Dialog, RaisedButton } from 'material-ui';
+import LiveHighchart from '../../components/live-highchart/live-highchart';
 
 import styles from './styles';
 require('./home.scss');
@@ -60,7 +60,7 @@ export default class Home extends React.Component {
                     {locations}
                 </ul>
 
-                <LiveChart />
+                <LiveHighchart />
 
                 <div style={styles.buttonContainer}>
                     <RaisedButton
