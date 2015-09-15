@@ -48,7 +48,7 @@ class LiveChart extends React.Component {
     }
 
     componentWillUnmount() {
-        this.context.socket.removeListener('tempData', this._tempDataCb);
+        //this.context.socket.removeListener('tempData', this._tempDataCb);
     }
 
     render() {

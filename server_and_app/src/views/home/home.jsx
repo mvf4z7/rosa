@@ -55,7 +55,7 @@ export default class Home extends React.Component {
         });
 
         return (
-    	 	<div className='home-wrapper'>
+    	 	<div style={styles.homeWrapper}>
                 <ul>
                     {locations}
                 </ul>

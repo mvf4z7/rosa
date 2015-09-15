@@ -1,32 +1,21 @@
 import React from 'react';
 
 import Highcharts from 'react-highcharts';
+import chartConfig from '../../highcharts';
 
 import styles from './styles';
 
-let config = {
-    chart: {
-        type: 'spline',
-        animation: {
-            duration: 250,
-            easing: 'linear'
-        },
-        marginLeft: 75,
-        marginRight: 75
-    },
-    plotOptions: {
-        spline: {
-            animation: false
-        }
-    },
-    credits: {
-        enabled: false
-    },
-
-  series: [{
-    data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-  }]
+chartConfig.chart.type = 'spline';
+chartConfig.chart.animation = { duration: 250, easing: 'linear' };
+chartConfig.plotOptions = {
+    spline: {
+        animation: false
+    }
 };
+chartConfig.credits = { enabled: false };
+chartConfig.series = [{
+  data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+}];
 
 class LiveHighChart extends React.Component {
     constructor(props) {
@@ -42,7 +31,7 @@ class LiveHighChart extends React.Component {
     render() {
         return (
             <div style={styles.chartWrapper}>
-                <Highcharts style={styles.highChart} ref='chart' config={config}></Highcharts>
+                <Highcharts style={styles.highChart} ref='chart' config={chartConfig}></Highcharts>
             </div>
         );
     }

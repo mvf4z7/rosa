@@ -4,7 +4,7 @@ let Colors = mui.Styles.Colors;
 let styles = {
     appWrapper: {
         height: '100%',
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#ECEEF4'
     },
     AppBar: {
         position: 'fixed',
