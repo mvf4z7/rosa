@@ -1,0 +1,46 @@
+wifi adapter install:
+
+-plug in wall power and ethernet before USB dongle
+
+lsusb #should see the adapter as one of the devices
+apt-get update
+apt-cache realtek
+apt-get install firmware-realtek # may say it's already been installed, that's fine
+ifconfig -a # should now see a wlan0 connection
+nano /etc/network/interfaces
+
+-add the following under the #wifi example section
+iface wlan0 inet dhcp
+
+-and then go back to the terminal and...
+ifup wlan0
+
+-should see: Internet Systems Consortium DHCP Client 4.2.2...
+Press ^c
+
+-Search for wireless access points:
+iwlist wlan0 scan
+wpa_passphrase chosenSSID thepassword > /etc/wpa.conf
+nano /etc/wpa.conf
+
+-add things to make network{ look like this:
+network = {
+	ssid="chosenSSID"
+	#psk="thepassword"
+	key_mgmt=WPA-PSK
+	pairwise=CCMP TKIP
+	group=CCMP TKIP
+	psk=ksjdf;laksfhiouwehtrk;jh;aslfk;jas;lfjas;odf
+}
+
+-Back in /etc/network/interfaces add:
+wpa-conf /etc/wpa.conf under the iface wlan0 inet dhcp you added earlier
+
+-Back to terminal
+/etc/init.d/networking restart
+ifconfig -a
+ifup wlan0
+ifconfig -a # should now see that the wlan0 device has an ip address
+
+-Back to /etc/network/interfaces
+add "auto wlan0" where you have been entering the other things, this will allow it to run on boot

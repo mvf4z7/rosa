@@ -1,0 +1,18 @@
+Get the ntp package:
+
+date
+apt-get update
+apt-cache search ntp # just to see how many ntp related packages there are
+ntpdate -b -s -u pool.ntp.org
+date # should see new date now
+apt-get install ntp
+
+
+Setting time:
+
+root@beaglebone:/etc# rm localtime
+root@beaglebone:/etc# ln -s /usr/share/zoneinfo/US/Central /etc/localtime
+
+OR
+
+root@beaglebone:~# dpkg-reconfigure tzdata
