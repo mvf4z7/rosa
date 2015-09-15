@@ -16,5 +16,7 @@ dtc -O dtb -o EBB-PRU-Example-00A0.dtbo -b 0 -@ EBB-PRU-Example.dts
 Copy overlay to /lib/firmware:
 cp *.dtbo /lib/firmware
 
+*Disable HDMI before running this command. 
+Goto /boot/uEnv.txt and un-comment the HDMI disabler
 Enable Device Tree Overlay:
 echo EBB-PRU-Example > /sys/devices/bone_capemgr.*/slots
