@@ -16,11 +16,10 @@
 MEMORY
 {
     PAGE 0:
-      PRUIMEM:   o = 0x00000000  l = 0x00001000  /* 8kB PRU0 Instruction RAM */
+      PRUIMEM:   o = 0x00000000  l = 0x00001000  /* 4kB PRU0 Instruction RAM */
     PAGE 1:
-      PRUDMEM:   o = 0x00000000  l = 0x00001000  /* 8kB PRU Data RAM 0 */
-   /* PAGE 2: */
-      PRINTMEM   origin = 0x00010000  length = 0x00000208 cregister=4 fill = 0x00   /* 520 byte shared print memory */
+      PRUDMEM:   o = 0x00000000  l = 0x00001000  /* 4kB PRU Data RAM 0 */
+      PRINTMEM   origin = 0x00001000  length = 0x00001000 cregister=4 fill = 0x00   /* 4kB shared print memory */
 }
 
 SECTIONS

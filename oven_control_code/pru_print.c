@@ -5,11 +5,11 @@
 
 #define LF 0x0A
 
-#define INC_INDEX( i, max );     i++; if( i == max ) i = 0;
+#define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
-__far volatile shr_print print_mem __attribute__((cregister("PRINTMEM", far)));
-
-
+//volatile shr_print print_mem __attribute__((cregister("PRINTMEM")));
+#pragma LOCATION( print_mem, 0x00001000 )
+volatile shr_print print_mem;
 
 void print_msg( const char * msg )
 {
@@ -40,4 +40,11 @@ void print_msg( const char * msg )
     INC_INDEX( print_mem.write_idx, PRINT_MEM_SZ ); 
     
     return;
+}
+
+void init_print()
+{
+print_mem.write_idx = 0;
+print_mem.read_idx = 0;
+
 }
