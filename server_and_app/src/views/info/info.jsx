@@ -29,6 +29,9 @@ class Info extends React.Component {
                         onTouchTap={this._startOvenSim}
                         style={styles.button} />
                 </div>
+                <br /><br/><br/><br/>
+                <h1>hello</h1>
+                <h1>hello</h1>
     		</div>
         );
     }

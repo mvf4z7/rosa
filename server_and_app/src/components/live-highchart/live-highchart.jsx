@@ -10,12 +10,17 @@ let config = {
         animation: {
             duration: 250,
             easing: 'linear'
-        }
+        },
+        marginLeft: 75,
+        marginRight: 75
     },
     plotOptions: {
         spline: {
             animation: false
         }
+    },
+    credits: {
+        enabled: false
     },
 
   series: [{
@@ -37,7 +42,7 @@ class LiveHighChart extends React.Component {
     render() {
         return (
             <div style={styles.chartWrapper}>
-                <Highcharts ref='chart' config={config}></Highcharts>
+                <Highcharts style={styles.highChart} ref='chart' config={config}></Highcharts>
             </div>
         );
     }

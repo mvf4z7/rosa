@@ -1,9 +1,10 @@
 let styles = {
     chartWrapper: {
-        width: '90%',
-        height: '70%',
-        margin: '1em auto',
+        height: '70%'
     },
+    highChart: {
+        height: '100%'
+    }
 };
 
 export default styles;
