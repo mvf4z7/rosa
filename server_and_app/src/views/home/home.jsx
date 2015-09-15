@@ -62,7 +62,7 @@ export default class Home extends React.Component {
 
                 <LiveChart />
 
-                <div style={{textAlign:'center'}}>
+                <div style={styles.buttonContainer}>
                     <RaisedButton
                         label='open dialog box'
                         linkButton={true}

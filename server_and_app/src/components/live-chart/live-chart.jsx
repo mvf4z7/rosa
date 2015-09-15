@@ -47,6 +47,10 @@ class LiveChart extends React.Component {
         this.context.socket.on('tempData', this._tempDataCb);
     }
 
+    componentWillUnmount() {
+        this.context.socket.removeListener('tempData', this._tempDataCb);
+    }
+
     render() {
         return (
             <div style={styles.canvasWrapper}>
@@ -62,7 +66,7 @@ class LiveChart extends React.Component {
 }
 
 LiveChart.contextTypes = {
-    socket: React.PropTypes.object,
+    socket: React.PropTypes.object
 };
 
 export default LiveChart;
