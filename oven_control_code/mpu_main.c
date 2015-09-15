@@ -26,6 +26,7 @@ printf( "Initialized PRU.\n");
 
 prussdrv_open( PRU_EVTOUT_0 );
 printf( "Opened PRU.\n");
+//printf( "PRU Version: %s\n", prussdrv_strversion( prussdrv_version() ) );
 prussdrv_pruintc_init( &pruss_intc_initdata );
 prussdrv_load_datafile(PRUSS0_PRU0_DATARAM, "./data.bin");
 
@@ -39,7 +40,7 @@ shr = (shr_print *)( (uint32)mem + SHR_MEM_OFST );
 printf( "Read Idx: %u\n", shr->read_idx );
 printf( "Write Idx: %u\n", shr->write_idx );
 
-for( idx = 0; idx < 512; idx++ )
+/*for( idx = 0; idx < 512; idx++ )
 {
      if( shr->data[ idx ]  != 0 )
      {
@@ -48,10 +49,10 @@ for( idx = 0; idx < 512; idx++ )
      }
 
 
-}
+}*/
 
-prussdrv_exec_program( PRU_NUM, "./text.bin" );
-//prussdrv_exec_program_at(PRU_NUM, "./text.bin", 0x000000E4);
+//prussdrv_exec_program( PRU_NUM, "./text.bin" );
+prussdrv_exec_program_at(PRU_NUM, "./text.bin", 0x00000178);
 
 printf( "Shared Mem: 0x%x\n", (uint32)shr );
 
@@ -62,23 +63,32 @@ while( 1 )
     if( shr->read_idx != shr->write_idx )
     {
         printf( "Write Index: %d\n", shr->write_idx );
+        printf( "Read Index: %d\n", shr->read_idx );
         printf( "Copying data...\n" );
         idx = 0;
         while( shr->read_idx != shr->write_idx )
         {
+            printf( "\tV: 0x%x\n", shr->data[ shr->read_idx ] );
             print_buf[ idx ] = shr->data[ shr->read_idx ];
             idx++;
             INC_INDEX( shr->read_idx, 512 );
             
         }
-     }
-     else if( shr->data[ 0 ] != 0 )
+        if( print_buf[ idx ] != 0 )
+        {
+            print_buf[ idx ] = 0;
+            idx++;
+        }
+    
+     /*else if( shr->data[ 0 ] != 0 )
      {
-          printf( (uint8 *)&shr->data );
-     }
+          printf( "Writing data...\n" );
+           printf( (uint8 *)&shr->data );
+     }*/
         
-        printf( print_buf );
-        
+    printf( "printing data\n" );    
+    printf( print_buf );
+    }    
     
     
     

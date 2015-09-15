@@ -14,7 +14,7 @@ int main()
 {
     
     init_print();
-    print_msg( "Hello World" ); 
+    print_msg( "Hello World!" ); 
        
     __halt();
 }

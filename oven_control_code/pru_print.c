@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "pru_types.h"
 #include "shared.h"
 #include "pru_mem.h"
@@ -14,24 +16,19 @@ volatile shr_print print_mem;
 void print_msg( const char * msg )
 {
     uint8 cnt;
-    boolean done;
+    uint8 num;
     
-    done = FALSE;
+
     cnt = 0;
+    num = strlen( msg );
     
     //Store message in shared print memory:
-    while( !done )
+    for( cnt = 0; cnt < num; cnt++ )
     {
-        if( msg[ cnt ] != NULL )
-        {
-            print_mem.data[ print_mem.write_idx ] = msg[ cnt ];
-            cnt++;
-            INC_INDEX( print_mem.write_idx, PRINT_MEM_SZ ); 
-        }
-        else
-        {
-            done = TRUE;
-        }
+
+        print_mem.data[ print_mem.write_idx ] = msg[ cnt ];
+        cnt++;
+        INC_INDEX( print_mem.write_idx, PRINT_MEM_SZ ); 
     }
     
     print_mem.data[ print_mem.write_idx ] = LF;
