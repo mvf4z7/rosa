@@ -30,7 +30,7 @@ do
 
     if [ $ARGS == "run" ]
     then
-        ENTRY="$( dispru pru_test.out | grep _c_int00 | cut -f1 -d' ' )" 
+        ENTRY="$( dispru pru_prog.elf | grep _c_int00 | cut -f1 -d' ' )" 
         HEX="0x"
         echo Entry Point: $HEX$ENTRY
         ENTRY_ADDR=$HEX$ENTRY

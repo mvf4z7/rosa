@@ -56,11 +56,11 @@ while( argv[ 1 ][ idx ] != 0 )
     }
     else if( argv[ 1 ][ idx ] >= CHAR_A && argv[ 1 ][ idx ] <= CHAR_F )
     {
-        entry_addr = entry_addr + ( argv[ 1 ][ idx ] - CHAR_A );
+        entry_addr = entry_addr + ( argv[ 1 ][ idx ] - CHAR_A + 10 );
     }
     else if( argv[ 1 ][ idx ] >= CHAR_a && argv[ 1 ][ idx ] <= CHAR_f )
     {
-        entry_addr = entry_addr + ( argv[ 1 ][ idx ] - CHAR_a );
+        entry_addr = entry_addr + ( argv[ 1 ][ idx ] - CHAR_a + 10 );
     }
     else
     {
