@@ -4,7 +4,14 @@ COMPILING & LINKING
 compiler command:
 clpru --silicon_version=2 -Ooff pru0_main.c pru_print.c -z PRU_lnk.cmd -o pru_test.out -m pru_test.map --search_path=%PRU_RTS%
 
+Create Binary files:
+hexpru bin.cmd pru_test.out
 
+Determine the entry point for the PRU program:
+1) dispru pru_test.out | grep _c_int00
+2) Enter the address from the previous command (the left-most word) into mpu_main.c as the third argument to prussdrv_exec_program_at
+
+Compile and link the main processor program:
 gcc mpu_main.c -o mpu_test.out -lpthread -lprussdrv
 
 ******************************************
