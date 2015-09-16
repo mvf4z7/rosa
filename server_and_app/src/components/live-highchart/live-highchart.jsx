@@ -38,7 +38,7 @@ class LiveHighchart extends React.Component {
 
     addPoint(data) {
         let chart = this.refs.chart.getChart();
-        chart.series[0].addPoint(data.temp);
+        chart.series[0].addPoint(data);
     }
 
     _tempDataCb(data) {
