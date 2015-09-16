@@ -1,39 +1,43 @@
 import React from 'react';
 import request from 'superagent';
+
 import LocationStore from '../../stores/LocationStore';
 import LocationActions from '../../actions/LocationActions';
+import LiveChartStore from '../../stores/LiveChartStore';
 
 import { Link } from 'react-router';
-import { FlatButton, Dialog, RaisedButton } from 'material-ui';
-import LiveChart from '../../components/live-chart/live-chart';
+import { Dialog, RaisedButton } from 'material-ui';
+import LiveHighchart from '../../components/live-highchart/live-highchart';
 
 import styles from './styles';
-require('./home.scss');
 
 export default class Home extends React.Component {
     constructor() {
         super();
-        this.state = LocationStore.getState();
+        this.state = {
+            locations: LocationStore.getState().locations,
+            newData: LiveChartStore.getState().newData
+        };
 
         this.standardActions = [
           { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
           { text: 'Submit', onClick: this._onDialogSubmit.bind(this), ref: 'submit' }
         ];
+
         this._startOvenSim = this._startOvenSim.bind(this);
-        this._onStoreChange = this._onStoreChange.bind(this);
+        this._onLocationStoreChange = this._onLocationStoreChange.bind(this);
+        this._onLiveChartStoreChange = this._onLiveChartStoreChange.bind(this);
     }
 
     componentDidMount() {
-        LocationStore.listen(this._onStoreChange);
+        LocationStore.listen(this._onLocationStoreChange);
+        LiveChartStore.listen(this._onLiveChartStoreChange);
     }
 
     componentWillUnmount() {
-        LocationStore.unlisten(this._onStoreChange);
-    }
-
-    _onStoreChange(state) {
-        this.setState(state);
-    }
+        LocationStore.unlisten(this._onLocationStoreChange);
+        LiveChartStore.unlisten(this._onLiveChartStoreChange);
+    }    
 
     _onDialogCancel() {
         this.refs.dialog.dismiss();
@@ -55,14 +59,14 @@ export default class Home extends React.Component {
         });
 
         return (
-    	 	<div className='home-wrapper'>
+    	 	<div style={styles.homeWrapper}>
                 <ul>
                     {locations}
                 </ul>
 
-                <LiveChart />
+                <LiveHighchart ref='chart' />
 
-                <div style={{textAlign:'center'}}>
+                <div style={styles.buttonContainer}>
                     <RaisedButton
                         label='open dialog box'
                         linkButton={true}
@@ -95,6 +99,15 @@ export default class Home extends React.Component {
                 </div>
     		</div>
         );
+    }
+
+    _onLocationStoreChange(state) {
+        this.setState({ locations: state.locations });
+    }
+
+    _onLiveChartStoreChange(state) {
+        console.log('livechartstorechange: ', state);
+        this.refs.chart.addPoint(state.newData);
     }
 
     _onButtonClicked() {
