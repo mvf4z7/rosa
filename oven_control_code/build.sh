@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "-------------------------------"
+echo "Build Script Starting!"
+
 if [ $# == 0 ]
 then
     echo "Arguments include: 'init' 'clean' 'pru' 'mpu' 'run'"
@@ -14,13 +17,13 @@ do
 
     if [ $ARGS == "pru" ]
     then
-        clpru --silicon_version=2 -Ooff --multibyte_chars --printf_support=minimal pru0_main.c pru_print.c -z PRU_lnk.cmd -o pru_prog.elf -m pru_test.map
+        clpru --silicon_version=2 -Ooff --define=PRU_BLD --printf_support=minimal pru_*.c -z PRU_lnk.cmd -o pru_prog.elf -m pru_test.map
         hexpru bin.cmd pru_prog.elf
     fi
 
     if [ $ARGS == "mpu" ]
     then
-        gcc mpu_main.c -o mpu_prog.elf -lpthread -lprussdrv
+        gcc -D MPU_BLD mpu_*.c -o mpu_prog.elf -lpthread -lprussdrv
     fi
 
     if [ $ARGS == "init" ]
@@ -32,8 +35,12 @@ do
     then
         ENTRY="$( dispru pru_prog.elf | grep _c_int00 | cut -f1 -d' ' )" 
         HEX="0x"
-        echo Entry Point: $HEX$ENTRY
         ENTRY_ADDR=$HEX$ENTRY
+        echo "Executing Program..."
+        echo "-------------------------------"       
         ./mpu_prog.elf $ENTRY_ADDR
     fi
 done
+
+echo "Build Script Finished!"
+echo "-------------------------------"
