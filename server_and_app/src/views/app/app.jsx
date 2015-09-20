@@ -38,7 +38,6 @@ class App extends React.Component {
 
     componentDidMount() {
         NavigationStore.listen(this._onStoreChange);
-        NavigationActions.setRouter({ router: this.context.router });
         NavigationActions.setMenuItems({ menuItems: menuItems });
     }
 
