@@ -13,6 +13,10 @@ class NavigationActions {
         this.dispatch(data);
     }
 
+    setCurrentRoute(data) {
+        this.dispatch(data);
+    }
+
     transitionTo(data) {
         this.dispatch(data);
     }
