@@ -1,6 +1,7 @@
 import React from 'react';
 import request from 'superagent';
 
+import NavigationActions from '../../actions/NavigationActions';
 import LocationStore from '../../stores/LocationStore';
 import LocationActions from '../../actions/LocationActions';
 import LiveChartStore from '../../stores/LiveChartStore';
@@ -29,6 +30,10 @@ export default class Home extends React.Component {
         this._onLiveChartStoreChange = this._onLiveChartStoreChange.bind(this);
     }
 
+    static willTransitionTo() {
+        NavigationActions.setCurrentRoute({ route: '/' });
+    }
+
     componentDidMount() {
         LocationStore.listen(this._onLocationStoreChange);
         LiveChartStore.listen(this._onLiveChartStoreChange);
@@ -37,7 +42,7 @@ export default class Home extends React.Component {
     componentWillUnmount() {
         LocationStore.unlisten(this._onLocationStoreChange);
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
-    }    
+    }
 
     _onDialogCancel() {
         this.refs.dialog.dismiss();

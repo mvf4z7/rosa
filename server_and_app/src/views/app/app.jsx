@@ -29,6 +29,11 @@ class App extends React.Component {
         this._onStoreChange = this._onStoreChange.bind(this);
     }
 
+    static willTransitionTo() {
+        console.log('calling App willTransitionTo...');
+        NavigationActions.setMenuItems({ menuItems: menuItems });
+    }
+
     getChildContext() {
         return {
             muiTheme: ThemeManager.getCurrentTheme(),
@@ -38,8 +43,7 @@ class App extends React.Component {
 
     componentDidMount() {
         NavigationStore.listen(this._onStoreChange);
-        NavigationActions.setRouter({ router: this.context.router });
-        NavigationActions.setMenuItems({ menuItems: menuItems });
+
     }
 
     componentWillUnmount() {

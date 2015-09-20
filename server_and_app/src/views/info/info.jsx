@@ -1,6 +1,8 @@
 import React from 'react';
 import request from 'superagent';
 
+import NavigationActions from '../../actions/NavigationActions';
+
 import LiveHighchart from '../../components/live-highchart/live-highchart';
 import { RaisedButton } from 'material-ui';
 
@@ -13,6 +15,10 @@ class Info extends React.Component {
         super();
 
         this._startOvenSim = this._startOvenSim.bind(this);
+    }
+
+    static willTransitionTo() {
+        NavigationActions.setCurrentRoute({ route: '/info' });
     }
 
     render() {
