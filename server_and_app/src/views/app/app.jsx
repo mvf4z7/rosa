@@ -30,7 +30,6 @@ class App extends React.Component {
     }
 
     static willTransitionTo() {
-        console.log('calling App willTransitionTo...');
         NavigationActions.setMenuItems({ menuItems: menuItems });
     }
 
@@ -85,10 +84,6 @@ class App extends React.Component {
         this.setState(state);
     }
 }
-
-App.contextTypes = {
-    router: React.PropTypes.func,
-};
 
 App.childContextTypes = {
     muiTheme: React.PropTypes.object,
