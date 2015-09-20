@@ -6,7 +6,7 @@ let menuItems = null;
 
 class NavigationStore {
   constructor() {
-    this.selectedIndex = 0;
+    this.selectedIndex = null;
     this.currentRoute = null;
 
     this.bindListeners({
