@@ -13,13 +13,11 @@ let styles = {
         color: '#0A5CBF'
     },
     boxContainer: {
-        marginTop: '4rem'
+        marginTop: '2rem'
     },
     box: {
         textAlign: 'center',
-        padding: '1em',
-        borderColor: 'black',
-        borderStyle: 'dashed'
+        padding: '2em',
     },
     boxTitle: {
         color: '#0A5CBF',
@@ -27,7 +25,7 @@ let styles = {
         textAlign: 'left'
     },
     boxBody: {
-        textAlign: 'center'
+        textAlign: 'justify'
     },
     button: {
         margin: '1em'
