@@ -24,8 +24,52 @@ class Info extends React.Component {
     render() {
         return (
     	 	<div className='info-wrapper'>
-    			<h1>Insert Info Page Content Here</h1>
-                <LiveHighchart />
+                <h1 style={styles.header}>ROSA</h1>
+                <p style={styles.tagLine}>
+                    A
+                    <span style={styles.accent}> R</span>eflow
+                    <span style={styles.accent}> O</span>ven for
+                    <span style={styles.accent}> S</span>MD
+                    <span style={styles.accent}> A</span>pplication
+                </p>
+                <div className='pure-g' style={styles.boxContainer}>
+                    <div className='pure-u-1 pure-u-md-1-2' style={styles.box}>
+                        <h3 style={styles.boxTitle}>What is Rosa?</h3>
+                        <p style={styles.boxBody}>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam diam ligula,
+                            dapibus eu odio et, pellentesque imperdiet nunc. Etiam sed turpis eu lacus
+                            feugiat consectetur vel non dui. Vestibulum quam libero, condimentum in turpis
+                            at, varius pulvinar ipsum. Sed tellus nibh, bibendum vitae accumsan vel,
+                        </p>
+                    </div>
+                    <div className='pure-u-1 pure-u-md-1-2' style={styles.box}>
+                        <h3 style={styles.boxTitle}>Who created ROSA?</h3>
+                        <p style={styles.boxBody}>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam diam ligula,
+                            dapibus eu odio et, pellentesque imperdiet nunc. Etiam sed turpis eu lacus
+                            feugiat consectetur vel non dui. Vestibulum quam libero, condimentum in turpis
+                            at, varius pulvinar ipsum. Sed tellus nibh, bibendum vitae accumsan vel,
+                        </p>
+                    </div>
+                    <div className='pure-u-1 pure-u-md-1-2' style={styles.box}>
+                        <h3 style={styles.boxTitle}>Technologies used</h3>
+                        <p style={styles.boxBody}>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam diam ligula,
+                            dapibus eu odio et, pellentesque imperdiet nunc. Etiam sed turpis eu lacus
+                            feugiat consectetur vel non dui. Vestibulum quam libero, condimentum in turpis
+                            at, varius pulvinar ipsum. Sed tellus nibh, bibendum vitae accumsan vel,
+                        </p>
+                    </div>
+                    <div className='pure-u-1 pure-u-md-1-2' style={styles.box}>
+                        <h3 style={styles.boxTitle}>Find us on Github</h3>
+                        <p style={styles.boxBody}>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam diam ligula,
+                            dapibus eu odio et, pellentesque imperdiet nunc. Etiam sed turpis eu lacus
+                            feugiat consectetur vel non dui. Vestibulum quam libero, condimentum in turpis
+                            at, varius pulvinar ipsum. Sed tellus nibh, bibendum vitae accumsan vel,
+                        </p>
+                    </div>
+                </div>
                 <div style={styles.buttonContainer}>
                     <RaisedButton
                         label='start oven sim'
