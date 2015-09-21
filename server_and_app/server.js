@@ -31,13 +31,15 @@ app.get('/api', function(req, res, next) {
 
     simInProgress = true;
 
-    var testLength = 10; // in seconds
+    var testLength = 240; // in seconds
     var interval = 1; // in seconds
 
     var f = function(time) {
-        var min = 0;
-        var max = 100;
-        var randTemp = Math.floor(Math.random() * (max - min + 1)) + min;
+        var errorFactor = 0.05;
+        var trueTemp = getTemp(time);
+        var max = trueTemp * (1 + errorFactor);
+        var min = trueTemp * (1 - errorFactor);
+        var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
 
         setTimeout(function() {
             var tempData = {
@@ -58,6 +60,95 @@ app.get('/api', function(req, res, next) {
 
     res.send({status: 'ok'});
 });
+
+var profile = [{
+        start: {
+            x: 0,
+            y: 25
+        },
+        stop: {
+            x: 42,
+            y: 150
+        },
+        m: 125/42,
+        b: 25
+    }, {
+        start: {
+            x: 42,
+            y: 150
+        },
+        stop: {
+            x: 110,
+            y: 220
+        },
+        m: 35/34,
+        b: 1815/17
+    }, {
+        start: {
+            x: 110,
+            y: 220
+        },
+        stop: {
+            x: 134,
+            y: 260
+        },
+        m: 5/3,
+        b: 110/3
+    }, {
+        start: {
+            x: 134,
+            y: 260
+        },
+        stop: {
+            x: 143,
+            y: 260
+        },
+        m: 0,
+        b: 260
+    }, {
+        start: {
+            x: 143,
+            y: 260
+        },
+        stop: {
+            x: 202,
+            y: 150
+        },
+        m: -110/59,
+        b: 31070/59
+    }, {
+        start: {
+            x: 202,
+            y: 150
+        },
+        stop: {
+            x: 240,
+            y: 25
+        },
+        m: -125/38,
+        b: 15475/19
+    }
+]
+
+function getTemp(time) {
+    var line = getLine(time);
+    var temp = line.m * time + line.b;
+    return temp;
+}
+
+function getLine(time) {
+    var line = null;
+    for(var i = 0; i < profile.length; i++) {
+        var tempLine = profile[i];
+        if(time >= tempLine.start.x && time <= tempLine.stop.x) {
+            line = tempLine;
+            break;
+        }
+    }
+
+    return line;
+}
+
 
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');

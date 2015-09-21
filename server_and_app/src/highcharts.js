@@ -29,6 +29,7 @@ let chartConfig = {
    },
    xAxis: {
       gridLineColor: '#707073',
+      gridLineWidth: 2,
       labels: {
          style: {
             color: '#E0E0E3'

@@ -7,17 +7,17 @@ let styles = {
     },
     tagLine: {
         textAlign: 'center',
-        fontSize: '1.5rem',
+        fontSize: '1.25rem'
     },
     accent: {
         color: '#0A5CBF'
     },
     boxContainer: {
-        marginTop: '2rem'
+        marginTop: '0rem'
     },
     box: {
         textAlign: 'center',
-        padding: '2em',
+        padding: '2rem',
     },
     boxTitle: {
         color: '#0A5CBF',
@@ -27,11 +27,19 @@ let styles = {
     boxBody: {
         textAlign: 'justify'
     },
+    list: {
+        textAlign: 'left'
+    },
+    link: {
+        color: '#0A%CBF',
+        textDecoration: 'none'
+    },
     button: {
-        margin: '1em'
+        margin: '2rem'
     },
     buttonContainer: {
-        textAlign: 'center'
+        textAlign: 'center',
+        marginTop: '1rem'
     }
 };
 
