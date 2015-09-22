@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Boilerplate for ReactJS project with hot code reloading and an ExpressJS server",
   "scripts": {
-    "start": "npm run build && NODE_ENV=production node bin/www",
+    "start": "NODE_ENV=production PORT=8001 node bin/www",
     "start-dev": "nodemon bin/www",
     "start-hot": "node hot-server.js",
     "build": "webpack",
