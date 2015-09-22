@@ -33,7 +33,7 @@ app.get('/api', function(req, res, next) {
     simInProgress = true;
 
     // Running LED program
-    var ledProgram = spawn('../oven_control_code/build.sh', ['run']);
+    var ledProgram = spawn('source', ['../oven_control_code/build.sh', 'run']);
     ledProgram.stdout.on('data', function(data) {
         data = data + '';
         io.emit('ledToggle', data);
