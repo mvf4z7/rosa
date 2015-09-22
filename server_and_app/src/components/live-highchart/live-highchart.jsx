@@ -26,11 +26,6 @@ class LiveHighchart extends React.Component {
     constructor(props) {
         super(props);
         this.addPoint = this.addPoint.bind(this);
-        //this._tempDataCb = this._tempDataCb.bind(this);
-    }
-
-    componentDidMount() {
-        //this.context.socket.on('tempData', this._tempDataCb);
     }
 
     render() {
