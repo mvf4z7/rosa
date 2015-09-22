@@ -14,7 +14,8 @@ export default class Home extends React.Component {
     constructor() {
         super();
         this.state = {
-            newData: LiveChartStore.getState().newData
+            newData: LiveChartStore.getState().newData,
+            led: 'OFF'
         };
 
         this.standardActions = [
@@ -32,6 +33,12 @@ export default class Home extends React.Component {
 
     componentDidMount() {
         LiveChartStore.listen(this._onLiveChartStoreChange);
+
+        this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
+    }
+
+    _onLedToggle(ledState) {
+        this.setState({ led: ledState });
     }
 
     componentWillUnmount() {
@@ -51,6 +58,13 @@ export default class Home extends React.Component {
     }
 
     render() {
+        let ledStyle = {
+            textAlign: 'center'
+        }
+        if(this.state.led == 'ON') {
+            ledStyle.backgroundColor = '#0A5CBF';
+        }
+
         return (
     	 	<div style={styles.homeWrapper}>
                 <LiveHighchart ref='chart' />
@@ -69,6 +83,10 @@ export default class Home extends React.Component {
                         onTouchTap={this._startOvenSim}
                         style={styles.button} />
                 </div>
+                <h1 style={ledStyle}>
+                    LED {this.state.led}
+                </h1>
+
                 <div onClick={ this._onDialogCancel.bind(this) }>
                     <Dialog
                         ref='dialog'
@@ -107,3 +125,7 @@ export default class Home extends React.Component {
             })
     }
 }
+
+Home.contextTypes = {
+    socket: React.PropTypes.object
+};

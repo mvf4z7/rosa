@@ -36,7 +36,7 @@ app.get('/api', function(req, res, next) {
     var ledProgram = spawn('python', ['demo.py']);
     ledProgram.stdout.on('data', function(data) {
         data = data + '';
-        console.log(data);
+        io.emit('ledToggle', data);
     });
 
     var testLength = 240; // in seconds
