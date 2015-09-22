@@ -77,11 +77,13 @@ while( 1 )
         g_dbg_var_last = *g_dbg_var;
         if( *g_dbg_var ) 
         {
-            printf( "ON\n" );
+            printf( "ON" );
+            fflush(stdout);
         }
         else
         {
-            printf( "OFF\n" );
+            printf( "OFF" );
+            fflush(stdout);
         }
     }
     
