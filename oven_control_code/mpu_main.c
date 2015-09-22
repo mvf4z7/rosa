@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <signal.h>
 #include "prussdrv.h"
 #include "pruss_intc_mapping.h"
 
@@ -15,12 +16,20 @@ uint8   g_state_var_last;
 uint8 * g_dbg_var;
 uint8   g_dbg_var_last;
 
+static void signalHandler( int signal );
+
 int main( int argc, char *argv[] ) 
 {
 
 void * mem;
 uint16 idx;
 uint32 entry_addr;
+
+//Set up signal handler:
+if( signal( SIGINT, signalHandler ) == SIG_ERR )
+{
+    printf( "MPU: Error setting up ctrl-c interrupt.\n" );
+}
 
 if( argc != 2 )
 {
@@ -40,7 +49,7 @@ if( !util_str_to_hex( argv[ 1 ], &entry_addr ) )
     return( 0 );
 }
 
-printf( "PRU Entry Point: 0x%x\n", entry_addr );
+//printf( "PRU Entry Point: 0x%x\n", entry_addr );
 
 /* Initialize PRU 0, load code and map shared memory. */
 tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
@@ -79,7 +88,7 @@ while( 1 )
     if( *g_state_var != g_state_var_last )
     {
         g_state_var_last = *g_state_var;
-        printf( "State var = %x\n", *g_state_var );
+        //printf( "State var = %x\n", *g_state_var );
         if( ( *g_state_var == DONE_NO_ERR ) || ( *g_state_var == DONE_ERR ) )
         {
             break;
@@ -92,4 +101,12 @@ while( 1 )
 prussdrv_pru_disable( PRU_NUM );
 prussdrv_exit();
 return( 0 );
+}
+
+
+static void signalHandler( int signal )
+{
+    prussdrv_pru_disable( PRU_NUM );
+    prussdrv_exit();
+    return;
 }
