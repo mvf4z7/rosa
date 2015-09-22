@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
+var spawn = require('child_process').spawn;
 
 var app = express();
 app.use(logger('dev'));
@@ -30,6 +31,13 @@ app.get('/api', function(req, res, next) {
     }
 
     simInProgress = true;
+
+    // Running LED program
+    var ledProgram = spawn('python', ['demo.py']);
+    ledProgram.stdout.on('data', function(data) {
+        data = data + '';
+        console.log(data);
+    });
 
     var testLength = 240; // in seconds
     var interval = 1; // in seconds
