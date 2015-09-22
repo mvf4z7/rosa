@@ -7,14 +7,24 @@
 #include "mpu_types.h"
 #endif
 
-#define PRINT_MEM_SZ 512
+#define SHR_MEM_OFST  0x00001000
 
-typedef volatile struct
+/* State variable is defined in pru_main.c. */
+#define STATE_VAR_OFST  ( SHR_MEM_OFST + 0 )
+#define STATE_VAR_SZ    1
+
+/* Debug variable is defined in pru_dbg.c */
+#define DBG_VAR_OFST    ( STATE_VAR_OFST + STATE_VAR_SZ )
+#define DBG_VAR_SZ      1       
+
+
+enum
 {
-    uint32  read_idx;
-    uint32  write_idx;
-    uint8   data[ PRINT_MEM_SZ ];  
-} shr_print;
+    IDLE = 0x00,
+    RUNNING = 1,
+    DONE_NO_ERR = 2,
+    DONE_ERR = 3
+};
 
 
 

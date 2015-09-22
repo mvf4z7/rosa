@@ -19,7 +19,7 @@ MEMORY
       PRUIMEM:   o = 0x00000000  l = 0x00001000  /* 4kB PRU0 Instruction RAM */
     PAGE 1:
       PRUDMEM:   org = 0x00000000  len = 0x00001000  /* 4kB PRU Data RAM 0 */
-      PRINTMEM:  org = 0x00001000  len = 0x00001000  /* 4kB shared print memory */
+      SHRMEM:    org = 0x00001000  len = 0x00001000  /* 4kB shared print memory */
       PRU_CFG:   org = 0x00026000  len = 0x00000100	CREGISTER=4
 }
 

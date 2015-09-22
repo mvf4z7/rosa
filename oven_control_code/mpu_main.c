@@ -7,12 +7,13 @@
 #include "mpu_util.h"
 
 #define PRU_NUM 0
-#define SHR_MEM_OFST  0x00001000
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
 
-shr_print * shr;
-uint8       print_buf[ 512 ];
+uint8 * g_state_var;
+uint8   g_state_var_last;
+uint8 * g_dbg_var;
+uint8   g_dbg_var_last;
 
 int main( int argc, char *argv[] ) 
 {
@@ -49,44 +50,42 @@ prussdrv_pruintc_init( &pruss_intc_initdata );
 prussdrv_load_datafile(PRUSS0_PRU0_DATARAM, "./data.bin");
 
 prussdrv_map_prumem( PRUSS0_PRU0_DATARAM , &mem );
-shr = (shr_print *)( (uint32)mem + SHR_MEM_OFST );
+g_state_var = ( uint8 * )( ( (uint32)mem ) + STATE_VAR_OFST );
+g_dbg_var = (uint8 * )( ( (uint32)mem ) + DBG_VAR_OFST );
+
+*g_dbg_var = 0;
+g_dbg_var_last = 0;
+*g_state_var = 0;
+g_state_var_last = 0;
 
 prussdrv_exec_program_at(PRU_NUM, "./text.bin", entry_addr);
-printf( "Initialized PRU.\n");
 
 
 while( 1 )
 {
-    if( shr->read_idx != shr->write_idx )
+    if( *g_dbg_var != g_dbg_var_last )
     {
-        printf( "Write Index: %d\n", shr->write_idx );
-        printf( "Read Index: %d\n", shr->read_idx );
-        printf( "Copying data...\n" );
-        idx = 0;
-        while( shr->read_idx != shr->write_idx )
+        g_dbg_var_last = *g_dbg_var;
+        if( *g_dbg_var ) 
         {
-            printf( "\tV: 0x%x\n", shr->data[ shr->read_idx ] );
-            print_buf[ idx ] = shr->data[ shr->read_idx ];
-            idx++;
-            INC_INDEX( shr->read_idx, 512 );
-            
+            printf( "ON\n" );
         }
-        if( print_buf[ idx ] != 0 )
+        else
         {
-            print_buf[ idx ] = 0;
-            idx++;
+            printf( "OFF\n" );
         }
-        
-    printf( "printing data\n" );    
-    printf( print_buf );
     }
-
-    /*if( prussdrv_pru_event_fd( PRU_EVTOUT_0 ) != 0 )
+    
+    if( *g_state_var != g_state_var_last )
     {
-        prussdrv_pru_clear_event ( PRU0_ARM_INTERRUPT, PRU_EVTOUT0 );
-        printf( "Received finish event.\nClosing!\n" );
-        break;
-    }*/
+        g_state_var_last = *g_state_var;
+        printf( "State var = %x\n", *g_state_var );
+        if( ( *g_state_var == DONE_NO_ERR ) || ( *g_state_var == DONE_ERR ) )
+        {
+            break;
+        }
+    }
+    
         
 }
 

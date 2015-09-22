@@ -27,3 +27,11 @@ cp *.dtbo /lib/firmware
 Goto /boot/uEnv.txt and un-comment the HDMI disabler
 Enable Device Tree Overlay:
 echo EBB-PRU-Example > /sys/devices/bone_capemgr.*/slots
+
+******************************************
+PINOUT for DEMO:
+******************************************
+J20 -> GPIO P9.27
+GND -> GND P9.1/2
+C21 -> VDD 5V P9.5
+

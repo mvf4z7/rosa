@@ -3,7 +3,6 @@
 #include "pru_cfg.h"
 #include "pru_ctrl.h"
 #include "pru_util.h"
-#include "pru_print.h"
 
 #define CLK_ENABLE 2
 #define PRU0_CTRL_REG_ADDR  0x00022000
