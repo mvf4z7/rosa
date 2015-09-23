@@ -36,9 +36,7 @@ app.get('/api', function(req, res, next) {
     var options = { cwd: '../oven_control_code' };
     var ledProgram = spawn('./build.sh', ['run'], options);
     ledProgram.stdout.on('data', function(data) {
-        console.log(data);
         data = data + '';
-        console.log('data after decoding: ', data);
         io.emit('ledToggle', data);
     });
 
