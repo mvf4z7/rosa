@@ -34,7 +34,6 @@ app.get('/api', function(req, res, next) {
     simInProgress = true;
 
     // Running LED program
-    //var options = { cwd: '../oven_control_code' };
     var ledProgram = spawn(config.ledProgram.command,
                            config.ledProgram.args,
                            config.ledProgram.options);
