@@ -17,6 +17,7 @@ import LiveChartActions from '../actions/LiveChartActions';
 class LiveChartStore {
 	constructor() {
   		this.newData = null;
+		this.newTime = null;
 
 	    this.bindListeners({
 	        handleAddNewData: LiveChartActions.ADD_NEW_DATA,
@@ -24,7 +25,8 @@ class LiveChartStore {
 	}
 
 	handleAddNewData(data) {
-		this.newData = data.temp;	
+		this.newData = data.temp;
+		this.newTime = data.time;	
 	}
 }
 

@@ -52,9 +52,9 @@ class LiveHighchart extends React.Component {
         );
     }
 
-    addPoint(data) {
+    addPoint(point) {
         let chart = this.refs.chart.getChart();
-        chart.series[0].addPoint(data);
+        chart.series[0].addPoint(point);
     }
 
     _tempDataCb(data) {

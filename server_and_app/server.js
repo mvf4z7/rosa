@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
 var spawn = require('child_process').spawn;
+var config = require('./config');
 
 var app = express();
 app.use(logger('dev'));
@@ -33,8 +34,10 @@ app.get('/api', function(req, res, next) {
     simInProgress = true;
 
     // Running LED program
-    var options = { cwd: '../oven_control_code' };
-    var ledProgram = spawn('./build.sh', ['run'], options);
+    //var options = { cwd: '../oven_control_code' };
+    var ledProgram = spawn(config.ledProgram.command,
+                           config.ledProgram.args,
+                           config.ledProgram.options);
     ledProgram.stdout.on('data', function(data) {
         data = data + '';
         io.emit('ledToggle', data);

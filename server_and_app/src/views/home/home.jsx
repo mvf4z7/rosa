@@ -102,7 +102,7 @@ export default class Home extends React.Component {
 
     _onLiveChartStoreChange(state) {
         console.log('livechartstorechange: ', state);
-        this.refs.chart.addPoint(state.newData);
+        this.refs.chart.addPoint([state.newTime, state.newData]);
     }
 
     _onButtonClicked() {
