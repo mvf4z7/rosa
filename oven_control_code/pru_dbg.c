@@ -4,7 +4,7 @@
 #include "pru_dbg.h"
 
 #pragma LOCATION( g_dbg_var, 0x00001001 )
-volatile uint8 g_dbg_var;
+volatile uint32 g_dbg_var;
 
 void dbg_init()
 {
@@ -12,12 +12,12 @@ void dbg_init()
 }
 
 
-void dbg_set( uint8 val )
+void dbg_set( uint32 val )
 {
     g_dbg_var = val;   
 }
 
-uint8 dbg_get()
+uint32 dbg_get()
 {
     return( g_dbg_var );
 }

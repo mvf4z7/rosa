@@ -17,7 +17,7 @@ do
 
     if [ $ARGS == "pru" ]
     then
-        clpru --silicon_version=2 -Ooff --define=PRU_BLD --printf_support=minimal pru_*.c -z PRU_lnk.cmd -o pru_prog.elf -m pru_test.map
+        clpru --silicon_version=2 -Ooff --define=PRU_BLD --float_operations_allowed=32 pru_*.c -z PRU_lnk.cmd -o pru_prog.elf -m pru_test.map
         hexpru bin.cmd pru_prog.elf
     fi
 
