@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var path = require('path');
 
 var config = {
@@ -18,7 +19,8 @@ var config = {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.NoErrorsPlugin(),
+        new UglifyJsPlugin({ minimize: true })
     ],
     module: {
         loaders: [{
