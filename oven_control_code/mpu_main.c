@@ -13,8 +13,8 @@
 
 uint8 * g_state_var;
 uint8   g_state_var_last;
-uint8 * g_dbg_var;
-uint8   g_dbg_var_last;
+uint32 * g_dbg_var;
+uint32   g_dbg_var_last;
 
 static void signalHandler( int signal );
 
@@ -60,7 +60,7 @@ prussdrv_load_datafile(PRUSS0_PRU0_DATARAM, "./data.bin");
 
 prussdrv_map_prumem( PRUSS0_PRU0_DATARAM , &mem );
 g_state_var = ( uint8 * )( ( (uint32)mem ) + STATE_VAR_OFST );
-g_dbg_var = (uint8 * )( ( (uint32)mem ) + DBG_VAR_OFST );
+g_dbg_var = (uint32 * )( ( (uint32)mem ) + DBG_VAR_OFST );
 
 *g_dbg_var = 0;
 g_dbg_var_last = 0;
@@ -75,22 +75,15 @@ while( 1 )
     if( *g_dbg_var != g_dbg_var_last )
     {
         g_dbg_var_last = *g_dbg_var;
-        if( *g_dbg_var ) 
-        {
-            printf( "ON" );
-            fflush(stdout);
-        }
-        else
-        {
-            printf( "OFF" );
-            fflush(stdout);
-        }
+        printf( "Debug var: = %d\n", *g_dbg_var );
+        fflush( stdout );
     }
     
     if( *g_state_var != g_state_var_last )
     {
         g_state_var_last = *g_state_var;
-        //printf( "State var = %x\n", *g_state_var );
+        printf( "State var = %x\n", *g_state_var );
+        fflush( stdout );
         if( ( *g_state_var == DONE_NO_ERR ) || ( *g_state_var == DONE_ERR ) )
         {
             break;

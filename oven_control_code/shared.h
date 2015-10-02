@@ -15,7 +15,7 @@
 
 /* Debug variable is defined in pru_dbg.c */
 #define DBG_VAR_OFST    ( STATE_VAR_OFST + STATE_VAR_SZ )
-#define DBG_VAR_SZ      1       
+#define DBG_VAR_SZ      4       
 
 
 enum
