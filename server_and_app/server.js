@@ -160,6 +160,18 @@ function getLine(time) {
     return line;
 }
 
+app.get('/api/profiles', function(req, res) {
+    var profiles = [{
+       name: 'Pb-free',
+       data: [[0, 25], [42, 150], [110, 220], [134, 260], [143, 260], [202, 150], [240, 25]]
+   }];
+   var defaultProfile = 'Pb-free';
+   res.send({
+       profiles: profiles,
+       defaultProfile: defaultProfile
+   });
+});
+
 
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');

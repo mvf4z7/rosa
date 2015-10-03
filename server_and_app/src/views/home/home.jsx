@@ -3,6 +3,7 @@ import request from 'superagent';
 
 import NavigationActions from '../../actions/NavigationActions';
 import LiveChartStore from '../../stores/LiveChartStore';
+import TempProfilesStore from '../../stores/TempProfilesStore';
 
 import { Dialog, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
@@ -12,8 +13,12 @@ import styles from './styles';
 export default class Home extends React.Component {
     constructor() {
         super();
+
+        let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
-            led: 'OFF'
+            led: 'OFF',
+            profiles: TempProfilesStoreState.profiles,
+            defaultIdx: TempProfilesStoreState.defaultIdx
         };
 
         this.standardActions = [
@@ -23,6 +28,7 @@ export default class Home extends React.Component {
 
         this._startOvenSim = this._startOvenSim.bind(this);
         this._onLiveChartStoreChange = this._onLiveChartStoreChange.bind(this);
+
     }
 
     static willTransitionTo() {
@@ -31,6 +37,7 @@ export default class Home extends React.Component {
 
     componentDidMount() {
         LiveChartStore.listen(this._onLiveChartStoreChange);
+        TempProfilesStore.listen(this._onTempProfilesStoreChange);
 
         this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
     }
@@ -97,6 +104,10 @@ export default class Home extends React.Component {
     _onLiveChartStoreChange(state) {
         console.log('livechartstorechange: ', state);
         this.refs.chart.addPoint([state.newTime, state.newData]);
+    }
+
+    _onTempProfilesStoreChange(state) {
+
     }
 
     _onButtonClicked() {
