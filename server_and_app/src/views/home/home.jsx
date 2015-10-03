@@ -2,6 +2,8 @@ import React from 'react';
 import request from 'superagent';
 
 import NavigationActions from '../../actions/NavigationActions';
+import TempProfileActions from '../../actions/TempProfileActions';
+
 import LiveChartStore from '../../stores/LiveChartStore';
 import TempProfilesStore from '../../stores/TempProfilesStore';
 
@@ -18,7 +20,8 @@ export default class Home extends React.Component {
         this.state = {
             led: 'OFF',
             profiles: TempProfilesStoreState.profiles,
-            defaultIdx: TempProfilesStoreState.defaultIdx
+            selectedProfileIdx: TempProfilesStoreState.selectedProfileIdx,
+            defaultProfile: TempProfilesStoreState.defaultProfile
         };
 
         this.standardActions = [
@@ -28,7 +31,7 @@ export default class Home extends React.Component {
 
         this._startOvenSim = this._startOvenSim.bind(this);
         this._onLiveChartStoreChange = this._onLiveChartStoreChange.bind(this);
-
+        this._onTempProfilesStoreChange = this._onTempProfilesStoreChange.bind(this);
     }
 
     static willTransitionTo() {
@@ -39,6 +42,8 @@ export default class Home extends React.Component {
         LiveChartStore.listen(this._onLiveChartStoreChange);
         TempProfilesStore.listen(this._onTempProfilesStoreChange);
 
+        TempProfileActions.fetchProfiles();
+
         this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
     }
 
@@ -48,6 +53,7 @@ export default class Home extends React.Component {
 
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
+        TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
     }
 
     _onDialogCancel() {
@@ -66,15 +72,17 @@ export default class Home extends React.Component {
             ledStyle.backgroundColor = '#0A5CBF';
         }
 
+        let profile = this.state.profiles[this.state.selectedProfileIdx];
+
         return (
     	 	<div style={styles.homeWrapper}>
-                <LiveHighchart ref='chart' />
+                <LiveHighchart ref='chart' profile={profile}/>
 
                 <div style={styles.buttonContainer}>
                     <RaisedButton
                         label='open dialog box'
                         linkButton={true}
-                        onClick={ this._onButtonClicked.bind(this) }
+                        onClick={this._onButtonClicked.bind(this)}
                         style={styles.button}
                     />
                     <RaisedButton
@@ -88,7 +96,7 @@ export default class Home extends React.Component {
                     LED {this.state.led}
                 </h1>
 
-                <div onClick={ this._onDialogCancel.bind(this) }>
+                <div onClick={this._onDialogCancel.bind(this)}>
                     <Dialog
                         ref='dialog'
                         title='Dialog with actions'
@@ -107,7 +115,9 @@ export default class Home extends React.Component {
     }
 
     _onTempProfilesStoreChange(state) {
-
+        console.log('before profile store change setstate');
+        this.setState(state);
+        console.log('after profile store change setstate');
     }
 
     _onButtonClicked() {

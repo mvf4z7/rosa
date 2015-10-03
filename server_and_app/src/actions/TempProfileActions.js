@@ -4,15 +4,17 @@ import request from 'superagent';
 class TempProfileActions {
     fetchProfiles() {
         this.dispatch();
+
         request
             .get('/api/profiles')
-            .end(function(err, res) {
+            .end((err, res) => {
                 let defaultIdx = res.body.profiles.map(profile => {
                     return profile.name;
                 }).indexOf(res.body.defaultProfile);
 
                 this.actions.setProfiles({ profiles: res.body.profiles });
-                this.actions.setDefaultIdx({ defaultIdx: defaultIdx });
+                this.actions.setDefaultProfile({ defaultProfile: res.body.defaultProfile });
+                this.actions.setSelectedProfileIdx({ selectedProfileIdx: defaultIdx });
             });
     }
 
@@ -20,7 +22,11 @@ class TempProfileActions {
         this.dispatch(data);
     }
 
-    setDefaultIdx(data) {
+    setSelectedProfileIdx(data) {
+        this.dispatch(data);
+    }
+
+    setDefaultProfile(data) {
         this.dispatch(data);
     }
 }

@@ -1,5 +1,5 @@
 import alt from '../alt';
-import TempProfileActions from '../actions/NavigationActions';
+import TempProfileActions from '../actions/TempProfileActions';
 
 let router = null;
 let menuItems = null;
@@ -7,27 +7,32 @@ let menuItems = null;
 class TempProfileStore {
   constructor() {
     this.profiles = [];
-    this.defaultIdx = null;
-    this.selectedIdx = null;
+    this.selectedProfileIdx = null;
+    this.defaultProfile = null;
 
     this.bindListeners({
-        handleFetchProfiles: NavigationActions.FETCH_PROFILES,
-        handleSetProfiles: NavigationActions.SET_PROFILES,
-        handleSetDefaultIdx: NavigationActions.SET_DEFAULT_IDX
+        handleFetchProfiles: TempProfileActions.FETCH_PROFILES,
+        handleSetProfiles: TempProfileActions.SET_PROFILES,
+        handleSetSelectedProfileIdx: TempProfileActions.SET_SELECTED_PROFILE_IDX,
+        handleSetDefaultProfile: TempProfileActions.SET_DEFAULT_PROFILE
     });
   }
 
   handleFetchProfiles() {
       this.profiles = [];
-      this.defaultIdx = null;
+      this.defaultProfile = null;
   }
 
   handleSetProfiles(data) {
       this.profiles = data.profiles;
   }
 
-  handleSetDefaultIdx(data) {
-      this.defaultIdx = data.defaultIdx;
+  handleSetSelectedProfileIdx(data) {
+      this.selectedProfileIdx = data.selectedProfileIdx;
+  }
+
+  handleSetDefaultProfile(data) {
+      this.defaultProfile = data.defaultProfile;
   }
 }
 
