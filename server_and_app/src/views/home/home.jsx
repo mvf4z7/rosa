@@ -4,7 +4,6 @@ import request from 'superagent';
 import NavigationActions from '../../actions/NavigationActions';
 import LiveChartStore from '../../stores/LiveChartStore';
 
-import { Link } from 'react-router';
 import { Dialog, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
 
@@ -14,7 +13,6 @@ export default class Home extends React.Component {
     constructor() {
         super();
         this.state = {
-            newData: LiveChartStore.getState().newData,
             led: 'OFF'
         };
 
@@ -51,10 +49,6 @@ export default class Home extends React.Component {
 
     _onDialogSubmit() {
         console.log('i dont do anything!');
-    }
-
-    _clickedButton() {
-        console.log('button was clicked');
     }
 
     render() {
