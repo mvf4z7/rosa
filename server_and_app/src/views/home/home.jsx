@@ -7,7 +7,7 @@ import TempProfileActions from '../../actions/TempProfileActions';
 import LiveChartStore from '../../stores/LiveChartStore';
 import TempProfilesStore from '../../stores/TempProfilesStore';
 
-import { Dialog, RaisedButton } from 'material-ui';
+import { Dialog, DropDownMenu, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
 
 import styles from './styles';
@@ -72,6 +72,11 @@ export default class Home extends React.Component {
 
         let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
+        let menuItems = isLoading ? [{text: ''}] : this.state.profiles.map( (profile, idx) => {
+            return { text: profile.name, payload: idx };
+        });
+
+        console.log('menuItems: ', menuItems);
 
         return (
     	 	<div style={styles.homeWrapper}>
@@ -91,6 +96,11 @@ export default class Home extends React.Component {
                         onTouchTap={this._startOvenSim}
                         style={styles.button} />
                 </div>
+
+                <DropDownMenu
+                    menuItems={menuItems}
+                    disabled={isLoading}
+                    onChange={this._onDropDownChange.bind(this)} />
 
                 <h1 style={ledStyle}>
                     LED {this.state.led}
@@ -125,6 +135,11 @@ export default class Home extends React.Component {
                     alert('Error: ' + res.body.error);
                 }
             })
+    }
+
+    _onDropDownChange = (e, selectedIdx, menuItem) => {
+        //debugger;
+        TempProfileActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
     }
 
     _onButtonClicked() {
