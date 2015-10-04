@@ -56,29 +56,15 @@ class LiveHighchart extends React.Component {
             );
         }
 
-        chartConfig.series[0] = this.props.profile;
+        chartConfig.series[0] = {
+            name: this.props.profile.name,
+            data: this.props.profile.points
+        }
         return (
             <div style={styles.chartWrapper}>
                 <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
             </div>
         );
-
-
-        // if(this.props.profile) {
-        //     chartConfig.series[0] = this.props.profile;
-        //
-        //     return (
-        //         <div style={styles.chartWrapper}>
-        //             <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
-        //         </div>
-        //     );
-        // } else {
-        //     return (
-        //         <div style={styles.chartWrapper}>
-        //             Chart is loading!
-        //         </div>
-        //     );
-        // }
     }
 
     addPoint = (point) => {

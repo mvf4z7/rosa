@@ -26,7 +26,8 @@ if(isProduction) {
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 var simInProgress = false;
-app.get('/api', function(req, res, next) {
+
+app.get('/api/ovensim', function(req, res, next) {
     if(simInProgress) {
         res.send({error: 'There is already an oven sim in progress'});
         return;
@@ -49,10 +50,10 @@ app.get('/api', function(req, res, next) {
     var profile = profiles.profiles.filter(function(profile) {
         return profile.name === 'Pb-free';
     });
-    profilePoints = profile[0].points;
+    lines = profile[0].lines;
 
     for(var i = 0; i * interval  <= testLength; i++) {
-        generatePoint(profilePoints, i*interval);
+        generatePoint(lines, i*interval);
     }
 
     setTimeout(function() {
@@ -62,9 +63,9 @@ app.get('/api', function(req, res, next) {
     res.send({status: 'ok'});
 });
 
-function generatePoint(profilePoints, time) {
+function generatePoint(lines, time) {
     var errorFactor = 0.05;
-    var trueTemp = getTemp(profilePoints, time);
+    var trueTemp = getTemp(lines, time);
     var max = trueTemp * (1 + errorFactor);
     var min = trueTemp * (1 - errorFactor);
     var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
@@ -78,16 +79,16 @@ function generatePoint(profilePoints, time) {
     },time * 1000);
 }
 
-function getTemp(profilePoints, time) {
-    var line = getLine(profilePoints, time);
+function getTemp(lines, time) {
+    var line = getLine(lines, time);
     var temp = line.m * time + line.b;
     return temp;
 }
 
-function getLine(profilePoints, time) {
+function getLine(lines, time) {
     var line = null;
-    for(var i = 0; i < profilePoints.length; i++) {
-        var tempLine = profilePoints[i];
+    for(var i = 0; i < lines.length; i++) {
+        var tempLine = lines[i];
         if(time >= tempLine.start.x && time <= tempLine.stop.x) {
             line = tempLine;
             break;
@@ -98,15 +99,7 @@ function getLine(profilePoints, time) {
 }
 
 app.get('/api/profiles', function(req, res) {
-    var profiles = [{
-       name: 'Pb-free',
-       data: [[0, 25], [42, 150], [110, 220], [134, 260], [143, 260], [202, 150], [240, 25]]
-   }];
-   var defaultProfile = 'Pb-free';
-   res.send({
-       profiles: profiles,
-       defaultProfile: defaultProfile
-   });
+   res.send(profiles);
 });
 
 app.get('/*', function(req, res) {

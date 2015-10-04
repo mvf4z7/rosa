@@ -91,6 +91,7 @@ export default class Home extends React.Component {
                         onTouchTap={this._startOvenSim}
                         style={styles.button} />
                 </div>
+
                 <h1 style={ledStyle}>
                     LED {this.state.led}
                 </h1>
@@ -118,7 +119,7 @@ export default class Home extends React.Component {
 
     _startOvenSim = () => {
         request
-            .get('/api')
+            .get('/api/ovensim')
             .end(function(err, res) {
                 if(res.body.error) {
                     alert('Error: ' + res.body.error);

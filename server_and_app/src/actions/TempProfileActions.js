@@ -13,8 +13,8 @@ class TempProfileActions {
                 }).indexOf(res.body.defaultProfile);
 
                 this.actions.setProfiles({ profiles: res.body.profiles });
-                this.actions.setDefaultProfile({ defaultProfile: res.body.defaultProfile });
                 this.actions.setSelectedProfileIdx({ selectedProfileIdx: defaultIdx });
+                this.actions.setDefaultProfile({ defaultProfile: res.body.defaultProfile });
             });
     }
 
