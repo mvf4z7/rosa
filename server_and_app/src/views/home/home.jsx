@@ -28,10 +28,6 @@ export default class Home extends React.Component {
           { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
           { text: 'Submit', onClick: this._onDialogSubmit.bind(this), ref: 'submit' }
         ];
-
-        this._startOvenSim = this._startOvenSim.bind(this);
-        this._onLiveChartStoreChange = this._onLiveChartStoreChange.bind(this);
-        this._onTempProfilesStoreChange = this._onTempProfilesStoreChange.bind(this);
     }
 
     static willTransitionTo() {
@@ -54,6 +50,8 @@ export default class Home extends React.Component {
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
+
+        this.context.socket.removeAllListeners('ledToggle');
     }
 
     _onDialogCancel() {
@@ -72,11 +70,12 @@ export default class Home extends React.Component {
             ledStyle.backgroundColor = '#0A5CBF';
         }
 
-        let profile = this.state.profiles[this.state.selectedProfileIdx];
+        let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
+        let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
 
         return (
     	 	<div style={styles.homeWrapper}>
-                <LiveHighchart ref='chart' profile={profile}/>
+                <LiveHighchart ref='chart' loading={isLoading} profile={profile}/>
 
                 <div style={styles.buttonContainer}>
                     <RaisedButton
@@ -109,15 +108,22 @@ export default class Home extends React.Component {
         );
     }
 
-    _onLiveChartStoreChange(state) {
-        console.log('livechartstorechange: ', state);
+    _onLiveChartStoreChange = (state) => {
         this.refs.chart.addPoint([state.newTime, state.newData]);
     }
 
-    _onTempProfilesStoreChange(state) {
-        console.log('before profile store change setstate');
+    _onTempProfilesStoreChange = (state) => {
         this.setState(state);
-        console.log('after profile store change setstate');
+    }
+
+    _startOvenSim = () => {
+        request
+            .get('/api')
+            .end(function(err, res) {
+                if(res.body.error) {
+                    alert('Error: ' + res.body.error);
+                }
+            })
     }
 
     _onButtonClicked() {
@@ -126,18 +132,6 @@ export default class Home extends React.Component {
 
     _closeModal() {
         this.refs.dialog.dismiss();
-    }
-
-    _startOvenSim() {
-        console.log('starting oven sim');
-        request
-            .get('/api')
-            .end(function(err, res) {
-                if(res.body.error) {
-                    alert('Error: ' + res.body.error);
-                }
-                console.log(res.body);
-            })
     }
 }
 

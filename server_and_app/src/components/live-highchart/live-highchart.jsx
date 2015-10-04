@@ -31,6 +31,9 @@ chartConfig.plotOptions = {
 };
 chartConfig.credits = { enabled: false };
 chartConfig.series = [{
+    name: '',
+    data: []
+    }, {
     name: 'Live Data',
     data: []
 }];
@@ -38,20 +41,6 @@ chartConfig.series = [{
 class LiveHighchart extends React.Component {
     constructor(props) {
         super(props);
-        this.addPoint = this.addPoint.bind(this);
-
-    }
-
-    componentWillMount() {
-        if(this.props.profile) {
-            chartConfig.series.push(this.props.profile);
-        } else {
-            let emptyProfile = {
-                name: '',
-                data: []
-            }
-            chartConfig.series.push(emptyProfile);
-        }
     }
 
     shouldComponentUpdate(newProps) {
@@ -59,26 +48,42 @@ class LiveHighchart extends React.Component {
     }
 
     render() {
-        if(this.props.profile) {
-            chartConfig.series[1] = this.props.profile;
-
-            return (
-                <div style={styles.chartWrapper}>
-                    <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
-                </div>
-            );
-        } else {
-            return (
+        if(this.props.loading) {
+            return(
                 <div style={styles.chartWrapper}>
                     Chart is loading!
                 </div>
             );
         }
+
+        chartConfig.series[0] = this.props.profile;
+        return (
+            <div style={styles.chartWrapper}>
+                <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
+            </div>
+        );
+
+
+        // if(this.props.profile) {
+        //     chartConfig.series[0] = this.props.profile;
+        //
+        //     return (
+        //         <div style={styles.chartWrapper}>
+        //             <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
+        //         </div>
+        //     );
+        // } else {
+        //     return (
+        //         <div style={styles.chartWrapper}>
+        //             Chart is loading!
+        //         </div>
+        //     );
+        // }
     }
 
-    addPoint(point) {
+    addPoint = (point) => {
         let chart = this.refs.chart.getChart();
-        chart.series[0].addPoint(point);
+        chart.series[1].addPoint(point);
     }
 }
 

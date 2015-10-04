@@ -9,6 +9,7 @@ var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
 var spawn = require('child_process').spawn;
 var config = require('./config');
+var profiles = require('./profiles'); // mock profile data
 
 var app = express();
 app.use(logger('dev'));
@@ -45,24 +46,13 @@ app.get('/api', function(req, res, next) {
     var testLength = 240; // in seconds
     var interval = 1; // in seconds
 
-    var f = function(time) {
-        var errorFactor = 0.05;
-        var trueTemp = getTemp(time);
-        var max = trueTemp * (1 + errorFactor);
-        var min = trueTemp * (1 - errorFactor);
-        var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
+    var profile = profiles.profiles.filter(function(profile) {
+        return profile.name === 'Pb-free';
+    });
+    profilePoints = profile[0].points;
 
-        setTimeout(function() {
-            var tempData = {
-                time: time,
-                temp: randTemp
-            }
-            io.emit('tempData', tempData);
-        },time * 1000);
-    }
-
-    for(var i = 1; i * interval  <= testLength; i++) {
-        f(i*interval);
+    for(var i = 0; i * interval  <= testLength; i++) {
+        generatePoint(profilePoints, i*interval);
     }
 
     setTimeout(function() {
@@ -72,85 +62,32 @@ app.get('/api', function(req, res, next) {
     res.send({status: 'ok'});
 });
 
-var profile = [{
-        start: {
-            x: 0,
-            y: 25
-        },
-        stop: {
-            x: 42,
-            y: 150
-        },
-        m: 125/42,
-        b: 25
-    }, {
-        start: {
-            x: 42,
-            y: 150
-        },
-        stop: {
-            x: 110,
-            y: 220
-        },
-        m: 35/34,
-        b: 1815/17
-    }, {
-        start: {
-            x: 110,
-            y: 220
-        },
-        stop: {
-            x: 134,
-            y: 260
-        },
-        m: 5/3,
-        b: 110/3
-    }, {
-        start: {
-            x: 134,
-            y: 260
-        },
-        stop: {
-            x: 143,
-            y: 260
-        },
-        m: 0,
-        b: 260
-    }, {
-        start: {
-            x: 143,
-            y: 260
-        },
-        stop: {
-            x: 202,
-            y: 150
-        },
-        m: -110/59,
-        b: 31070/59
-    }, {
-        start: {
-            x: 202,
-            y: 150
-        },
-        stop: {
-            x: 240,
-            y: 25
-        },
-        m: -125/38,
-        b: 15475/19
-    }
-]
+function generatePoint(profilePoints, time) {
+    var errorFactor = 0.05;
+    var trueTemp = getTemp(profilePoints, time);
+    var max = trueTemp * (1 + errorFactor);
+    var min = trueTemp * (1 - errorFactor);
+    var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
 
-function getTemp(time) {
-    var line = getLine(time);
+    setTimeout(function() {
+        var tempData = {
+            time: time,
+            temp: randTemp
+        }
+        io.emit('tempData', tempData);
+    },time * 1000);
+}
+
+function getTemp(profilePoints, time) {
+    var line = getLine(profilePoints, time);
     var temp = line.m * time + line.b;
     return temp;
 }
 
-function getLine(time) {
+function getLine(profilePoints, time) {
     var line = null;
-    for(var i = 0; i < profile.length; i++) {
-        var tempLine = profile[i];
+    for(var i = 0; i < profilePoints.length; i++) {
+        var tempLine = profilePoints[i];
         if(time >= tempLine.start.x && time <= tempLine.stop.x) {
             line = tempLine;
             break;
@@ -171,7 +108,6 @@ app.get('/api/profiles', function(req, res) {
        defaultProfile: defaultProfile
    });
 });
-
 
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
