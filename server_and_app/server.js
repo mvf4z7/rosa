@@ -9,6 +9,7 @@ var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
 var spawn = require('child_process').spawn;
 var config = require('./config');
+var profiles = require('./profiles'); // mock profile data
 
 var app = express();
 app.use(logger('dev'));
@@ -25,7 +26,8 @@ if(isProduction) {
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 var simInProgress = false;
-app.get('/api', function(req, res, next) {
+
+app.get('/api/ovensim', function(req, res, next) {
     if(simInProgress) {
         res.send({error: 'There is already an oven sim in progress'});
         return;
@@ -45,24 +47,13 @@ app.get('/api', function(req, res, next) {
     var testLength = 240; // in seconds
     var interval = 1; // in seconds
 
-    var f = function(time) {
-        var errorFactor = 0.05;
-        var trueTemp = getTemp(time);
-        var max = trueTemp * (1 + errorFactor);
-        var min = trueTemp * (1 - errorFactor);
-        var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
+    var profile = profiles.profiles.filter(function(profile) {
+        return profile.name === 'Pb-free';
+    });
+    lines = profile[0].lines;
 
-        setTimeout(function() {
-            var tempData = {
-                time: time,
-                temp: randTemp
-            }
-            io.emit('tempData', tempData);
-        },time * 1000);
-    }
-
-    for(var i = 1; i * interval  <= testLength; i++) {
-        f(i*interval);
+    for(var i = 0; i * interval  <= testLength; i++) {
+        generatePoint(lines, i*interval);
     }
 
     setTimeout(function() {
@@ -72,85 +63,32 @@ app.get('/api', function(req, res, next) {
     res.send({status: 'ok'});
 });
 
-var profile = [{
-        start: {
-            x: 0,
-            y: 25
-        },
-        stop: {
-            x: 42,
-            y: 150
-        },
-        m: 125/42,
-        b: 25
-    }, {
-        start: {
-            x: 42,
-            y: 150
-        },
-        stop: {
-            x: 110,
-            y: 220
-        },
-        m: 35/34,
-        b: 1815/17
-    }, {
-        start: {
-            x: 110,
-            y: 220
-        },
-        stop: {
-            x: 134,
-            y: 260
-        },
-        m: 5/3,
-        b: 110/3
-    }, {
-        start: {
-            x: 134,
-            y: 260
-        },
-        stop: {
-            x: 143,
-            y: 260
-        },
-        m: 0,
-        b: 260
-    }, {
-        start: {
-            x: 143,
-            y: 260
-        },
-        stop: {
-            x: 202,
-            y: 150
-        },
-        m: -110/59,
-        b: 31070/59
-    }, {
-        start: {
-            x: 202,
-            y: 150
-        },
-        stop: {
-            x: 240,
-            y: 25
-        },
-        m: -125/38,
-        b: 15475/19
-    }
-]
+function generatePoint(lines, time) {
+    var errorFactor = 0.05;
+    var trueTemp = getTemp(lines, time);
+    var max = trueTemp * (1 + errorFactor);
+    var min = trueTemp * (1 - errorFactor);
+    var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
 
-function getTemp(time) {
-    var line = getLine(time);
+    setTimeout(function() {
+        var tempData = {
+            time: time,
+            temp: randTemp
+        }
+        io.emit('tempData', tempData);
+    },time * 1000);
+}
+
+function getTemp(lines, time) {
+    var line = getLine(lines, time);
     var temp = line.m * time + line.b;
     return temp;
 }
 
-function getLine(time) {
+function getLine(lines, time) {
     var line = null;
-    for(var i = 0; i < profile.length; i++) {
-        var tempLine = profile[i];
+    for(var i = 0; i < lines.length; i++) {
+        var tempLine = lines[i];
         if(time >= tempLine.start.x && time <= tempLine.stop.x) {
             line = tempLine;
             break;
@@ -160,6 +98,9 @@ function getLine(time) {
     return line;
 }
 
+app.get('/api/profiles', function(req, res) {
+   res.send(profiles);
+});
 
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');

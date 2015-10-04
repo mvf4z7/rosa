@@ -2,7 +2,10 @@ import React from 'react';
 import request from 'superagent';
 
 import NavigationActions from '../../actions/NavigationActions';
+import TempProfileActions from '../../actions/TempProfileActions';
+
 import LiveChartStore from '../../stores/LiveChartStore';
+import TempProfilesStore from '../../stores/TempProfilesStore';
 
 import { Dialog, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
@@ -12,17 +15,19 @@ import styles from './styles';
 export default class Home extends React.Component {
     constructor() {
         super();
+
+        let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
-            led: 'OFF'
+            led: 'OFF',
+            profiles: TempProfilesStoreState.profiles,
+            selectedProfileIdx: TempProfilesStoreState.selectedProfileIdx,
+            defaultProfile: TempProfilesStoreState.defaultProfile
         };
 
         this.standardActions = [
           { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
           { text: 'Submit', onClick: this._onDialogSubmit.bind(this), ref: 'submit' }
         ];
-
-        this._startOvenSim = this._startOvenSim.bind(this);
-        this._onLiveChartStoreChange = this._onLiveChartStoreChange.bind(this);
     }
 
     static willTransitionTo() {
@@ -31,6 +36,9 @@ export default class Home extends React.Component {
 
     componentDidMount() {
         LiveChartStore.listen(this._onLiveChartStoreChange);
+        TempProfilesStore.listen(this._onTempProfilesStoreChange);
+
+        TempProfileActions.fetchProfiles();
 
         this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
     }
@@ -41,6 +49,9 @@ export default class Home extends React.Component {
 
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
+        TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
+
+        this.context.socket.removeAllListeners('ledToggle');
     }
 
     _onDialogCancel() {
@@ -59,15 +70,18 @@ export default class Home extends React.Component {
             ledStyle.backgroundColor = '#0A5CBF';
         }
 
+        let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
+        let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
+
         return (
     	 	<div style={styles.homeWrapper}>
-                <LiveHighchart ref='chart' />
+                <LiveHighchart ref='chart' loading={isLoading} profile={profile}/>
 
                 <div style={styles.buttonContainer}>
                     <RaisedButton
                         label='open dialog box'
                         linkButton={true}
-                        onClick={ this._onButtonClicked.bind(this) }
+                        onClick={this._onButtonClicked.bind(this)}
                         style={styles.button}
                     />
                     <RaisedButton
@@ -77,11 +91,12 @@ export default class Home extends React.Component {
                         onTouchTap={this._startOvenSim}
                         style={styles.button} />
                 </div>
+
                 <h1 style={ledStyle}>
                     LED {this.state.led}
                 </h1>
 
-                <div onClick={ this._onDialogCancel.bind(this) }>
+                <div onClick={this._onDialogCancel.bind(this)}>
                     <Dialog
                         ref='dialog'
                         title='Dialog with actions'
@@ -94,9 +109,22 @@ export default class Home extends React.Component {
         );
     }
 
-    _onLiveChartStoreChange(state) {
-        console.log('livechartstorechange: ', state);
+    _onLiveChartStoreChange = (state) => {
         this.refs.chart.addPoint([state.newTime, state.newData]);
+    }
+
+    _onTempProfilesStoreChange = (state) => {
+        this.setState(state);
+    }
+
+    _startOvenSim = () => {
+        request
+            .get('/api/ovensim')
+            .end(function(err, res) {
+                if(res.body.error) {
+                    alert('Error: ' + res.body.error);
+                }
+            })
     }
 
     _onButtonClicked() {
@@ -105,18 +133,6 @@ export default class Home extends React.Component {
 
     _closeModal() {
         this.refs.dialog.dismiss();
-    }
-
-    _startOvenSim() {
-        console.log('starting oven sim');
-        request
-            .get('/api')
-            .end(function(err, res) {
-                if(res.body.error) {
-                    alert('Error: ' + res.body.error);
-                }
-                console.log(res.body);
-            })
     }
 }
 

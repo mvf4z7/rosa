@@ -31,35 +31,46 @@ chartConfig.plotOptions = {
 };
 chartConfig.credits = { enabled: false };
 chartConfig.series = [{
+    name: '',
+    data: []
+    }, {
     name: 'Live Data',
     data: []
-}, {
-    name: 'Pb-free',
-    data: [[0, 25], [42, 150], [110, 220], [134, 260], [143, 260], [202, 150], [240, 25]]
 }];
 
 class LiveHighchart extends React.Component {
     constructor(props) {
         super(props);
-        this.addPoint = this.addPoint.bind(this);
+    }
+
+    shouldComponentUpdate(newProps) {
+        return this.props.profile != newProps.profile;
     }
 
     render() {
+        if(this.props.loading) {
+            return(
+                <div style={styles.chartWrapper}>
+                    Chart is loading!
+                </div>
+            );
+        }
+
+        chartConfig.series[0] = {
+            name: this.props.profile.name,
+            data: this.props.profile.points
+        }
         return (
             <div style={styles.chartWrapper}>
-                <Highcharts style={styles.highChart} ref='chart' config={chartConfig}></Highcharts>
+                <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
             </div>
         );
     }
 
-    addPoint(point) {
+    addPoint = (point) => {
         let chart = this.refs.chart.getChart();
-        chart.series[0].addPoint(point);
+        chart.series[1].addPoint(point);
     }
 }
-
-LiveHighchart.contextTypes = {
-    socket: React.PropTypes.object,
-};
 
 export default LiveHighchart;
