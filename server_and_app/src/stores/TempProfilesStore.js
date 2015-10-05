@@ -20,6 +20,7 @@ class TempProfileStore {
 
   handleFetchProfiles() {
       this.profiles = [];
+      this.selectedProfileIdx = null;
       this.defaultProfile = null;
   }
 

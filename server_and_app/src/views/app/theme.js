@@ -12,7 +12,7 @@ let theme = {
             accent3Color: '#167AF3',
             textColor: Colors.darkBlack,
             canvasColor: Colors.white,
-            borderColor: Colors.grey300,
+            borderColor: '#0A5CBF',
         };
     },
     getComponentThemes(palette, spacing) {

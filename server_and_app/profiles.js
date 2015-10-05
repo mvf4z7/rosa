@@ -1,8 +1,8 @@
 var profiles = {
     profiles: [{
-        name: 'Pb-free', //rename series to points
+        name: 'Pb-free',
         points: [[0, 25], [42, 150], [110, 220], [134, 260], [143, 260], [202, 150], [240, 25]],
-        lines: [{ //rename lines
+        lines: [{
             start: { x: 0, y: 25 },
             stop: { x: 42, y: 150 },
             m: 125/42,
@@ -35,8 +35,8 @@ var profiles = {
         }]
     }, {
         name: 'Pb',
-        series: [[0, 25], [42, 150], [110, 220], [134, 260], [143, 260], [202, 150], [240, 25]],
-        points: [{
+        points: [[0, 50], [42, 150], [110, 220], [134, 260], [143, 260], [202, 150], [240, 25]],
+        lines: [{
             start: { x: 0, y: 25 },
             stop: { x: 42, y: 150 },
             m: 125/42,

@@ -4,11 +4,22 @@ let styles = {
         height: '100%',
         overflowY: 'auto'
     },
+    dropDownWrapper: {
+        textAlign: 'center',
+        padding: '.5rem 0'
+    },
+    dropDownLabel: {
+        display: 'inline-block',
+        position:'relative',
+        bottom:'10px',
+        marginTop: '1rem'
+    },
     button: {
         margin: '1em'
     },
     buttonContainer: {
-        textAlign: 'center'
+        textAlign: 'center',
+        padding: '1rem 0'
     }
 };
 

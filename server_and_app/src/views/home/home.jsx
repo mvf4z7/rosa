@@ -7,7 +7,7 @@ import TempProfileActions from '../../actions/TempProfileActions';
 import LiveChartStore from '../../stores/LiveChartStore';
 import TempProfilesStore from '../../stores/TempProfilesStore';
 
-import { Dialog, RaisedButton } from 'material-ui';
+import { Dialog, DropDownMenu, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
 
 import styles from './styles';
@@ -64,7 +64,8 @@ export default class Home extends React.Component {
 
     render() {
         let ledStyle = {
-            textAlign: 'center'
+            textAlign: 'center',
+            marginTop: '3rem'
         }
         if(this.state.led == 'ON') {
             ledStyle.backgroundColor = '#0A5CBF';
@@ -72,10 +73,24 @@ export default class Home extends React.Component {
 
         let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
+        let menuItems = isLoading ? [{text: 'lojhjkhjkhf'}] : this.state.profiles.map( (profile, idx) => {
+            let text = profile.name === this.state.defaultProfile ? profile.name + ' (default)' : profile.name;
+            return { text: text, payload: idx };
+        });
 
         return (
     	 	<div style={styles.homeWrapper}>
                 <LiveHighchart ref='chart' loading={isLoading} profile={profile}/>
+
+                <div style={styles.dropDownWrapper}>
+                    <div style={styles.dropDownLabel}>SELECT A PROFILE: </div>
+                    <DropDownMenu
+                        menuItems={menuItems}
+                        disabled={isLoading}
+                        onChange={this._onDropDownChange}
+                        autoWidth={true}
+                        />
+                </div>
 
                 <div style={styles.buttonContainer}>
                     <RaisedButton
@@ -125,6 +140,10 @@ export default class Home extends React.Component {
                     alert('Error: ' + res.body.error);
                 }
             })
+    }
+
+    _onDropDownChange = (e, selectedIdx, menuItem) => {
+        TempProfileActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
     }
 
     _onButtonClicked() {
