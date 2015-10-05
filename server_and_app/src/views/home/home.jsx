@@ -64,7 +64,8 @@ export default class Home extends React.Component {
 
     render() {
         let ledStyle = {
-            textAlign: 'center'
+            textAlign: 'center',
+            marginTop: '3rem'
         }
         if(this.state.led == 'ON') {
             ledStyle.backgroundColor = '#0A5CBF';
@@ -72,15 +73,24 @@ export default class Home extends React.Component {
 
         let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
-        let menuItems = isLoading ? [{text: ''}] : this.state.profiles.map( (profile, idx) => {
-            return { text: profile.name, payload: idx };
+        let menuItems = isLoading ? [{text: 'lojhjkhjkhf'}] : this.state.profiles.map( (profile, idx) => {
+            let text = profile.name === this.state.defaultProfile ? profile.name + ' (default)' : profile.name;
+            return { text: text, payload: idx };
         });
-
-        console.log('menuItems: ', menuItems);
 
         return (
     	 	<div style={styles.homeWrapper}>
                 <LiveHighchart ref='chart' loading={isLoading} profile={profile}/>
+
+                <div style={styles.dropDownWrapper}>
+                    <div style={styles.dropDownLabel}>SELECT A PROFILE: </div>
+                    <DropDownMenu
+                        menuItems={menuItems}
+                        disabled={isLoading}
+                        onChange={this._onDropDownChange}
+                        autoWidth={true}
+                        />
+                </div>
 
                 <div style={styles.buttonContainer}>
                     <RaisedButton
@@ -96,11 +106,6 @@ export default class Home extends React.Component {
                         onTouchTap={this._startOvenSim}
                         style={styles.button} />
                 </div>
-
-                <DropDownMenu
-                    menuItems={menuItems}
-                    disabled={isLoading}
-                    onChange={this._onDropDownChange.bind(this)} />
 
                 <h1 style={ledStyle}>
                     LED {this.state.led}
@@ -138,7 +143,6 @@ export default class Home extends React.Component {
     }
 
     _onDropDownChange = (e, selectedIdx, menuItem) => {
-        //debugger;
         TempProfileActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
     }
 

@@ -1,5 +1,6 @@
 import alt from '../alt';
 import request from 'superagent';
+import { move } from '../utilities';
 
 class TempProfileActions {
     fetchProfiles() {
@@ -8,11 +9,16 @@ class TempProfileActions {
         request
             .get('/api/profiles')
             .end((err, res) => {
-                let defaultIdx = res.body.profiles.map(profile => {
-                    return profile.name;
+                let profiles = res.body.profiles;
+                let defaultIdx = profiles.map( profile => {
+                    return profile.name
                 }).indexOf(res.body.defaultProfile);
 
-                this.actions.setProfiles({ profiles: res.body.profiles });
+                // Make default profile first in list of profiles
+                profiles = move(profiles, defaultIdx, 0);
+                defaultIdx = 0;
+
+                this.actions.setProfiles({ profiles: profiles });
                 this.actions.setSelectedProfileIdx({ selectedProfileIdx: defaultIdx });
                 this.actions.setDefaultProfile({ defaultProfile: res.body.defaultProfile });
             });
