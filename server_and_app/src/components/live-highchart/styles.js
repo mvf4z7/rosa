@@ -10,13 +10,8 @@ let styles = {
         height: '100%'
     },
     spinnerWrapper: {
-        display: '-webkit-box',
-        display: '-ms-flexbox',
-        display: '-webkit-flex',
         display: 'flex',
-        WebkitAlignItems: 'center',
         alignItems: 'center',
-        WebkitJustifyContent: 'center',
         justifyContent: 'center',
         height: '70%',
         margin: '1rem 1rem',

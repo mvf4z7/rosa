@@ -1,8 +1,8 @@
 import React from 'react';
 import Highcharts from 'react-highcharts';
+import Radium from 'radium';
 import chartConfig from '../../highcharts';
 
-import MaterialSpinner from '../material-spinner/material-spinner';
 
 import styles from './styles';
 require('./style.scss');
@@ -52,8 +52,8 @@ class LiveHighchart extends React.Component {
     render() {
         if(this.props.loading) {
             return(
-                <div className='spinner-wrapper'>
-                    <i className='fa fa-spinner fa-pulse fa-4x spinner'></i>
+                <div style={styles.spinnerWrapper}>
+                    <i className='fa fa-spinner fa-pulse fa-4x'></i>
                 </div>
             );
         }
@@ -75,4 +75,19 @@ class LiveHighchart extends React.Component {
     }
 }
 
-export default LiveHighchart;
+export default Radium(LiveHighchart);
+
+let rStyles = {
+    spinnerWrapper:{
+        position: 'relative',
+        height: '70%',
+        width: '100%',
+        color: 'red'
+    },
+    spinner: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
+    }
+};
