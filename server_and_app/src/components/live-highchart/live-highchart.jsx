@@ -1,11 +1,11 @@
 import React from 'react';
+import Radium from 'radium';
 import Highcharts from 'react-highcharts';
 import chartConfig from '../../highcharts';
 
-import MaterialSpinner from '../material-spinner/material-spinner';
+import Spinner from '../spinner/spinner';
 
 import styles from './styles';
-require('./style.scss');
 
 chartConfig.chart.type = 'spline';
 chartConfig.chart.animation = { duration: 100, easing: 'linear' };
@@ -51,11 +51,7 @@ class LiveHighchart extends React.Component {
 
     render() {
         if(this.props.loading) {
-            return(
-                <div className='spinner-wrapper'>
-                    <i className='fa fa-spinner fa-pulse fa-4x spinner'></i>
-                </div>
-            );
+            return ( <Spinner /> );
         }
 
         chartConfig.series[0] = {
@@ -75,4 +71,4 @@ class LiveHighchart extends React.Component {
     }
 }
 
-export default LiveHighchart;
+export default Radium(LiveHighchart);
