@@ -1,9 +1,11 @@
 import React from 'react';
-
 import Highcharts from 'react-highcharts';
 import chartConfig from '../../highcharts';
 
+import MaterialSpinner from '../material-spinner/material-spinner';
+
 import styles from './styles';
+require('./style.scss');
 
 chartConfig.chart.type = 'spline';
 chartConfig.chart.animation = { duration: 100, easing: 'linear' };
@@ -50,8 +52,8 @@ class LiveHighchart extends React.Component {
     render() {
         if(this.props.loading) {
             return(
-                <div style={styles.chartWrapper}>
-                    Chart is loading!
+                <div className='spinner-wrapper'>
+                    <i className='fa fa-spinner fa-pulse fa-4x spinner'></i>
                 </div>
             );
         }

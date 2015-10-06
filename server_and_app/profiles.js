@@ -68,7 +68,7 @@ var profiles = {
             b: 15475/19
         }]
     }],
-    defaultProfile: 'Pb-free'
+    defaultProfile: 'Pb'
 };
 
 module.exports = profiles;
