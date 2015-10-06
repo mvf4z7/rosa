@@ -6,7 +6,6 @@ import chartConfig from '../../highcharts';
 import Spinner from '../spinner/spinner';
 
 import styles from './styles';
-require('./style.scss');
 
 chartConfig.chart.type = 'spline';
 chartConfig.chart.animation = { duration: 100, easing: 'linear' };
