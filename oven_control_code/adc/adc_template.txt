@@ -1,0 +1,31 @@
+/dts-v1/;
+/plugin/;
+
+/{
+	compatible = "ti,beaglebone", "ti,beaglebone-black";
+	/* identification */
+	part-number = "{overlay_name}";
+	version = "00A0";
+
+	/* state the resources to be used */
+	exclusive-use =
+	/* the pin header uses */
+	"{header_pin}";
+	
+	fragment@0
+	{
+		target = <&ocp>;
+		__overlay__
+		{
+			#address-cells = <1>;
+			#size-cells = <1>;
+			adc_helper: {overlay_name}
+			{
+				compatible = "bone-iio-helper";
+				vsense-name = "{adc_ch}";
+				vsense-scale = <{adc_scale}>;
+				status = "okay";
+			};
+		};
+	};
+};
