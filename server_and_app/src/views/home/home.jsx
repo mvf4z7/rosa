@@ -9,6 +9,7 @@ import TempProfilesStore from '../../stores/TempProfilesStore';
 
 import { Dialog, DropDownMenu, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
+import MaterialSpinner from '../../components/material-spinner/material-spinner';
 
 import styles from './styles';
 

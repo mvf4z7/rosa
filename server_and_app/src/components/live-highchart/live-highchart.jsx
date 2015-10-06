@@ -1,7 +1,9 @@
 import React from 'react';
-
+import Radium from 'radium';
 import Highcharts from 'react-highcharts';
 import chartConfig from '../../highcharts';
+
+import Spinner from '../spinner/spinner';
 
 import styles from './styles';
 
@@ -49,11 +51,7 @@ class LiveHighchart extends React.Component {
 
     render() {
         if(this.props.loading) {
-            return(
-                <div style={styles.chartWrapper}>
-                    Chart is loading!
-                </div>
-            );
+            return ( <Spinner /> );
         }
 
         chartConfig.series[0] = {
@@ -73,4 +71,4 @@ class LiveHighchart extends React.Component {
     }
 }
 
-export default LiveHighchart;
+export default Radium(LiveHighchart);

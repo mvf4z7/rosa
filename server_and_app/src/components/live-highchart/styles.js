@@ -1,3 +1,6 @@
+import theme from '../../views/app/theme';
+let palette = theme.getPalette();
+
 let styles = {
     chartWrapper: {
         height: '70%',

@@ -36,6 +36,7 @@
     "material-ui": "^0.11.0",
     "morgan": "^1.6.1",
     "proxy-middleware": "^0.13.0",
+    "radium": "^0.14.1",
     "react": "^0.13.3",
     "react-highcharts": "^2.0.0",
     "react-router": "^0.13.3",
