@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <signal.h>
+#include <time.h>
 #include "prussdrv.h"
 #include "pruss_intc_mapping.h"
 
@@ -10,7 +11,7 @@
 #define PRU_NUM 0
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
-
+boolean force_stop;
 uint8 * g_state_var;
 uint8   g_state_var_last;
 uint32 * g_dbg_var;
@@ -24,6 +25,8 @@ int main( int argc, char *argv[] )
 void * mem;
 uint16 idx;
 uint32 entry_addr;
+
+force_stop = FALSE;
 
 //Set up signal handler:
 if( signal( SIGINT, signalHandler ) == SIG_ERR )
@@ -90,7 +93,10 @@ while( 1 )
         }
     }
     
-        
+    if( force_stop == TRUE )
+    {
+        break;
+    }
 }
 
 prussdrv_pru_disable( PRU_NUM );
@@ -101,7 +107,17 @@ return( 0 );
 
 static void signalHandler( int signal )
 {
-    prussdrv_pru_disable( PRU_NUM );
-    prussdrv_exit();
+    time_t timer;
+    
+    //Get the current time:
+    time( &timer );
+    
+    //Disable PRU:
+    *g_state_var = FORCE_STOP;
+    
+    //Block until the PRU responds or 5 secs have passed:
+    while( ( *g_state_var != DONE_NO_ERR ) && (*g_state_var != DONE_ERR ) && ( difftime( timer, time( NULL ) ) < 5 ) );
+    
+    force_stop = TRUE;
     return;
 }

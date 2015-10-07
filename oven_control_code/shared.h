@@ -21,9 +21,10 @@
 enum
 {
     IDLE = 0x00,
-    RUNNING = 1,
-    DONE_NO_ERR = 2,
-    DONE_ERR = 3
+    FORCE_STOP,
+    RUNNING,
+    DONE_NO_ERR, 
+    DONE_ERR
 };
 
 

@@ -15,26 +15,42 @@ volatile register uint32 __R31, __R30;
 
 int main()
 {
+    boolean done;
     
+    done = FALSE;
     g_state_var = RUNNING;
     tmr_init();
     pwm_init();
     
+    
     pwm_set( .50f ); // Set the PWM duty cycle to 50% for 10s.
-    while( tmr_get_time() < 10 * CLKS_PER_S )
-        pwm_update();
-    
-    pwm_off(); //Turn off the PWM for 5 seconds.
-    while( tmr_get_time() < 15 * CLKS_PER_S )
-        pwm_update();
-    
-    pwm_set( .33f ); // Set the PWM duty cycle to 33% for 6 seconds.
-    while( tmr_get_time() < 21 * CLKS_PER_S )
-        pwm_update();
-    
-    pwm_set( .66f ); // Set the PWM duty cycle to 66% for 6 seconds.
-    while( tmr_get_time() < 27 * CLKS_PER_S )
-        pwm_update();
+    while( !done )
+    {
+        switch( g_state_var )
+        {
+        case IDLE:
+            g_state_var = DONE_ERR;
+            done = TRUE;
+            break;
+        case FORCE_STOP:
+            g_state_var = DONE_NO_ERR;
+            pwm_off();
+            done = TRUE;
+            break;
+        case DONE_ERR:
+            done = TRUE;
+            pwm_off();
+            break;
+        case DONE_NO_ERR:
+            done = TRUE;
+            pwm_off();
+            break;
+        case RUNNING:
+            pwm_update();
+            break;
+        }
+        
+    }
     
     pwm_off();
     
