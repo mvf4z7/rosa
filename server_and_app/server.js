@@ -163,26 +163,6 @@ app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-db.serialize(function() { // Runs database transactions in series
-    // Create database schema if this is the first time
-    if(!exists){
-        console.log('Preparing database for first-time use...');
-        // Create User table
-        db.run('CREATE TABLE User (' +
-            'username VARCHAR(20) PRIMARY KEY,' +
-            'password TEXT NOT NULL' +
-            ')');
-        // Create Profile table
-        db.run('CREATE TABLE Profile (' +
-            'pname VARCHAR(20) PRIMARY KEY,' +
-            'username VARCHAR(20) NOT NULL,' +
-            'profile TEXT NOT NULL,' +
-            'FOREIGN KEY(username) REFERENCES User(username)' +
-            ')');
-        createUser('default', '123');
-        createProfile('default', 'default_profile', JSON.stringify(dbProfile));
-    }
-});
 //db.close();
 
 app.io = io;
