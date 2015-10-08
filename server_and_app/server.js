@@ -29,8 +29,9 @@ app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 app.put('/api/ovensim', function(req, res) {
     var profile = req.body.profile;
+    console.log(req.body);
     console.log('Starting oven sim');
-    tempProfile.runSim(function(profile, result){
+    tempProfile.runSim(profile, function(result){
         res.send(result);
     });
 });

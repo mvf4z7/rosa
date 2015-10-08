@@ -83,6 +83,7 @@ var stopSim = function(cb){
         console.log('timer cleared: ', timer);
     });
     timers = [];
+    simInProgress = false;
 
     if(ledProgram) {
         ledProgram.kill('SIGTERM');
