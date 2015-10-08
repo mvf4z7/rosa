@@ -5,17 +5,27 @@ var url = require('url');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
 var spawn = require('child_process').spawn;
 var config = require('./config');
+var sqlite3 = require('sqlite3').verbose();
 var profiles = require('./profiles'); // mock profile data
+var dbProfile = require('./profile'); // sample JSON profile for db use
 
 var app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+
+var file = "data.db";
+var exists = fs.existsSync(file);
+if(!exists){
+    fs.openSync(file, 'w');
+}
+var db = new sqlite3.Database(file);
 
 if(isProduction) {
     app.use('/build', express.static(path.join(__dirname, 'build')));
@@ -98,6 +108,36 @@ function getLine(lines, time) {
     return line;
 }
 
+function createUser(uname, pass){
+    if(uname === '' || pass === ''){
+        console.log('username/password cannot be blank!');
+        return;
+    }
+
+    var stmt = db.prepare('INSERT INTO User(username, password) VALUES (?, ?)');
+    stmt.run(uname, pass, function(err){
+        if(err){
+            console.log(err);
+        }
+    });
+    stmt.finalize();
+}
+
+function createProfile(uname, pname, profile){
+    if(uname === '' || pname === ''){
+        console.log('username/profile name cannot be blank!');
+        return;
+    }
+
+    var stmt = db.prepare('INSERT INTO Profile(pname, username, profile) VALUES (?, ?, ?)');
+    stmt.run(pname, uname, profile, function(err){
+        if(err){
+            console.log(err);
+        }
+    });
+    stmt.finalize();
+}
+
 app.get('/api/profiles', function(req, res) {
    res.send(profiles);
 });
@@ -105,6 +145,28 @@ app.get('/api/profiles', function(req, res) {
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
+
+db.serialize(function() { // Runs database transactions in series
+    // Create database schema if this is the first time
+    if(!exists){
+        console.log('Preparing database for first-time use...');
+        // Create User table
+        db.run('CREATE TABLE User (' +
+            'username VARCHAR(20) PRIMARY KEY,' +
+            'password TEXT NOT NULL' +
+            ')');
+        // Create Profile table
+        db.run('CREATE TABLE Profile (' +
+            'pname VARCHAR(20) PRIMARY KEY,' +
+            'username VARCHAR(20) NOT NULL,' +
+            'profile TEXT NOT NULL,' +
+            'FOREIGN KEY(username) REFERENCES User(username)' +
+            ')');
+        createUser('default', '123');
+        createProfile('default', 'default_profile', JSON.stringify(dbProfile));
+    }
+});
+//db.close();
 
 app.io = io;
 
