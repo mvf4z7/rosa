@@ -8,24 +8,15 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
-var spawn = require('child_process').spawn;
-var config = require('./config');
-var sqlite3 = require('sqlite3').verbose();
 var profiles = require('./profiles'); // mock profile data
-var dbProfile = require('./profile'); // sample JSON profile for db use
+var database = require('./database');
+var tempProfile = require('./temp-profile');
 
 var app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-
-var file = "data.db";
-var exists = fs.existsSync(file);
-if(!exists){
-    fs.openSync(file, 'w');
-}
-var db = new sqlite3.Database(file);
 
 if(isProduction) {
     app.use('/build', express.static(path.join(__dirname, 'build')));
@@ -35,125 +26,20 @@ if(isProduction) {
 
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
-var simInProgress = false;
-var ledProgram = null;
-var timers = [];
+
 app.put('/api/ovensim', function(req, res) {
-    if(simInProgress) {
-        res.send({error: 'There is already an oven sim in progress'});
-        return;
-    }
-
-    simInProgress = true;
-
-    console.log(req.body.profile);
-
-    // Running LED program
-    ledProgram = spawn(config.ledProgram.command,
-                           config.ledProgram.args,
-                           config.ledProgram.options);
-    ledProgram.stdout.on('data', function(data) {
-        data = data + '';
-        io.emit('ledToggle', data);
-    });
-
-    var testLength = 240; // in seconds
-    var interval = 1; // in seconds
     var profile = req.body.profile;
-
-    for(var i = 0; i * interval  <= testLength; i++) {
-        var timerId = generatePoint(profile.lines, i*interval);
-        timers.push(timerId);
-    }
-
-    setTimeout(function() {
-        simInProgress = false;
-        timers = [];
-    }, testLength*1000 + 5000);
-
-    res.send({status: 'ok'});
+    console.log('Starting oven sim');
+    tempProfile.runSim(function(profile, result){
+        res.send(result);
+    });
 });
-
-function generatePoint(lines, time) {
-    var errorFactor = 0.05;
-    var trueTemp = getTemp(lines, time);
-    var max = trueTemp * (1 + errorFactor);
-    var min = trueTemp * (1 - errorFactor);
-    var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
-
-    var timerId = setTimeout(function() {
-        var tempData = {
-            time: time,
-            temp: randTemp
-        }
-        io.emit('tempData', tempData);
-    },time * 1000);
-
-    return timerId;
-}
-
-function getTemp(lines, time) {
-    var line = getLine(lines, time);
-    var temp = line.m * time + line.b;
-    return temp;
-}
-
-function getLine(lines, time) {
-    var line = null;
-    for(var i = 0; i < lines.length; i++) {
-        var tempLine = lines[i];
-        if(time >= tempLine.start.x && time <= tempLine.stop.x) {
-            line = tempLine;
-            break;
-        }
-    }
-
-    return line;
-}
 
 app.delete('/api/ovensim', function(req, res) {
-    timers.forEach(function(timer) {
-        clearTimeout(timer);
-        console.log('timer cleared: ', timer);
+    tempProfile.stopSim(function(result){
+        res.send(result);
     });
-    timers = [];
-
-    if(ledProgram) {
-        ledProgram.kill('SIGTERM');
-    }
-
-    res.send({status: 'ok'});
 });
-
-function createUser(uname, pass){
-    if(uname === '' || pass === ''){
-        console.log('username/password cannot be blank!');
-        return;
-    }
-
-    var stmt = db.prepare('INSERT INTO User(username, password) VALUES (?, ?)');
-    stmt.run(uname, pass, function(err){
-        if(err){
-            console.log(err);
-        }
-    });
-    stmt.finalize();
-}
-
-function createProfile(uname, pname, profile){
-    if(uname === '' || pname === ''){
-        console.log('username/profile name cannot be blank!');
-        return;
-    }
-
-    var stmt = db.prepare('INSERT INTO Profile(pname, username, profile) VALUES (?, ?, ?)');
-    stmt.run(pname, uname, profile, function(err){
-        if(err){
-            console.log(err);
-        }
-    });
-    stmt.finalize();
-}
 
 app.get('/api/profiles', function(req, res) {
    res.send(profiles);
@@ -162,8 +48,6 @@ app.get('/api/profiles', function(req, res) {
 app.get('/*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-
-//db.close();
 
 app.io = io;
 
