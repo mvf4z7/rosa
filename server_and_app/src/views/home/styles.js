@@ -15,7 +15,8 @@ let styles = {
         marginTop: '1rem'
     },
     button: {
-        margin: '1em'
+        margin: '1em',
+        width: '12rem'
     },
     buttonContainer: {
         textAlign: 'center',

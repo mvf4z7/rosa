@@ -26,8 +26,9 @@ if(isProduction) {
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 var simInProgress = false;
-
-app.get('/api/ovensim', function(req, res, next) {
+var ledProgram = null;
+var timers = [];
+app.put('/api/ovensim', function(req, res) {
     if(simInProgress) {
         res.send({error: 'There is already an oven sim in progress'});
         return;
@@ -35,8 +36,10 @@ app.get('/api/ovensim', function(req, res, next) {
 
     simInProgress = true;
 
+    console.log(req.body.profile);
+
     // Running LED program
-    var ledProgram = spawn(config.ledProgram.command,
+    ledProgram = spawn(config.ledProgram.command,
                            config.ledProgram.args,
                            config.ledProgram.options);
     ledProgram.stdout.on('data', function(data) {
@@ -46,18 +49,16 @@ app.get('/api/ovensim', function(req, res, next) {
 
     var testLength = 240; // in seconds
     var interval = 1; // in seconds
-
-    var profile = profiles.profiles.filter(function(profile) {
-        return profile.name === 'Pb-free';
-    });
-    lines = profile[0].lines;
+    var profile = req.body.profile;
 
     for(var i = 0; i * interval  <= testLength; i++) {
-        generatePoint(lines, i*interval);
+        var timerId = generatePoint(profile.lines, i*interval);
+        timers.push(timerId);
     }
 
     setTimeout(function() {
         simInProgress = false;
+        timers = [];
     }, testLength*1000 + 5000);
 
     res.send({status: 'ok'});
@@ -70,13 +71,15 @@ function generatePoint(lines, time) {
     var min = trueTemp * (1 - errorFactor);
     var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
 
-    setTimeout(function() {
+    var timerId = setTimeout(function() {
         var tempData = {
             time: time,
             temp: randTemp
         }
         io.emit('tempData', tempData);
     },time * 1000);
+
+    return timerId;
 }
 
 function getTemp(lines, time) {
@@ -97,6 +100,21 @@ function getLine(lines, time) {
 
     return line;
 }
+
+app.delete('/api/ovensim', function(req, res) {
+    timers.forEach(function(timer) {
+        clearTimeout(timer);
+        console.log('timer cleared: ', timer);
+    });
+    timers = [];
+
+    if(ledProgram) {
+        ledProgram.kill('SIGTERM');
+    }
+
+    res.send({status: 'ok'});
+});
+
 
 app.get('/api/profiles', function(req, res) {
    res.send(profiles);

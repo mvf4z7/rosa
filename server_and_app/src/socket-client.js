@@ -12,8 +12,4 @@ socket.on('tempData', function(data) {
     LiveChartActions.addNewData(data);
 });
 
-socket.on('ledToggle', function(data) {
-    console.log('led state: ', data);
-});
-
 export default socket;
