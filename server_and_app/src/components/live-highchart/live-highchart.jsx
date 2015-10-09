@@ -49,6 +49,10 @@ class LiveHighchart extends React.Component {
         return this.props.profile != newProps.profile;
     }
 
+    componentWillUnmount() {
+        chartConfig.series[1].data = [];
+    }
+
     render() {
         if(this.props.loading) {
             return ( <Spinner /> );
@@ -68,6 +72,11 @@ class LiveHighchart extends React.Component {
     addPoint = (point) => {
         let chart = this.refs.chart.getChart();
         chart.series[1].addPoint(point);
+    }
+
+    clearLiveData = () => {
+        let chart = this.refs.chart.getChart();
+        chart.series[1].setData([]);
     }
 }
 

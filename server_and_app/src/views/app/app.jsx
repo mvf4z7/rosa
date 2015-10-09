@@ -55,7 +55,6 @@ class App extends React.Component {
                 <AppBar
                     title='ROSA'
                     style={styles.AppBar}
-                    className='no-select'
                     onLeftIconButtonTouchTap={this._toggleNav} />
                 <LeftNav
                     ref='leftNav'

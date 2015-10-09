@@ -50,7 +50,7 @@ var runSim = function(profile, cb){
 
     simInProgress = true;
 
-    console.log(profile);
+    io.emit('oven_start');
 
     // Running LED program
     ledProgram = spawn(config.ledProgram.command,

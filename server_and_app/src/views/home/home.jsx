@@ -42,6 +42,7 @@ export default class Home extends React.Component {
 
         TempProfileActions.fetchProfiles();
 
+        this.context.socket.on('oven_start', this._onOvenStart);
         this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
     }
 
@@ -54,6 +55,7 @@ export default class Home extends React.Component {
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
 
         this.context.socket.removeAllListeners('ledToggle');
+        this.context.socket.removeAllListeners('oven_start');
     }
 
     _onDialogCancel() {
@@ -167,6 +169,11 @@ export default class Home extends React.Component {
             .end(function(err, res) {
                 console.log(res.body);
             });
+    }
+
+    _onOvenStart = () => {
+        console.log('in _onOvenStart');
+        this.refs.chart.clearLiveData();
     }
 
     _onButtonClicked() {

@@ -4,7 +4,13 @@ let Colors = mui.Styles.Colors;
 let styles = {
     appWrapper: {
         height: '100%',
-        backgroundColor: '#ECEEF4'
+        backgroundColor: '#ECEEF4',
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        KhtmlUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
+        userSelect: 'none',
     },
     AppBar: {
         position: 'fixed',
