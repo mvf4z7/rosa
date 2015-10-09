@@ -3,6 +3,7 @@ import request from 'superagent';
 
 import NavigationActions from '../../actions/NavigationActions';
 import TempProfileActions from '../../actions/TempProfileActions';
+import LiveChartActions from '../../actions/LiveChartActions';
 
 import LiveChartStore from '../../stores/LiveChartStore';
 import TempProfilesStore from '../../stores/TempProfilesStore';
@@ -19,11 +20,14 @@ export default class Home extends React.Component {
         super();
 
         let TempProfilesStoreState = TempProfilesStore.getState();
+        let LiveChartStoreState = LiveChartStore.getState();
+
         this.state = {
             led: 'OFF',
             profiles: TempProfilesStoreState.profiles,
             selectedProfileIdx: TempProfilesStoreState.selectedProfileIdx,
-            defaultProfile: TempProfilesStoreState.defaultProfile
+            defaultProfile: TempProfilesStoreState.defaultProfile,
+            liveData: LiveChartStoreState.liveData
         };
 
         this.standardActions = [
@@ -43,6 +47,7 @@ export default class Home extends React.Component {
         TempProfileActions.fetchProfiles();
 
         this.context.socket.on('oven_start', this._onOvenStart);
+        this.context.socket.on('tempData', this._onLiveData);
         this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
     }
 
@@ -54,8 +59,9 @@ export default class Home extends React.Component {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
 
-        this.context.socket.removeAllListeners('ledToggle');
-        this.context.socket.removeAllListeners('oven_start');
+        this.context.socket.removelistener('ledToggle', this._onLedToggle);
+        this.context.socket.removeListener('oven_start', this._onLiveData);
+        this.context.socket.removeListener('tempData', this._onLiveData);
     }
 
     _onDialogCancel() {
@@ -84,7 +90,7 @@ export default class Home extends React.Component {
 
         return (
     	 	<div style={styles.homeWrapper}>
-                <LiveHighchart ref='chart' loading={isLoading} profile={profile}/>
+                <LiveHighchart ref='chart' loading={isLoading} profile={profile} liveData={this.state.liveData}/>
 
                 <div style={styles.dropDownWrapper}>
                     <div style={styles.dropDownLabel}>PROFILE: </div>
@@ -141,7 +147,12 @@ export default class Home extends React.Component {
     }
 
     _onLiveChartStoreChange = (state) => {
-        this.refs.chart.addPoint([state.newTime, state.newData]);
+        if(state.liveData.length === 0) {
+            this.setState({ liveData: state.liveData });
+
+        }
+
+        //this.refs.chart.addPoint([state.newTime, state.newData]);
     }
 
     _onTempProfilesStoreChange = (state) => {
@@ -171,9 +182,13 @@ export default class Home extends React.Component {
             });
     }
 
-    _onOvenStart = () => {
-        console.log('in _onOvenStart');
-        this.refs.chart.clearLiveData();
+    _onOvenStart = (data) => {
+        //this.refs.chart.clearLiveData();
+        LiveChartActions.clearLiveData();
+    }
+
+    _onLiveData = (data) => {
+        this.refs.chart.addPoint([data.time, data.temp]);
     }
 
     _onButtonClicked() {

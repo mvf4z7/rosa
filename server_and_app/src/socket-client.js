@@ -7,9 +7,13 @@ socket.on('connect', function() {
     console.log('socket connection made: ', socket.id);
 });
 
+// socket.on('tempData', function(data) {
+//     console.log('temp data received: ', data);
+//     LiveChartActions.addNewData(data);
+// });
+
 socket.on('tempData', function(data) {
-    console.log('temp data received: ', data);
-    LiveChartActions.addNewData(data);
-});
+    LiveChartActions.updateLiveData(data);
+})
 
 export default socket;

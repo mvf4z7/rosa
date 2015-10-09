@@ -16,17 +16,31 @@ import LiveChartActions from '../actions/LiveChartActions';
 
 class LiveChartStore {
 	constructor() {
-  		this.newData = null;
-		this.newTime = null;
+		this.liveData = [];
+  // 		this.newData = null;
+		// this.newTime = null;
 
 	    this.bindListeners({
 	        handleAddNewData: LiveChartActions.ADD_NEW_DATA,
+			handleUpdateLiveData: LiveChartActions.UPDATE_LIVE_DATA,
+			handleClearLiveData: LiveChartActions.CLEAR_LIVE_DATA
 	    });
+	}
+
+	handleUpdateLiveData(data) {
+		this.liveData.push([data.time, data.temp]);
+		console.log('updateLiveData: ', data);
+		console.log('liveData array: ', this.liveData);
+	}
+
+	handleClearLiveData() {
+		console.log('clearing live data');
+		this.liveData = [];
 	}
 
 	handleAddNewData(data) {
 		this.newData = data.temp;
-		this.newTime = data.time;	
+		this.newTime = data.time;
 	}
 }
 

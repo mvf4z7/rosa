@@ -46,11 +46,14 @@ class LiveHighchart extends React.Component {
     }
 
     shouldComponentUpdate(newProps) {
-        return this.props.profile != newProps.profile;
+        let newProfile = this.props.profile != newProps.profile;
+        let newLiveData = this.props.liveData != newProps.liveData;
+        
+        return newProfile || newLiveData;
     }
 
     componentWillUnmount() {
-        chartConfig.series[1].data = [];
+        //chartConfig.series[1].data = [];
     }
 
     render() {
@@ -62,6 +65,8 @@ class LiveHighchart extends React.Component {
             name: this.props.profile.name,
             data: this.props.profile.points
         }
+        chartConfig.series[1].data = this.props.liveData;
+
         return (
             <div style={styles.chartWrapper}>
                 <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
