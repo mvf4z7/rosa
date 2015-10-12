@@ -46,7 +46,9 @@ class LiveHighchart extends React.Component {
     }
 
     shouldComponentUpdate(newProps) {
-        return this.props.profile != newProps.profile;
+        let newProfile = this.props.profile != newProps.profile;
+        let clearedLiveData = this.props.liveData.length === 0;
+        return newProfile || clearedLiveData;
     }
 
     componentWillUnmount() {
@@ -62,6 +64,7 @@ class LiveHighchart extends React.Component {
             name: this.props.profile.name,
             data: this.props.profile.points
         }
+        chartConfig.series[1].data = this.props.liveData;
         return (
             <div style={styles.chartWrapper}>
                 <Highcharts ref='chart' config={chartConfig} style={styles.highChart}></Highcharts>
@@ -77,6 +80,16 @@ class LiveHighchart extends React.Component {
     clearLiveData = () => {
         let chart = this.refs.chart.getChart();
         chart.series[1].setData([]);
+    }
+
+    updateLiveData = (data) => {
+        if(this.props.loading) {
+            console.log('unable to update liveData while chart is loading!');
+            return;
+        }
+
+        let chart = this.refs.chart.getChart();
+        chart.series[1].setData(data);
     }
 }
 
