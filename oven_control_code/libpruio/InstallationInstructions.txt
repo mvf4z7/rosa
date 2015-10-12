@@ -1,0 +1,102 @@
+INSTRUCTIONS FOR INSTALLING libpruio, version 0.2:
+//////////////////////////////////////////////////
+HELPFUL LINKS FOR GENERATING THIS PROCEDURE ARE FOUND BELOW:
+
+http://users.freebasic-portal.de/tjf/Projekte/libpruio/doc/html/_cha_preparation.html#SecInstallation
+https://www.freebasic-portal.de/downloads/fb-on-arm/
+https://github.com/DTJF/fb_prussdrv
+http://www.freebasic.net/forum/viewtopic.php?f=14&t=22501&start=60
+
+ONLY TRY THE PART DIRECTLY BELOW, INSIDE THE SLASHES IF THE STEPS BELOW IT DO NOT WORK!
+//////////////////////////////////////////////////////////////////////////
+*-- DOWNLOAD AND DECOMPRESS THE TARBALL --*
+wget -4 http://www.freebasic-portal.de/dlfiles/452/BBB_fbc-1.00.tar.bz2
+tar xf BBB_fbc-1.00.tar.bz2
+
+*-- COPY THE FILES --*
+cd bbb_fbc-0.0.2
+cp usr/local/bin/fbc /usr/local/bin
+cp -R usr/local/lib/freebasic /usr/local/lib/
+
+*-- TEST THE COMPILER NOW TO MAKE SURE IT INSTALLED PROPERLY --*
+fbc -version
+///////////////////////////////////////////////////////////////////////////
+
+*--------------------------------------------------------*
+*-- GET THE FREE BASIC COMPILER --*
+*--------------------------------------------------------*
+Go to: https://www.freebasic-portal.de/downloads/fb-on-arm/
+And choose the latest Debian package FBC-xxxxxx_armhf.
+Place the downloaded .deb file in your user downloads folder on the BBB.
+After downloading cd to your downloads folder and...:
+sudo dpkg --install freebasic_xxxxxxxx.deb
+//NOTE: THE ABOVE INSTALL WILL PROBABLY GIVE YOU DEPENDENCY ERRORS...PROCEED!
+sudo apt-get -f install
+
+*--------------------------------------------------------*
+*-- MAKE SURE THAT THE am335x-pru-package IS INSTALLED --*
+*--------------------------------------------------------*
+apt-get install am335x-pru-package
+
+*--------------------------------------------------------*
+*-- DOWNLOAD, DECOMPRESS, INSTALL THE FB prussdrv Kit --*
+*--------------------------------------------------------*
+wget https://github.com/DTJF/fb_prussdrv/archive/master.zip
+unzip master.zip
+cd fb_prussdrv-master/
+sudo su
+cp bin/pasm /usr/local/bin
+cp bin/libprussdrv.* /usr/local/lib
+ldconfig
+mkdir /usr/include/freebasic/BBB
+cp include/* /usr/include/freebasic/BBB
+exit
+
+*--------------------------------------------------------*
+*-- INSTALL libpruio --*
+*--------------------------------------------------------*
+wget https://www.freebasic-portal.de/dlfiles/592/libpruio-0.2.tar.bz2
+tar xjf libpruio-0.2.tar.bz2
+cd libpruio-0.2
+sudo su
+cp src/c_wrapper/libpruio.so /usr/local/lib/
+ldconfig
+mkdir /usr/local/include/freebasic/BBB
+cp src/c_wrapper/pruio*.h* /usr/local/include
+cp src/config/libpruio-0A00.dtbo /lib/firmware
+cp src/pruio/pruio*.bi /usr/local/include/freebasic/BBB
+cp src/pruio/pruio.hp /usr/local/include/freebasic/BBB
+exit
+
+*--------------------------------------------------------*
+*-- LOAD THE DEVICE TREE OVERLAY --*
+*--------------------------------------------------------*
+NOTE: THE FIRST TIME YOU LOAD IT, YOU WILL NEED TO (copy below line directly):
+sudo mv /lib/firmware/libpruio-0A00.dtbo /lib/firmware/libpruio-00A0.dtbo
+sudo su
+sudo echo libpruio > /sys/devices/bone_capemgr.9/slots
+exit
+
+*--------------------------------------------------------*
+*-- TEST IT OUT --*
+*--------------------------------------------------------*
+BACK IN THE DOWNLOADS FOLDER OR WHEREVER libpruio-0.2 DIRECTORY IS LOCATED:
+sudo su
+src/examples/1
+exit
+
+AFTER TESTING THAT, YOU SHOULD SEE A TABLE SIMILAR(13 lines, 8 columns) TO THE ONE BELOW...IT'S WORKING!
+
+ F5E0 EFA0 F070 E860 DEC0 DD70 DB10 F0C0
+ F340 EFA0 F0A0 E950 E120 DB70 D960 F0C0
+ F3D0 EF30 F090 E8C0 E2E0 DBC0 DAD0 F0A0
+ F3A0 EF70 F0A0 E8E0 E0B0 DE60 DB00 F0B0
+ F390 EFC0 F0B0 E8F0 DFB0 DE30 D9F0 F0A0
+ F330 EEE0 F100 E910 E0E0 DBC0 DA50 F0C0
+ F410 EF30 F0A0 E8D0 E1D0 DBA0 D930 F0A0
+ F3B0 EF40 F0E0 E8A0 E110 DDF0 DB20 F0B0
+ F340 EEE0 F070 E890 DF70 DDB0 D9E0 F0C0
+ F3D0 EF70 F090 E900 E010 DE30 D980 F0B0
+ F390 EF80 F090 E8C0 E120 DBC0 D9F0 F0B0
+ F3A0 EF50 F040 E900 DFB0 DE50 DB80 F0B0
+ F340 EF40 F0B0 E930 E2A0 DE70 DB80 F0D0
