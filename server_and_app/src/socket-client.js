@@ -8,8 +8,8 @@ socket.on('connect', function() {
 });
 
 socket.on('tempData', function(data) {
-    console.log('temp data received: ', data);
-    LiveChartActions.addNewData(data);
+    console.log('socket received new temp data: ', data);
+    LiveChartActions.updateLiveData([data.time, data.temp]);
 });
 
 export default socket;
