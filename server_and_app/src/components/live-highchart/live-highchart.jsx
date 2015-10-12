@@ -6,6 +6,7 @@ import chartConfig from '../../highcharts';
 import Spinner from '../spinner/spinner';
 
 import styles from './styles';
+require('./styles.scss');
 
 chartConfig.chart.type = 'spline';
 chartConfig.chart.animation = { duration: 100, easing: 'linear' };
@@ -45,6 +46,10 @@ class LiveHighchart extends React.Component {
         super(props);
     }
 
+    componentDidMount() {
+        this.context.socket.on('tempData', this._socketOnTempData);
+    }
+
     shouldComponentUpdate(newProps) {
         let newProfile = this.props.profile != newProps.profile;
         let clearedLiveData = this.props.liveData.length === 0;
@@ -53,6 +58,8 @@ class LiveHighchart extends React.Component {
 
     componentWillUnmount() {
         chartConfig.series[1].data = [];
+
+        this.context.socket.removeListener('tempData', this._socketOnTempData);
     }
 
     render() {
@@ -91,6 +98,23 @@ class LiveHighchart extends React.Component {
         let chart = this.refs.chart.getChart();
         chart.series[1].setData(data);
     }
+
+    _socketOnTempData  = (data) => {
+        if(this.props.loading) {
+            return;
+        }
+
+        let title = {
+            useHTML: true,
+            text: `<pre class='chart-title'>Target: <span class='target'>${data.temp+2}</span>    Actual: <span class='actual'>${data.temp}</span></pre>`,
+        }
+        let chart = this.refs.chart.getChart();
+        chart.setTitle(title);
+    };
 }
+
+LiveHighchart.contextTypes = {
+    socket: React.PropTypes.object
+};
 
 export default Radium(LiveHighchart);

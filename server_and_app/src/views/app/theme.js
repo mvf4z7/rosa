@@ -9,7 +9,7 @@ let theme = {
             primary3Color: '#018E43',
             accent1Color: '#0A5CBF',
             accent2Color: '#0B66D5',
-            accent3Color: '#167AF3',
+            accent3Color: '#0B88D5',
             textColor: Colors.darkBlack,
             canvasColor: Colors.white,
             borderColor: '#0A5CBF',

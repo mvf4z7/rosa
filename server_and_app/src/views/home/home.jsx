@@ -56,8 +56,8 @@ export default class Home extends React.Component {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
 
-        this.context.socket.removeAllListeners('ledToggle');
-        this.context.socket.removeAllListeners('oven_start');
+        this.context.socket.removeListener('ledToggle');
+        this.context.socket.removeListener('oven_start');
     }
 
     _onDialogCancel() {
