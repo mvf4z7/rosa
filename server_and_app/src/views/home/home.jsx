@@ -104,7 +104,7 @@ export default class Home extends React.Component {
                         primary={true}
                         disable={isLoading}
                         linkButton={true}
-                        onClick={this._onStartOvenSim.bind(null, profile)}
+                        onClick={this._onClickStart.bind(null, profile)}
                         backgroundColor={colors.green500}
                         style={styles.button} />
                     <RaisedButton
@@ -112,7 +112,7 @@ export default class Home extends React.Component {
                         primary={true}
                         disable={isLoading}
                         linkButton={true}
-                        onClick={this._onStopOven}
+                        onClick={this._onClickStop}
                         backgroundColor={colors.red500}
                         style={styles.button}/>
                 </div>
@@ -155,7 +155,7 @@ export default class Home extends React.Component {
         TempProfileActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
     }
 
-    _onStartOvenSim = (profile) => {
+    _onClickStart = (profile) => {
         request
             .put('/api/ovensim')
             .send({ profile: profile })
@@ -166,7 +166,7 @@ export default class Home extends React.Component {
             })
     }
 
-    _onStopOven = () => {
+    _onClickStop = () => {
         request
             .del('/api/ovensim')
             .end(function(err, res) {
