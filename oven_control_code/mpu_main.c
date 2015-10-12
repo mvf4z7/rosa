@@ -7,6 +7,7 @@
 #include "mpu_types.h"
 #include "shared.h"
 #include "mpu_util.h"
+#include "mpu_cJSON.h"
 
 #define PRU_NUM 0
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
@@ -34,7 +35,7 @@ if( signal( SIGINT, signalHandler ) == SIG_ERR )
     printf( "MPU: Error setting up ctrl-c interrupt.\n" );
 }
 
-if( argc != 2 )
+if( argc != 3 )
 {
     printf( "Incorrect number of arguments.\nOnly pass the entry point for the PRU program.\n" );
     return( 0 );
@@ -52,7 +53,11 @@ if( !util_str_to_hex( argv[ 1 ], &entry_addr ) )
     return( 0 );
 }
 
-//printf( "PRU Entry Point: 0x%x\n", entry_addr );
+if( !util_load_profile( argv[ 2 ] ) )
+{
+    printf( "Error: Loading device profile.\n" );
+    return( 0 );
+}
 
 /* Initialize PRU 0, load code and map shared memory. */
 tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
