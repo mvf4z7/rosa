@@ -3,6 +3,7 @@ import request from 'superagent';
 
 import NavigationActions from '../../actions/NavigationActions';
 import TempProfileActions from '../../actions/TempProfileActions';
+import LiveChartActions from '../../actions/LiveChartActions';
 
 import LiveChartStore from '../../stores/LiveChartStore';
 import TempProfilesStore from '../../stores/TempProfilesStore';
@@ -23,7 +24,8 @@ export default class Home extends React.Component {
             led: 'OFF',
             profiles: TempProfilesStoreState.profiles,
             selectedProfileIdx: TempProfilesStoreState.selectedProfileIdx,
-            defaultProfile: TempProfilesStoreState.defaultProfile
+            defaultProfile: TempProfilesStoreState.defaultProfile,
+            liveData: LiveChartStore.getState().liveData
         };
 
         this.standardActions = [
@@ -77,14 +79,14 @@ export default class Home extends React.Component {
 
         let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
-        let menuItems = isLoading ? [{text: 'lojhjkhjkhf'}] : this.state.profiles.map( (profile, idx) => {
+        let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
             let text = profile.name === this.state.defaultProfile ? profile.name + ' (default)' : profile.name;
             return { text: text, payload: idx };
         });
 
         return (
     	 	<div style={styles.homeWrapper}>
-                <LiveHighchart ref='chart' loading={isLoading} profile={profile}/>
+                <LiveHighchart ref='chart' loading={isLoading} profile={profile} liveData={this.state.liveData}/>
 
                 <div style={styles.dropDownWrapper}>
                     <div style={styles.dropDownLabel}>PROFILE: </div>
@@ -141,7 +143,8 @@ export default class Home extends React.Component {
     }
 
     _onLiveChartStoreChange = (state) => {
-        this.refs.chart.addPoint([state.newTime, state.newData]);
+        this.setState({ liveData: state.liveData });
+        this.refs.chart.updateLiveData(state.liveData);
     }
 
     _onTempProfilesStoreChange = (state) => {
@@ -172,8 +175,7 @@ export default class Home extends React.Component {
     }
 
     _onOvenStart = () => {
-        console.log('in _onOvenStart');
-        this.refs.chart.clearLiveData();
+        LiveChartActions.clearLiveData();
     }
 
     _onButtonClicked() {

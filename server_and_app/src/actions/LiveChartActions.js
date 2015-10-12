@@ -1,8 +1,12 @@
 import alt from '../alt';
 
 class LiveChartActions {
-	addNewData(data) {
+	updateLiveData(data) {
 		this.dispatch(data);
+	}
+
+	clearLiveData() {
+		this.dispatch();
 	}
 }
 
