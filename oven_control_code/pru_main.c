@@ -6,9 +6,13 @@
 #include "pru_timer.h"
 #include "pru_util.h"
 #include "pru_pwm.h"
+#include "pru_dbg.h"
 
 #pragma LOCATION( g_state_var, 0x00001000 )
 uint8 g_state_var;
+
+#pragma LOCATION( g_profile, 0x00001005 );
+profile_shr_mem g_profile;
 
 volatile register uint32 __R31, __R30;  
 
@@ -21,8 +25,9 @@ int main()
     g_state_var = RUNNING;
     tmr_init();
     pwm_init();
+    dbg_init();
     
-    
+    dbg_set( g_profile.num_lines );
     pwm_set( .50f ); // Set the PWM duty cycle to 50% for 10s.
     while( !done )
     {

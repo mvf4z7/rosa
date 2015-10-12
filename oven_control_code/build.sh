@@ -38,7 +38,7 @@ do
         ENTRY_ADDR=$HEX$ENTRY
         echo "Executing Program..."
         echo "-------------------------------"       
-        ./mpu_prog.elf $ENTRY_ADDR
+        ./mpu_prog.elf $ENTRY_ADDR ../server_and_app/profile.json
     fi
 done
 

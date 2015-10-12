@@ -18,7 +18,7 @@
 #define DBG_VAR_SZ      4
 
 /* Line shared memory variable is not yet defined in the PRU. */
-#define LINE_MEM_OFST   ( DBG_VAR_OFST + DBG_VAR_SZ + 3 ) 
+#define LINE_MEM_OFST   ( DBG_VAR_OFST + DBG_VAR_SZ ) 
         //Offset was added to align the memory to a 4-byte boundary  
 #define LINE_MEM_SZ     484
         //Determined via experiment.
@@ -56,7 +56,7 @@ typedef struct
 typedef struct
 {
     line lines[ 20 ];
-    uint8 num_lines;
+    uint32 num_lines;
 } profile_shr_mem;
 
 #endif

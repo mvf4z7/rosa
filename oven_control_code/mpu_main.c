@@ -53,11 +53,7 @@ if( !util_str_to_hex( argv[ 1 ], &entry_addr ) )
     return( 0 );
 }
 
-if( !util_load_profile( argv[ 2 ] ) )
-{
-    printf( "Error: Loading device profile.\n" );
-    return( 0 );
-}
+printf( "Sizeof profile: %d\n", sizeof( profile_shr_mem ) );
 
 /* Initialize PRU 0, load code and map shared memory. */
 tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
@@ -69,6 +65,12 @@ prussdrv_load_datafile(PRUSS0_PRU0_DATARAM, "./data.bin");
 prussdrv_map_prumem( PRUSS0_PRU0_DATARAM , &mem );
 g_state_var = ( uint8 * )( ( (uint32)mem ) + STATE_VAR_OFST );
 g_dbg_var = (uint32 * )( ( (uint32)mem ) + DBG_VAR_OFST );
+
+if( !util_load_profile( argv[ 2 ] ) )
+{
+    printf( "Error: Loading device profile.\n" );
+    return( 0 );
+}
 
 *g_dbg_var = 0;
 g_dbg_var_last = 0;

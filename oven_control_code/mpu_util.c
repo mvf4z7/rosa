@@ -71,8 +71,9 @@ boolean util_load_profile( const char * path )
     cJSON * point;
     uint8 num_lines;
     profile_shr_mem * mem;
-    
     mem = (profile_shr_mem * )LINE_MEM_OFST;
+    
+    printf( "Mem: %x\n", (uint32)mem );
     
     fp = fopen( path, "r" );
     
@@ -118,14 +119,20 @@ boolean util_load_profile( const char * path )
         return( FALSE );
     }
     
-    mem->num_lines = num_lines;
+    printf( "Modifying shared memory.\n" );
+    fflush( stdout );
     
+    (*mem).num_lines = num_lines;
+    
+    printf( "Retrieving data...\n" );
+    fflush( stdout );
     for( idx = 0; idx < num_lines; idx++ )
     {
         line = cJSON_GetArrayItem( json, idx );
         if( line == NULL )
         {
             printf( "Error retrieving item %d from array of lines.\n", idx );
+            fflush( stdout );
             return( FALSE );
         }
         
@@ -143,6 +150,9 @@ boolean util_load_profile( const char * path )
         
         //Read in the slope of the line:
         mem->lines[ idx ].m = (float) ( cJSON_GetObjectItem( line, "m" )->valuedouble );
+        
+        printf( "Idx: %d  M: %f\n", idx, mem->lines[ idx ].m );
+        fflush( stdout );
         
         //Read in the y-intercept of the line:
         mem->lines[ idx ].b = (float) ( cJSON_GetObjectItem( line, "b" )->valuedouble );
