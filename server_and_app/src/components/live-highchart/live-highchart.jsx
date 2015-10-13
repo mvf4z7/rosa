@@ -11,7 +11,7 @@ require('./styles.scss');
 chartConfig.chart.type = 'spline';
 chartConfig.chart.animation = { duration: 100, easing: 'linear' };
 chartConfig.chart.zoomType = 'x';
-chartConfig.title.text = 'Live Reflow Temperature Data';
+chartConfig.title.text = 'Live Temperature Data';
 chartConfig.xAxis.title = {
     text: 'time (s)',
     style: {
@@ -104,12 +104,13 @@ class LiveHighchart extends React.Component {
             return;
         }
 
-        let title = {
+        let subTitle = {
             useHTML: true,
             text: `<pre class='chart-title'>Target: <span class='target'>${data.temp+2}</span>    Actual: <span class='actual'>${data.temp}</span></pre>`,
+            align: 'right',
         }
         let chart = this.refs.chart.getChart();
-        chart.setTitle(title);
+        chart.setTitle(chartConfig.title, subTitle);
     };
 }
 
