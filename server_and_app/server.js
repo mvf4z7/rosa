@@ -23,7 +23,6 @@ var oauth2 = require('simple-oauth2')({
     tokenPath: '/oauth/access_token'
 });
 
-
 var app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
