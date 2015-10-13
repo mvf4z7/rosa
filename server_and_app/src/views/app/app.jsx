@@ -1,5 +1,4 @@
 import React from 'react';
-import { RouteHandler } from 'react-router';
 import socket from '../../socket-client';
 import mui from 'material-ui';
 
@@ -7,6 +6,8 @@ import NavigationStore from '../../stores/NavigationStore';
 import NavigationActions from '../../actions/NavigationActions';
 
 import { AppBar, LeftNav } from 'material-ui';
+import { RouteHandler } from 'react-router';
+import MobileLiveDataViewer from '../../components/mobile-live-data-viewer/mobile-live-data-viewer';
 
 import styles from './styles';
 import theme from './theme';
@@ -54,6 +55,7 @@ class App extends React.Component {
     		<div style={styles.appWrapper}>
                 <AppBar
                     title='ROSA'
+                    iconElementRight={<MobileLiveDataViewer />}
                     style={styles.AppBar}
                     onLeftIconButtonTouchTap={this._toggleNav} />
                 <LeftNav
