@@ -34,12 +34,9 @@ do
 
     if [ $ARGS == "run" ]
     then
-        ENTRY="$( dispru pru_prog.elf | grep _c_int00 | cut -f1 -d' ' )" 
-        HEX="0x"
-        ENTRY_ADDR=$HEX$ENTRY
         echo "Executing Program..."
         echo "-------------------------------"       
-        ./mpu_prog.elf $ENTRY_ADDR
+        ./mpu_prog.elf 
     fi
 done
 

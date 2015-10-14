@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <time.h>
+#include <unistd.h>
 #include "stdio.h"
 #include "pruio.h" // include header
 
@@ -8,14 +9,9 @@
 #include "shared.h"
 #include "mpu_util.h"
 
-#define PRU_NUM 0
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
 boolean force_stop;
-uint8 * g_state_var;
-uint8   g_state_var_last;
-uint32 * g_dbg_var;
-uint32   g_dbg_var_last;
 
 static void signalHandler( int signal );
 
@@ -25,14 +21,27 @@ int main( int argc, char *argv[] )
     float temp;
     float voltage;
     float amp_voltage;
+    time_t timer;
     
+    force_stop = FALSE;
+    
+    //Set up signal handler:
+    if( signal( SIGINT, signalHandler ) == SIG_ERR )
+    {
+        printf( "MPU: Error setting up ctrl-c interrupt.\n" );
+        return( -1 );
+    }
+   
     pruIo *io = pruio_new(PRUIO_DEF_ACTIVE, 0x98, 0, 1); 
     if (pruio_config(io, 1, 0x1FE, 0, 4))
     { 
         printf("config failed (%s)\n", io->Errr);
+        return( -1 );
     }
-    else 
+
+    while( !force_stop )
     {
+        
         adc_val = io->Adc->Value[ 1 ];
         voltage = (float)( adc_val ) / 0xFFF0 * 1.8;
         amp_voltage = 2 * voltage;
@@ -45,7 +54,9 @@ int main( int argc, char *argv[] )
         printf( "Current temperature F: %.2f\n", ( temp * 1.8 ) + 32 );
         printf( "--------------------------------\n" );
         
-    }
+        //Sleep for 1 second
+        sleep( 1 );
+    }   
     
     pruio_destroy(io);        /* destroy driver structure */
     
@@ -54,18 +65,7 @@ int main( int argc, char *argv[] )
 
 
 static void signalHandler( int signal )
-{
-    time_t timer;
-    
-    //Get the current time:
-    time( &timer );
-    
-    //Disable PRU:
-    *g_state_var = FORCE_STOP;
-    
-    //Block until the PRU responds or 5 secs have passed:
-    while( ( *g_state_var != DONE_NO_ERR ) && (*g_state_var != DONE_ERR ) && ( difftime( timer, time( NULL ) ) < 5 ) );
-    
+{  
     force_stop = TRUE;
     return;
 }
