@@ -29,6 +29,7 @@ do
     if [ $ARGS == "init" ]
     then
         echo EBB-PRU-Example > /sys/devices/bone_capemgr.*/slots
+        echo libpruio > /sys/devices/bone_capemgr.9/slots
     fi
 
     if [ $ARGS == "run" ]
