@@ -6,7 +6,6 @@
 #include "pruio.h" // include header
 
 #include "mpu_types.h"
-#include "shared.h"
 #include "mpu_util.h"
 
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
@@ -21,14 +20,26 @@ int main( int argc, char *argv[] )
     float temp;
     float voltage;
     float amp_voltage;
-    time_t timer;
+    profile prf;
     
     force_stop = FALSE;
+    
+    if( argc != 2 )
+    {
+        printf( "Error: The only argument is the path to the JSON file.\n" );
+        return( -1 );
+    }
     
     //Set up signal handler:
     if( signal( SIGINT, signalHandler ) == SIG_ERR )
     {
         printf( "MPU: Error setting up ctrl-c interrupt.\n" );
+        return( -1 );
+    }
+    
+    if( !util_load_profile( argv[ 1 ], &prf ) )
+    {
+        printf( "Error: There was an error loading the profile.\n" );
         return( -1 );
     }
    

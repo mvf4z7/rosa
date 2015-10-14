@@ -15,20 +15,14 @@ do
     rm *.obj *.map *.elf *.bin
     fi
 
-    if [ $ARGS == "pru" ]
-    then
-        clpru --silicon_version=2 -Ooff --define=PRU_BLD --float_operations_allowed=32 pru_*.c -z PRU_lnk.cmd -o pru_prog.elf -m pru_test.map
-        hexpru bin.cmd pru_prog.elf
-    fi
-
     if [ $ARGS == "mpu" ]
     then
-        gcc -Wall mpu_main.c -o mpu_prog.elf -lpthread -lpruio
+        gcc -Wall mpu_*.c -o mpu_prog.elf -lpthread -lpruio
     fi
 
     if [ $ARGS == "init" ]
     then
-        echo EBB-PRU-Example > /sys/devices/bone_capemgr.*/slots
+        #echo EBB-PRU-Example > /sys/devices/bone_capemgr.*/slots
         echo libpruio > /sys/devices/bone_capemgr.9/slots
     fi
 
@@ -36,7 +30,7 @@ do
     then
         echo "Executing Program..."
         echo "-------------------------------"       
-        ./mpu_prog.elf 
+        ./mpu_prog.elf ../server_and_app/profile.json
     fi
 done
 
