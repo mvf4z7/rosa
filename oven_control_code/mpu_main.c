@@ -1,123 +1,82 @@
 #include <stdio.h>
 #include <signal.h>
 #include <time.h>
-#include "prussdrv.h"
-#include "pruss_intc_mapping.h"
+#include <unistd.h>
+#include "stdio.h"
+#include "pruio.h" // include header
 
 #include "mpu_types.h"
-#include "shared.h"
 #include "mpu_util.h"
 
-#define PRU_NUM 0
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
 boolean force_stop;
-uint8 * g_state_var;
-uint8   g_state_var_last;
-uint32 * g_dbg_var;
-uint32   g_dbg_var_last;
 
 static void signalHandler( int signal );
 
 int main( int argc, char *argv[] ) 
 {
-
-void * mem;
-uint16 idx;
-uint32 entry_addr;
-
-force_stop = FALSE;
-
-//Set up signal handler:
-if( signal( SIGINT, signalHandler ) == SIG_ERR )
-{
-    printf( "MPU: Error setting up ctrl-c interrupt.\n" );
-}
-
-if( argc != 2 )
-{
-    printf( "Incorrect number of arguments.\nOnly pass the entry point for the PRU program.\n" );
-    return( 0 );
-}
-
-if( argv[ 1 ][ 0 ] != '0' || argv[ 1 ][ 1 ] != 'x' )
-{
-    printf( "Invalid format.\n Argument must start with '0x'\n" );
-    return( 0 );
-}
-
-if( !util_str_to_hex( argv[ 1 ], &entry_addr ) )
-{
-    printf( "Error: There was an error parsing the entry point for the application." );
-    return( 0 );
-}
-
-//printf( "PRU Entry Point: 0x%x\n", entry_addr );
-
-/* Initialize PRU 0, load code and map shared memory. */
-tpruss_intc_initdata pruss_intc_initdata = PRUSS_INTC_INITDATA;
-prussdrv_init();
-prussdrv_open( PRU_EVTOUT_0 );
-prussdrv_pruintc_init( &pruss_intc_initdata );
-prussdrv_load_datafile(PRUSS0_PRU0_DATARAM, "./data.bin");
-
-prussdrv_map_prumem( PRUSS0_PRU0_DATARAM , &mem );
-g_state_var = ( uint8 * )( ( (uint32)mem ) + STATE_VAR_OFST );
-g_dbg_var = (uint32 * )( ( (uint32)mem ) + DBG_VAR_OFST );
-
-*g_dbg_var = 0;
-g_dbg_var_last = 0;
-*g_state_var = 0;
-g_state_var_last = 0;
-
-prussdrv_exec_program_at(PRU_NUM, "./text.bin", entry_addr);
-
-
-while( 1 )
-{
-    if( *g_dbg_var != g_dbg_var_last )
+    uint16 adc_val;
+    float temp;
+    float voltage;
+    float amp_voltage;
+    profile prf;
+    
+    force_stop = FALSE;
+    
+    if( argc != 2 )
     {
-        g_dbg_var_last = *g_dbg_var;
-        printf( "Debug var: = %d\n", *g_dbg_var );
-        fflush( stdout );
+        printf( "Error: The only argument is the path to the JSON file.\n" );
+        return( -1 );
     }
     
-    if( *g_state_var != g_state_var_last )
+    //Set up signal handler:
+    if( signal( SIGINT, signalHandler ) == SIG_ERR )
     {
-        g_state_var_last = *g_state_var;
-        printf( "State var = %x\n", *g_state_var );
-        fflush( stdout );
-        if( ( *g_state_var == DONE_NO_ERR ) || ( *g_state_var == DONE_ERR ) )
-        {
-            break;
-        }
+        printf( "MPU: Error setting up ctrl-c interrupt.\n" );
+        return( -1 );
     }
     
-    if( force_stop == TRUE )
+    if( !util_load_profile( argv[ 1 ], &prf ) )
     {
-        break;
+        printf( "Error: There was an error loading the profile.\n" );
+        return( -1 );
     }
-}
+   
+    pruIo *io = pruio_new(PRUIO_DEF_ACTIVE, 0x98, 0, 1); 
+    if (pruio_config(io, 1, 0x1FE, 0, 4))
+    { 
+        printf("config failed (%s)\n", io->Errr);
+        return( -1 );
+    }
 
-prussdrv_pru_disable( PRU_NUM );
-prussdrv_exit();
-return( 0 );
+    while( !force_stop )
+    {
+        
+        adc_val = io->Adc->Value[ 1 ];
+        voltage = (float)( adc_val ) / 0xFFF0 * 1.8;
+        amp_voltage = 2 * voltage;
+        temp = ( amp_voltage - 1.25 ) / 0.005;
+        printf( "--------------------------------\n" );
+        printf( "ADC value: %x\n", adc_val );
+        printf( "ADC voltage: %f\n", voltage );
+        printf( "Amp voltage: %f\n", amp_voltage );
+        printf( "Current temperature C: %.2f\n", temp );
+        printf( "Current temperature F: %.2f\n", ( temp * 1.8 ) + 32 );
+        printf( "--------------------------------\n" );
+        
+        //Sleep for 1 second
+        sleep( 1 );
+    }   
+    
+    pruio_destroy(io);        /* destroy driver structure */
+    
+    return 0;
 }
 
 
 static void signalHandler( int signal )
-{
-    time_t timer;
-    
-    //Get the current time:
-    time( &timer );
-    
-    //Disable PRU:
-    *g_state_var = FORCE_STOP;
-    
-    //Block until the PRU responds or 5 secs have passed:
-    while( ( *g_state_var != DONE_NO_ERR ) && (*g_state_var != DONE_ERR ) && ( difftime( timer, time( NULL ) ) < 5 ) );
-    
+{  
     force_stop = TRUE;
     return;
 }
