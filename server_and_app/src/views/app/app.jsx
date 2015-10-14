@@ -1,12 +1,15 @@
 import React from 'react';
-import { RouteHandler } from 'react-router';
 import socket from '../../socket-client';
 import mui from 'material-ui';
 
 import NavigationStore from '../../stores/NavigationStore';
+import OvenStore from '../../stores/OvenStore';
+
 import NavigationActions from '../../actions/NavigationActions';
 
 import { AppBar, LeftNav } from 'material-ui';
+import { RouteHandler } from 'react-router';
+import MobileLiveDataViewer from '../../components/mobile-live-data-viewer/mobile-live-data-viewer';
 
 import styles from './styles';
 import theme from './theme';
@@ -22,7 +25,14 @@ let menuItems = [
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = NavigationStore.getState();
+
+        let navigationStoreState = NavigationStore.getState();
+        let ovenStoreState = OvenStore.getState();
+        this.state = {
+            selectedIndex: navigationStoreState.selectedIndex,
+            currentRoute: navigationStoreState.currentRoute,
+            ovenOn: ovenStoreState.ovenOn
+        }
 
         this._toggleNav = this._toggleNav.bind(this);
         this._onLeftNavChange = this._onLeftNavChange.bind(this);
@@ -42,18 +52,23 @@ class App extends React.Component {
 
     componentDidMount() {
         NavigationStore.listen(this._onStoreChange);
+        OvenStore.listen(this._onOvenStoreChange);
 
     }
 
     componentWillUnmount() {
         NavigationStore.unlisten(this._onStoreChange);
+        OvenStore.listen(this._onOvenStoreChange);
     }
 
     render() {
+
+        console.log('ovenOn: ', this.state.ovenOn);
         return (
     		<div style={styles.appWrapper}>
                 <AppBar
                     title='ROSA'
+                    iconElementRight={<MobileLiveDataViewer hide={!this.state.ovenOn}/>}
                     style={styles.AppBar}
                     onLeftIconButtonTouchTap={this._toggleNav} />
                 <LeftNav
@@ -80,6 +95,11 @@ class App extends React.Component {
     }
 
     _onStoreChange(state) {
+        this.setState(state);
+    }
+
+    _onOvenStoreChange = (state) => {
+        console.log('ovenStoreChange: ', state);
         this.setState(state);
     }
 }
