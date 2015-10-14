@@ -84,6 +84,7 @@ var stopSim = function(cb){
     });
     timers = [];
     simInProgress = false;
+    io.emit('oven_stop');
 
     if(ledProgram) {
         ledProgram.kill('SIGTERM');

@@ -18,7 +18,7 @@ class MobileLiveDataViewer extends React.Component {
 
     render() {
         return (
-            <div style={styles.container}>
+            <div style={[styles.container, this.props.hide && styles.hide]}>
                 <div style={[styles.item, styles.target]}>{this.state.target}</div>
                 <div style={[styles.item, styles.actual]}>{this.state.actual}</div>
             </div>
@@ -36,8 +36,12 @@ MobileLiveDataViewer.contextTypes = {
 
 export default Radium(MobileLiveDataViewer);
 
+
+
 var styles = {
     container: {
+        position: 'absolute',
+        right: 0,
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'nowrap',
@@ -46,9 +50,13 @@ var styles = {
         height: '50px',
         alignSelf: 'center',
         marginRight: '0.5rem',
+        transition: '1.5s ease-in-out',
         '@media (min-width: 601px)': {
             display: 'none'
         }
+    },
+    hide: {
+        right: '-50%'
     },
     item: {
         backgroundColor: '#31333A',
