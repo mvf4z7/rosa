@@ -21,7 +21,6 @@ export default class Home extends React.Component {
 
         let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
-            led: 'OFF',
             profiles: TempProfilesStoreState.profiles,
             selectedProfileIdx: TempProfilesStoreState.selectedProfileIdx,
             defaultProfile: TempProfilesStoreState.defaultProfile,
@@ -43,8 +42,6 @@ export default class Home extends React.Component {
         TempProfilesStore.listen(this._onTempProfilesStoreChange);
 
         TempProfileActions.fetchProfiles();
-
-        this.context.socket.on('ledToggle', this._onLedToggle);
     }
 
 
@@ -52,8 +49,6 @@ export default class Home extends React.Component {
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
-
-        this.context.socket.removeListener('ledToggle', this._onLedToggle);
     }
 
     _onDialogCancel() {
@@ -65,14 +60,6 @@ export default class Home extends React.Component {
     }
 
     render() {
-        let ledStyle = {
-            textAlign: 'center',
-            marginTop: '3rem'
-        }
-        if(this.state.led == 'ON') {
-            ledStyle.backgroundColor = '#0A5CBF';
-        }
-
         let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
         let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
@@ -120,10 +107,6 @@ export default class Home extends React.Component {
                         onClick={this._onButtonClicked.bind(this)}
                         style={styles.button}/>
                 </div>
-
-                <h1 style={ledStyle}>
-                    LED {this.state.led}
-                </h1>
 
                 <div onClick={this._onDialogCancel.bind(this)}>
                     <Dialog
@@ -176,14 +159,6 @@ export default class Home extends React.Component {
 
     _closeModal() {
         this.refs.dialog.dismiss();
-    }
-
-    // _onLedToggle(ledState) {
-    //     this.setState({ led: ledState });
-    // }
-
-    _onLedToggle = ledState => {
-        this.setState({ led: ledState });
     }
 }
 
