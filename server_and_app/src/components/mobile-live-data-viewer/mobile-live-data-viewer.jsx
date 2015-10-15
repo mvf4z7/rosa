@@ -51,9 +51,9 @@ var styles = {
         alignSelf: 'center',
         marginRight: '0.5rem',
         transition: '1.5s ease-in-out',
-        // '@media (min-width: 601px)': {
-        //     display: 'none'
-        // }
+        '@media (min-width: 601px)': {
+            display: 'none'
+        }
     },
     hide: {
         right: '-50%'

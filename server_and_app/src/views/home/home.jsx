@@ -44,20 +44,16 @@ export default class Home extends React.Component {
 
         TempProfileActions.fetchProfiles();
 
-        //this.context.socket.on('oven_start', this._onOvenStart);
-        this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
+        this.context.socket.on('ledToggle', this._onLedToggle);
     }
 
-    _onLedToggle(ledState) {
-        this.setState({ led: ledState });
-    }
+
 
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
 
-        this.context.socket.removeListener('ledToggle');
-        this.context.socket.removeListener('oven_start');
+        this.context.socket.removeListener('ledToggle', this._onLedToggle);
     }
 
     _onDialogCancel() {
@@ -174,16 +170,20 @@ export default class Home extends React.Component {
             });
     }
 
-    // _onOvenStart = () => {
-    //     LiveChartActions.clearLiveData();
-    // }
-
     _onButtonClicked() {
         this.refs.dialog.show();
     }
 
     _closeModal() {
         this.refs.dialog.dismiss();
+    }
+
+    // _onLedToggle(ledState) {
+    //     this.setState({ led: ledState });
+    // }
+
+    _onLedToggle = ledState => {
+        this.setState({ led: ledState });
     }
 }
 
