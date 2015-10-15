@@ -3,8 +3,7 @@ let palette = theme.getPalette();
 
 let styles = {
     chartWrapper: {
-        height: '70%',
-        margin: '1rem 1rem'
+        height: '70%'
     },
     highChart: {
         height: '100%'
