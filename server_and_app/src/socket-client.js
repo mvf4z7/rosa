@@ -14,6 +14,7 @@ socket.on('tempData', function(data) {
 });
 
 socket.on('oven_start', function() {
+    LiveChartActions.clearLiveData();
     OvenActions.setOvenOn({ ovenOn: true });
     console.log('set OvenOn to true');
 });

@@ -69,10 +69,11 @@ var runSim = function(profile, cb){
         timers.push(timerId);
     }
 
-    setTimeout(function() {
+    var timerId = setTimeout(function() {
         simInProgress = false;
         timers = [];
     }, testLength*1000 + 5000);
+    timers.push(timerId);
 
     cb({status: 'ok'});
 };

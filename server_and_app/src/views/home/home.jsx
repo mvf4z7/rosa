@@ -44,7 +44,7 @@ export default class Home extends React.Component {
 
         TempProfileActions.fetchProfiles();
 
-        this.context.socket.on('oven_start', this._onOvenStart);
+        //this.context.socket.on('oven_start', this._onOvenStart);
         this.context.socket.on('ledToggle', this._onLedToggle.bind(this));
     }
 
@@ -174,9 +174,9 @@ export default class Home extends React.Component {
             });
     }
 
-    _onOvenStart = () => {
-        LiveChartActions.clearLiveData();
-    }
+    // _onOvenStart = () => {
+    //     LiveChartActions.clearLiveData();
+    // }
 
     _onButtonClicked() {
         this.refs.dialog.show();
