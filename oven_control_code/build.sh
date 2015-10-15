@@ -17,7 +17,7 @@ do
 
     if [ $ARGS == "mpu" ]
     then
-        gcc -Wall mpu_*.c -o mpu_prog.elf -lpthread -lpruio
+        gcc -Wall -lrt mpu_*.c -o mpu_prog.elf -lpthread -lpruio
     fi
 
     if [ $ARGS == "init" ]

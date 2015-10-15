@@ -7,6 +7,7 @@
 
 #include "mpu_types.h"
 #include "mpu_util.h"
+#include "mpu_timer.h"
 
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
@@ -21,8 +22,12 @@ int main( int argc, char *argv[] )
     float voltage;
     float amp_voltage;
     profile prf;
+    uint32 cur_time;
+    uint32 start_time;
     
     force_stop = FALSE;
+    
+    timer_init();
     
     if( argc != 2 )
     {
@@ -65,8 +70,25 @@ int main( int argc, char *argv[] )
         printf( "Current temperature F: %.2f\n", ( temp * 1.8 ) + 32 );
         printf( "--------------------------------\n" );
         
-        //Sleep for 1 second
-        sleep( 1 );
+        if( !timer_get( &start_time ) )
+        {
+            printf( "There was an error with the timer.\n" );
+            return( 0 );
+        }
+        
+        cur_time = start_time;
+        
+        //block for 1 second.
+        while( cur_time - start_time <= 1000 )
+        {
+            if( !timer_get( &cur_time ) )
+            {
+                printf( "There was an error with the timer.\n" );
+                return( 0 );
+            }
+        }
+        
+        printf( "Current time: %u\n", cur_time );
     }   
     
     pruio_destroy(io);        /* destroy driver structure */
