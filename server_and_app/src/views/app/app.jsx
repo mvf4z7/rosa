@@ -62,8 +62,6 @@ class App extends React.Component {
     }
 
     render() {
-
-        console.log('ovenOn: ', this.state.ovenOn);
         return (
     		<div style={styles.appWrapper}>
                 <AppBar
@@ -99,7 +97,6 @@ class App extends React.Component {
     }
 
     _onOvenStoreChange = (state) => {
-        console.log('ovenStoreChange: ', state);
         this.setState(state);
     }
 }

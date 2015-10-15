@@ -9,14 +9,12 @@ socket.on('connect', function() {
 });
 
 socket.on('tempData', function(data) {
-    console.log('socket received new temp data: ', data);
     LiveChartActions.updateLiveData([data.time, data.temp]);
 });
 
 socket.on('oven_start', function() {
     LiveChartActions.clearLiveData();
     OvenActions.setOvenOn({ ovenOn: true });
-    console.log('set OvenOn to true');
 });
 
 socket.on('oven_stop', function() {
