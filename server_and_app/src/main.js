@@ -3,6 +3,9 @@ import Router from 'react-router';
 import routes from './routes';
 import NavigationActions from './actions/NavigationActions';
 
+var fastclick = require('fastclick');
+fastclick.attach(document.body);
+
 let injectTapEventPlugin = require('react-tap-event-plugin');
 injectTapEventPlugin();
 
