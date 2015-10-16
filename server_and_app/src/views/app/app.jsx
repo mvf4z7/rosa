@@ -53,12 +53,11 @@ class App extends React.Component {
     componentDidMount() {
         NavigationStore.listen(this._onStoreChange);
         OvenStore.listen(this._onOvenStoreChange);
-
     }
 
     componentWillUnmount() {
         NavigationStore.unlisten(this._onStoreChange);
-        OvenStore.listen(this._onOvenStoreChange);
+        OvenStore.unlisten(this._onOvenStoreChange);
     }
 
     render() {
@@ -76,7 +75,7 @@ class App extends React.Component {
                     selectedIndex={this.state.selectedIndex}
                     onChange={this._onLeftNavChange}
                     style={styles.LeftNav} />
-                <RouteHandler />
+                <RouteHandler ovenOn={this.state.ovenOn}/>
     		</div>
         );
     }
