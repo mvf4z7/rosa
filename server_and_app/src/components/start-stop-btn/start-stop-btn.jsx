@@ -12,7 +12,7 @@ class StartStopBtn extends React.Component {
     }
 
     render() {
-        let ovenStates = {
+        let btnStates = {
             on: {
                 label: 'Stop Oven',
                 onClick: this._onClickStop
@@ -29,10 +29,10 @@ class StartStopBtn extends React.Component {
 
         let currentState;
         if(this.props.disable) {
-            currentState = ovenStates.disabled;
+            currentState = btnStates.disabled;
         } else {
             currentState = this.props.ovenOn ? 'on' : 'off';
-            currentState = ovenStates[currentState];
+            currentState = btnStates[currentState];
         }
 
         return (
