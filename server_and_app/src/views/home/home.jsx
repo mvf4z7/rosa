@@ -10,7 +10,7 @@ import TempProfilesStore from '../../stores/TempProfilesStore';
 
 import mui, { Dialog, DropDownMenu, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
-import MaterialSpinner from '../../components/material-spinner/material-spinner';
+import StartStopBtn from '../../components/start-stop-btn/start-stop-btn';
 
 import styles from './styles';
 let colors = mui.Styles.Colors;
@@ -18,6 +18,8 @@ let colors = mui.Styles.Colors;
 export default class Home extends React.Component {
     constructor() {
         super();
+
+
 
         let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
@@ -43,8 +45,6 @@ export default class Home extends React.Component {
 
         TempProfileActions.fetchProfiles();
     }
-
-
 
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
@@ -77,36 +77,13 @@ export default class Home extends React.Component {
                         menuItems={menuItems}
                         disabled={isLoading}
                         onChange={this._onDropDownChange}
-                        autoWidth={true}
-                        />
+                        autoWidth={true}/>
                 </div>
 
-                <div style={styles.buttonContainer}>
-                    <RaisedButton
-                        label='START OVEN SIM'
-                        primary={true}
-                        disable={isLoading}
-                        linkButton={true}
-                        onClick={this._onClickStart.bind(null, profile)}
-                        backgroundColor={colors.green500}
-                        style={styles.button} />
-                    <RaisedButton
-                        label='STOP OVEN'
-                        primary={true}
-                        disable={isLoading}
-                        linkButton={true}
-                        onClick={this._onClickStop}
-                        backgroundColor={colors.red500}
-                        style={styles.button}/>
-                </div>
-
-                <div style={styles.buttonContainer}>
-                    <RaisedButton
-                        label='OPEN DIALOG BOX'
-                        linkButton={true}
-                        onClick={this._onButtonClicked.bind(this)}
-                        style={styles.button}/>
-                </div>
+                <StartStopBtn
+                    ovenOn={this.props.ovenOn}
+                    disable={isLoading}
+                    profile={profile}/>
 
                 <div onClick={this._onDialogCancel.bind(this)}>
                     <Dialog
@@ -132,25 +109,6 @@ export default class Home extends React.Component {
 
     _onDropDownChange = (e, selectedIdx, menuItem) => {
         TempProfileActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
-    }
-
-    _onClickStart = (profile) => {
-        request
-            .put('/api/ovensim')
-            .send({ profile: profile })
-            .end(function(err, res) {
-                if(res.body.error) {
-                    alert('Error: ' + res.body.error);
-                }
-            })
-    }
-
-    _onClickStop = () => {
-        request
-            .del('/api/ovensim')
-            .end(function(err, res) {
-                console.log(res.body);
-            });
     }
 
     _onButtonClicked() {
