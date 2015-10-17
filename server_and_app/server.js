@@ -27,6 +27,12 @@ if(isProduction) {
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 
+app.get('/api/ovensim', function(req, res) {
+    tempProfile.getOvenState(function(ovenState) {
+        res.send({ ovenOn: ovenState });
+    });
+});
+
 app.put('/api/ovensim', function(req, res) {
     var profile = req.body.profile;
     console.log(req.body);

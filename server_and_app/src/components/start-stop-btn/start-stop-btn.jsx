@@ -20,15 +20,25 @@ class StartStopBtn extends React.Component {
             off: {
                 label: 'Start Oven',
                 onClick: this._onClickStart.bind(null, this.props.profile)
+            },
+            disabled: {
+                label: 'Loading...',
+                onClick: function(){}
             }
         };
-        let currentState = this.props.ovenOn ? 'on' : 'off';
-        currentState = ovenStates[currentState];
+
+        let currentState;
+        if(this.props.disable) {
+            currentState = ovenStates.disabled;
+        } else {
+            currentState = this.props.ovenOn ? 'on' : 'off';
+            currentState = ovenStates[currentState];
+        }
 
         return (
             <div
                 ref='container'
-                style={[styles.container, this.props.ovenOn ? styles.on : styles.off]}
+                style={[styles.container, this.props.ovenOn ? styles.on : styles.off, this.props.disable && styles.disabled]}
                 onClick={currentState.onClick}>
                 <div ref='child' style={styles.child}>{currentState.label}</div>
             </div>
@@ -85,5 +95,8 @@ let styles = {
     },
     off: {
         backgroundColor: colors.green500
+    },
+    disabled: {
+        backgroundColor: colors.grey500
     }
 }

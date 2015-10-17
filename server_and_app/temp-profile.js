@@ -42,6 +42,11 @@ var getLine = function(lines, time) {
 var simInProgress = false;
 var ledProgram = null;
 var timers = [];
+
+var getOvenState = function(cb) {
+    cb(simInProgress);
+};
+
 var runSim = function(profile, cb){
     if(simInProgress) {
         cb({error: 'There is already an oven sim in progress'});
@@ -98,6 +103,7 @@ module.exports = {
     generatePoint : generatePoint,
     getTemp : getTemp,
     getLine : getLine,
+    getOvenState: getOvenState,
     runSim : runSim,
     stopSim : stopSim
 };
