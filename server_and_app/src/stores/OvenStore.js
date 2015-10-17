@@ -3,11 +3,16 @@ import OvenActions from '../actions/OvenActions';
 
 class OvenStore {
 	constructor() {
-		this.ovenOn = false;
+		this.ovenOn = null;
 
 	    this.bindListeners({
+			handleFetchOvenState: OvenActions.FETCH_OVEN_STATE,
 			handleSetOvenOn: OvenActions.SET_OVEN_ON
 	    });
+	}
+
+	handleFetchOvenState() {
+		this.ovenOn = null;
 	}
 
 	handleSetOvenOn(data) {

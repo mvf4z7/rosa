@@ -6,6 +6,7 @@ import NavigationStore from '../../stores/NavigationStore';
 import OvenStore from '../../stores/OvenStore';
 
 import NavigationActions from '../../actions/NavigationActions';
+import OvenActions from '../../actions/OvenActions';
 
 import { AppBar, LeftNav } from 'material-ui';
 import { RouteHandler } from 'react-router';
@@ -51,6 +52,8 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        OvenActions.fetchOvenState();
+
         NavigationStore.listen(this._onStoreChange);
         OvenStore.listen(this._onOvenStoreChange);
     }
