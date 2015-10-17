@@ -19,8 +19,6 @@ export default class Home extends React.Component {
     constructor() {
         super();
 
-
-
         let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
             profiles: TempProfilesStoreState.profiles,
@@ -119,7 +117,3 @@ export default class Home extends React.Component {
         this.refs.dialog.dismiss();
     }
 }
-
-Home.contextTypes = {
-    socket: React.PropTypes.object
-};

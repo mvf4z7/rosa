@@ -27,9 +27,10 @@ class StartStopBtn extends React.Component {
 
         return (
             <div
+                ref='container'
                 style={[styles.container, this.props.ovenOn ? styles.on : styles.off]}
                 onClick={currentState.onClick}>
-                <span>{currentState.label}</span>
+                <div ref='child' style={styles.child}>{currentState.label}</div>
             </div>
         );
     }
@@ -62,14 +63,21 @@ let styles = {
         position: 'absolute',
         bottom: 0,
         width: '100%',
-        padding: '0.9rem 0',
         textAlign: 'center',
         fontSize: '2rem',
+        cursor: 'pointer',
         color: 'white',
         '@media screen and (min-width: 64em)': {
             ':hover': {
-                opacity: '0.75'
+                opacity: '0.8'
             }
+        }
+    },
+    child: {
+        padding: '0.9rem 0',
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        ':active': {
+            backgroundColor: 'rgba(0, 0, 0, 0.3)'
         }
     },
     on: {
