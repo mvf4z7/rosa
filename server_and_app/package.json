@@ -6,7 +6,7 @@
     "start": "NODE_ENV=production PORT=8001 nodejs bin/www",
     "start-dev": "nodemon bin/www",
     "start-hot": "node hot-server.js",
-    "build": "webpack",
+    "build": "NODE_ENV=production webpack -p",
     "lint": "node_modules/eslint/bin/eslint.js src/*"
   },
   "repository": {
