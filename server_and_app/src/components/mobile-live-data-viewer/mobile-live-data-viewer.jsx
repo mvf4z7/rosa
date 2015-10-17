@@ -51,7 +51,7 @@ var styles = {
         alignSelf: 'center',
         marginRight: '0.5rem',
         transition: '1.5s ease-in-out',
-        '@media screen and (min-width: 601px)': {
+        '@media screen and (min-width: 48em)': {
             display: 'none'
         }
     },
