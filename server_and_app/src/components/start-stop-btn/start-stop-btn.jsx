@@ -2,7 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import request from 'superagent';
 
-import mui, { RaisedButton } from 'material-ui';
+import mui, { RaisedButton, FlatButton } from 'material-ui';
 
 let colors = mui.Styles.Colors;
 
@@ -15,43 +15,26 @@ class StartStopBtn extends React.Component {
         let ovenStates = {
             on: {
                 label: 'Stop Oven',
-                backgroundColor: colors.red500,
                 onClick: this._onClickStop
             },
             off: {
                 label: 'Start Oven',
-                backgroundColor: colors.green500,
                 onClick: this._onClickStart.bind(null, this.props.profile)
             }
         };
-
         let currentState = this.props.ovenOn ? 'on' : 'off';
-        let btnProps = ovenStates[currentState];
-
-        console.log(btnProps.onClick);
-        console.log('stopstartbutton props: ', this.props);
+        currentState = ovenStates[currentState];
 
         return (
-            <RaisedButton
-                primary={true}
-                disable={this.props.disable}
-                linkButton={true}
-                label={btnProps.label}
-                backgroundColor={btnProps.backgroundColor}
-                onClick={btnProps.onClick}
-                style={styles.base}
-            />
+            <div
+                style={[styles.container, this.props.ovenOn ? styles.on : styles.off]}
+                onClick={currentState.onClick}>
+                <span>{currentState.label}</span>
+            </div>
         );
     }
 
-
-    click() {
-        console.log('i was clicked');
-    }
-
     _onClickStart = (profile) => {
-
-        console.log('in onclick start');
         request
             .put('/api/ovensim')
             .send({ profile: profile })
@@ -75,8 +58,27 @@ class StartStopBtn extends React.Component {
 export default Radium(StartStopBtn);
 
 let styles = {
-    base: {
+    container: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0,
         width: '100%',
+        height: '10%',
         textAlign: 'center',
+        fontSize: '2rem',
+        color: 'white',
+        '@media screen and (min-width: 64em)': {
+            ':hover': {
+                opacity: '0.75'
+            }
+        }
+    },
+    on: {
+        backgroundColor: colors.red500
+    },
+    off: {
+        backgroundColor: colors.green500
     }
 }

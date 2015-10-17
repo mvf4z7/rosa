@@ -85,14 +85,6 @@ export default class Home extends React.Component {
                     disable={isLoading}
                     profile={profile}/>
 
-                <div style={styles.buttonContainer}>
-                    <RaisedButton
-                        label='OPEN DIALOG BOX'
-                        linkButton={true}
-                        onClick={this._onButtonClicked.bind(this)}
-                        style={styles.button}/>
-                </div>
-
                 <div onClick={this._onDialogCancel.bind(this)}>
                     <Dialog
                         ref='dialog'
