@@ -8,8 +8,12 @@
 boolean util_str_to_hex( const char * str, uint32 * ret_val );
 
 //This function will open the .json file at path and load the object into shared
-//memory allocated specifically for this purpose. If it returns false there was 
+//memory allocated specifically for this purpose. If it returns false there was
 //an error.
 boolean util_load_profile( const char * path, profile * mem );
+
+//Function for generating a JSON string, based on the given parameter values.
+//Returns a readable string in JSON format.
+char* util_get_json_string(uint32 time, float target, float temperature);
 
 #endif

@@ -151,11 +151,14 @@ boolean util_load_profile( const char * path, profile * mem )
 char* util_get_json_string(uint32 time, float target, float temperature)
 {
     cJSON *root;
-    
+    char *tmpMessage;
+
     root = cJSON_CreateObject();
     cJSON_AddNumberToObject(root, "time", time);
     cJSON_AddNumberToObject(root, "target", target);
     cJSON_AddNumberToObject(root, "temp", temperature);
+    tmpMessage = cJSON_Print(root);
+    cJSON_Delete(root);
 
-    return cJSON_Print(root);
+    return tmpMessage;
 }
