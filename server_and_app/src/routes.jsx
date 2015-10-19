@@ -3,12 +3,14 @@ import { Router, Route, DefaultRoute, NotFoundRoute } from 'react-router';
 
 import App from './views/app/app';
 import Home from './views/home/home';
+import Profiles from './views/profiles/profiles';
 import Info from './views/info/info';
 
 var routes = (
-  <Route path='/' handler={ App }>
-    <DefaultRoute name='home' handler={ Home }/>
-    <Route name='info' path='/info' handler={ Info }/>
+  <Route path='/' handler={App}>
+    <DefaultRoute name='home' handler={Home}/>
+    <Route name='profiles' path='/profiles' handler={Profiles}/>
+    <Route name='info' path='/info' handler={Info}/>
   </Route>
 );
 
