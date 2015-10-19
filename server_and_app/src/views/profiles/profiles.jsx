@@ -3,6 +3,8 @@ import Radium from 'radium';
 
 import NavigationActions from '../../actions/NavigationActions';
 
+import { Tabs, Tab} from 'material-ui';
+
 class Profiles extends React.Component {
     constructor(props) {
         super(props);
@@ -15,7 +17,10 @@ class Profiles extends React.Component {
     render() {
         return(
             <div style={styles.container}>
-                <h1 style={styles.child}>MANAGE PROFILES VIEW</h1>
+                <Tabs inkBarStyle={styles.inkBar}>
+                    <Tab label='CREATE'></Tab>
+                    <Tab label='EDIT'></Tab>
+                </Tabs>
             </div>
         );
     }
@@ -28,8 +33,7 @@ let styles = {
         height: '100%',
         paddingTop: '4rem'
     },
-    child: {
-        margin: 0,
-        padding: 0
+    inkBar: {
+        height: '4px'
     }
 };
