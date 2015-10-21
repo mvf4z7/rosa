@@ -27,7 +27,7 @@ typedef unsigned char   boolean;
 
 typedef struct
 {
-    uint32 time;    //Time in ms.
+    uint32 time;    //Time in s.
     float temp;     //Temp in Celsius.
 } point;
 
