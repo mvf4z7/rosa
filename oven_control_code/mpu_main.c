@@ -55,28 +55,18 @@ int main( int argc, char *argv[] )
         return( -1 );
     }
 
+    start_time = 0;
+    cur_time = 0;
+    
     while( !force_stop )
     {
         
+        printf( "%s\n\n", util_get_json_string( cur_time, temp, temp - 1 ) );
+        fflush( stdout );
         adc_val = io->Adc->Value[ 1 ];
         voltage = (float)( adc_val ) / 0xFFF0 * 1.8;
         amp_voltage = 2 * voltage;
         temp = ( amp_voltage - 1.25 ) / 0.005;
-        printf( "--------------------------------\n" );
-        printf( "ADC value: %x\n", adc_val );
-        printf( "ADC voltage: %f\n", voltage );
-        printf( "Amp voltage: %f\n", amp_voltage );
-        printf( "Current temperature C: %.2f\n", temp );
-        printf( "Current temperature F: %.2f\n", ( temp * 1.8 ) + 32 );
-        printf( "--------------------------------\n" );
-        
-        if( !timer_get( &start_time ) )
-        {
-            printf( "There was an error with the timer.\n" );
-            return( 0 );
-        }
-        
-        cur_time = start_time;
         
         //block for 1 second.
         while( cur_time - start_time <= 1000 )
@@ -88,7 +78,7 @@ int main( int argc, char *argv[] )
             }
         }
         
-        printf( "Current time: %u\n", cur_time );
+        start_time = start_time + 1000;
     }   
     
     pruio_destroy(io);        /* destroy driver structure */

@@ -104,7 +104,7 @@ boolean util_load_profile( const char * path, profile * mem )
     //Parse the string representation of the JSON file.
     json = cJSON_Parse( json_string );
 
-    printf( "%s profile loaded.\n", cJSON_GetObjectItem( json, "name" )->valuestring );
+    //printf( "%s profile loaded.\n", cJSON_GetObjectItem( json, "name" )->valuestring );
 
     json = cJSON_GetObjectItem( json, "lines" );
     num_lines = cJSON_GetArraySize( json );
@@ -154,11 +154,29 @@ char* util_get_json_string(uint32 time, float target, float temperature)
     char *tmpMessage;
 
     root = cJSON_CreateObject();
+    cJSON_AddNumberToObject( root, "type", POINT );
     cJSON_AddNumberToObject(root, "time", time);
     cJSON_AddNumberToObject(root, "target", target);
     cJSON_AddNumberToObject(root, "temp", temperature);
     tmpMessage = cJSON_Print(root);
+    strncpy( json_string, tmpMessage, sizeof( json_string ) );
     cJSON_Delete(root);
 
-    return tmpMessage;
+    return json_string;
+}
+
+char * util_print_debug( const char * string )
+{
+    cJSON * root;
+    char * tmpMessage;
+    
+    root = cJSON_CreateObject();
+    cJSON_AddNumberToObject( root, "type", DEBUG_MSG );
+    cJSON_AddStringToObject( root, "msg", string );
+    
+    tmpMessage = cJSON_Print( root );
+    strncpy( json_string, tmpMessage, sizeof( json_string ) );
+    cJSON_Delete(root);
+    
+    return( json_string );   
 }
