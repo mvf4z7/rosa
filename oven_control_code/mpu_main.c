@@ -13,8 +13,10 @@
 
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
-#define P_OUT     P9_21
-#define PWM_FREQ  0.5f
+#define P_OUT           P9_21
+#define PWM_FREQ        0.5f
+#define PWM_PERIOD      ( 1 / PWM_FREQ )
+#define PWM_PERIOD_MS   ( PWM_PERIOD * 1000 )
 
 boolean force_stop;
 
@@ -22,10 +24,7 @@ static void signalHandler( int signal );
 
 int main( int argc, char *argv[] ) 
 {
-    uint16 adc_val;
     float temp;
-    float voltage;
-    float amp_voltage;
     uint32 cur_time;
     uint32 start_time;
     float duty_cycle;
@@ -71,24 +70,15 @@ int main( int argc, char *argv[] )
     
     while( !force_stop )
     {
-        
-        
-        fflush( stdout );
-        adc_val = io->Adc->Value[ 1 ];
-        voltage = (float)( adc_val ) / 0xFFF0 * 1.8;
-        amp_voltage = 2 * voltage;
-        temp = ( amp_voltage - 1.25 ) / 0.005;
-        
+        temp = util_calc_temp( io->Adc->Value[ 1 ] );
         target_temp = pid_find_target( cur_time / 1000.0 );
-        
         duty_cycle = pid_calc( target_temp, temp );
-        
         pruio_pwm_setValue( io, P_OUT, -1, duty_cycle );
         
         util_print_point( cur_time / 1000, target_temp, temp );
                
         //block for 2 seconds.
-        while( cur_time - start_time <= 2000 )
+        while( cur_time - start_time <= PWM_PERIOD_MS )
         {
             if( !timer_get( &cur_time ) )
             {
@@ -97,7 +87,7 @@ int main( int argc, char *argv[] )
             }
         }
         
-        start_time = start_time + 2000;
+        start_time = start_time + PWM_PERIOD_MS;
     }   
     
     pruio_destroy(io);        /* destroy driver structure */

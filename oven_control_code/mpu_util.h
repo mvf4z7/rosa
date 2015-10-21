@@ -15,4 +15,6 @@ void util_print_point(uint32 time, float target, float temperature);
 
 void util_print_debug( const char * string );
 
+float util_calc_temp( uint16 adc_val );
+
 #endif
