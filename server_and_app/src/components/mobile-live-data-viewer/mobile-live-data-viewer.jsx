@@ -26,7 +26,7 @@ class MobileLiveDataViewer extends React.Component {
     }
 
     _socketOnTempData = (data) => {
-        this.setState({ target: data.temp+3, actual: data.temp });
+        this.setState({ target: data.target, actual: data.temp });
     }
 }
 

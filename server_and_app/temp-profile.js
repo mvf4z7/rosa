@@ -5,15 +5,16 @@ var isProduction = process.env.NODE_ENV === 'production';
 
 var generatePoint = function(lines, time) {
     var errorFactor = 0.05;
-    var trueTemp = getTemp(lines, time);
-    var max = trueTemp * (1 + errorFactor);
-    var min = trueTemp * (1 - errorFactor);
+    var targetTemp = getTemp(lines, time);
+    var max = targetTemp * (1 + errorFactor);
+    var min = targetTemp * (1 - errorFactor);
     var randTemp = Math.round(Math.floor(Math.random() * (max - min + 1)) + min);
 
     var timerId = setTimeout(function() {
         var tempData = {
             time: time,
-            temp: randTemp
+            temp: randTemp,
+            target: Math.round(targetTemp)
         };
         io.emit('tempData', tempData);
     },time * 1000);
@@ -68,7 +69,7 @@ var runSim = function(profile, cb){
 
             try {
                 data = JSON.parse(data);
-                io.emit('jon_test', data);
+                io.emit('tempData', data);
             } catch(e) {
                 console.log('error parsing JSON: ', e);
             }

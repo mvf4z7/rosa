@@ -106,7 +106,7 @@ class LiveHighchart extends React.Component {
 
         let subTitle = {
             useHTML: true,
-            text: `<pre class='chart-title'>Target: <span class='target'>${data.temp+2}</span>    Actual: <span class='actual'>${data.temp}</span></pre>`,
+            text: `<pre class='chart-title'>Target: <span class='target'>${data.target}</span>    Actual: <span class='actual'>${data.temp}</span></pre>`,
             align: 'right',
         }
         let chart = this.refs.chart.getChart();
