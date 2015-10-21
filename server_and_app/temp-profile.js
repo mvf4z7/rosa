@@ -63,7 +63,9 @@ var runSim = function(profile, cb){
         config.ledProgram.options);
     ledProgram.stdout.on('data', function(data) {
         data = data + '';
-        io.emit('ledToggle', data);
+        data = JSON.parse(data);
+
+        io.emit('jon_test', data);
     });
 
     var testLength = 240; // in seconds

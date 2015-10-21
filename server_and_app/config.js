@@ -12,6 +12,11 @@ var config = {
             command: './build.sh',
             args: ['run'],
             options: { cwd: '../oven_control_code' }
+        },
+        ovenControlProgram: {
+            command: '',
+            args: [''],
+            options: { cwd: '../oven_control_code' }
         }
     }
 }

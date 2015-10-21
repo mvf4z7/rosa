@@ -19,6 +19,10 @@ socket.on('oven_start', function() {
 
 socket.on('oven_stop', function() {
     OvenActions.setOvenOn({ ovenOn: false });
-})
+});
+
+socket.on('jon_test', function(data) {
+    console.log('data: ', data);
+});
 
 export default socket;
