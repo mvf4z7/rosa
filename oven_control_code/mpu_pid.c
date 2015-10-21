@@ -119,7 +119,7 @@ float pid_calc( float targ, float cur_temp )
     
     if( targ == 0 )
     { 
-        return( 0 );
+        return( -1 );
     }
     
     cur_error = targ - cur_temp;
@@ -147,7 +147,7 @@ float pid_find_target( float time )
     
     if( idx == s_profile.num_lines )
     {
-        return( 0 );
+        return( -1 );
     }
     
     ret_targ = s_profile.lines[ idx ].m * time + s_profile.lines[ idx ].b;

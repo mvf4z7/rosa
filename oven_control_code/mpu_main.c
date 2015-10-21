@@ -73,6 +73,12 @@ int main( int argc, char *argv[] )
         temp = util_calc_temp( io->Adc->Value[ 1 ] );
         target_temp = pid_find_target( cur_time / 1000.0 );
         duty_cycle = pid_calc( target_temp, temp );
+        
+        if( duty_cycle == -1 )
+        {
+            force_stop = TRUE;
+        }
+        
         pruio_pwm_setValue( io, P_OUT, -1, duty_cycle );
         
         util_print_point( cur_time / 1000, target_temp, temp );
