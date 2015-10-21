@@ -63,9 +63,13 @@ var runSim = function(profile, cb){
         config.ledProgram.options);
     ledProgram.stdout.on('data', function(data) {
         data = data + '';
-        data = JSON.parse(data);
 
-        io.emit('jon_test', data);
+        try {
+            data = JSON.parse(data);
+            io.emit('jon_test', data);
+        } catch(e) {
+            console.log('error parsing JSON: ', e);
+        }
     });
 
     var testLength = 240; // in seconds
