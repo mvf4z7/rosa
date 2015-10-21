@@ -3,6 +3,12 @@
 
 #include "mpu_types.h"
 
+enum
+{
+    POINT,
+    DEBUG_MSG
+};
+
 //This function will convert the string parameter with the format: "0xdddddddd"
 //into its integer representation.
 boolean util_str_to_hex( const char * str, uint32 * ret_val );
@@ -15,5 +21,7 @@ boolean util_load_profile( const char * path, profile * mem );
 //Function for generating a JSON string, based on the given parameter values.
 //Returns a readable string in JSON format.
 char* util_get_json_string(uint32 time, float target, float temperature);
+
+char * util_print_debug( const char * string );
 
 #endif
