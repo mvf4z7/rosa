@@ -36,7 +36,7 @@ var config = {
         }
     },
     prod: {
-        devtool: 'eval',
+        devtool: 'sourc-map',
         entry: [
             './src/main'
         ],
