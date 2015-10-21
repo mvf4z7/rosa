@@ -1,6 +1,7 @@
 var io = require('./socket-server');
 var config = require('./config');
 var spawn = require('child_process').spawn;
+var isProduction = process.env.NODE_ENV === 'production';
 
 var generatePoint = function(lines, time) {
     var errorFactor = 0.05;
@@ -40,7 +41,7 @@ var getLine = function(lines, time) {
 };
 
 var simInProgress = false;
-var ledProgram = null;
+var ovenControlProgram = null;
 var timers = [];
 
 var getOvenState = function(cb) {
@@ -57,28 +58,37 @@ var runSim = function(profile, cb){
 
     io.emit('oven_start');
 
-    // Running LED program
-    ledProgram = spawn(config.ledProgram.command,
-        config.ledProgram.args,
-        config.ledProgram.options);
-    ledProgram.stdout.on('data', function(data) {
-        data = data + '';
-        io.emit('ledToggle', data);
-    });
+    if(isProduction) {
+        // Run oven control code
+        ovenControlProgram = spawn(config.ovenControlProgram.command,
+            config.ovenControlProgram.args,
+            config.ovenControlProgram.options);
+        ovenControlProgram.stdout.on('data', function(data) {
+            data = data + '';
 
-    var testLength = 240; // in seconds
-    var interval = 1; // in seconds
+            try {
+                data = JSON.parse(data);
+                io.emit('jon_test', data);
+            } catch(e) {
+                console.log('error parsing JSON: ', e);
+            }
+        });
+    } else {
+        // Send simulation data
+        var testLength = 240; // in seconds
+        var interval = 1; // in seconds
 
-    for(var i = 0; i * interval  <= testLength; i++) {
-        var timerId = generatePoint(profile.lines, i*interval);
+        for(var i = 0; i * interval  <= testLength; i++) {
+            var timerId = generatePoint(profile.lines, i*interval);
+            timers.push(timerId);
+        }
+
+        var timerId = setTimeout(function() {
+            simInProgress = false;
+            timers = [];
+        }, testLength*1000 + 5000);
         timers.push(timerId);
     }
-
-    var timerId = setTimeout(function() {
-        simInProgress = false;
-        timers = [];
-    }, testLength*1000 + 5000);
-    timers.push(timerId);
 
     cb({status: 'ok'});
 };
@@ -92,8 +102,9 @@ var stopSim = function(cb){
     simInProgress = false;
     io.emit('oven_stop');
 
-    if(ledProgram) {
-        ledProgram.kill('SIGTERM');
+    if(ovenControlProgram) {
+        ovenControlProgram.kill('SIGTERM');
+        ovenControlProgram = null;
     }
 
     cb({status: 'ok'});
