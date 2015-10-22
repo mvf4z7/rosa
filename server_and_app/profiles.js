@@ -67,6 +67,20 @@ var profiles = {
             m: -125/38,
             b: 15475/19
         }]
+    }, {
+      name: 'tuning',
+      points: [[0, 50], [42, 100], [240, 100]],
+      lines: [{
+          start: { x: 0, y: 50 },
+          stop: { x: 42, y: 100 },
+          m: 50/42,
+          b: 50
+      }, {
+          start: { x: 42, y: 100 },
+          stop: { x: 240, y: 100 },
+          m: 0,
+          b: 100
+      }]
     }],
     defaultProfile: 'Pb'
 };
