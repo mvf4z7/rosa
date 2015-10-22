@@ -69,7 +69,7 @@ var runSim = function(profile, cb){
             config.ovenControlProgram.args,
             config.ovenControlProgram.options);
         ovenControlProgram.stdout.on('data', function(data) {
-            data = data + '';
+            data = data + ''; // convert raw bytes to string
 
             try {
                 data = JSON.parse(data);
@@ -82,6 +82,18 @@ var runSim = function(profile, cb){
                 console.log('error parsing JSON: ', e);
             }
         });
+
+        ovenControlProgram.on('close', function() {
+            console.log('ovenControlProgram closed');
+            ovenControlProgram = null;
+            io.emit('oven_stop');
+        });
+
+        ovenControlProgram.on('error', function(error) {
+            console.log('error with ovenControlProgram: ', error);
+        });
+
+
     } else {
         // Send simulation data
         var testLength = 240; // in seconds
@@ -95,7 +107,8 @@ var runSim = function(profile, cb){
         var timerId = setTimeout(function() {
             simInProgress = false;
             timers = [];
-        }, testLength*1000 + 5000);
+            io.emit('oven_stop');
+        }, testLength*1000 + 1000);
         timers.push(timerId);
     }
 
@@ -103,19 +116,20 @@ var runSim = function(profile, cb){
 };
 
 var stopSim = function(cb){
-    timers.forEach(function(timer) {
-        clearTimeout(timer);
-        console.log('timer cleared: ', timer);
-    });
-    timers = [];
-    simInProgress = false;
-    io.emit('oven_stop');
 
-    if(ovenControlProgram) {
+    if(isProduction && ovenControlProgram) {
         ovenControlProgram.kill('SIGINT');
-        ovenControlProgram = null;
+        console.log('sent SIGINT to ovenControlProgram');
+    } else {
+        timers.forEach(function(timer) {
+            clearTimeout(timer);
+            console.log('timer cleared: ', timer);
+        });
+        timers = [];
+        io.emit('oven_stop');
     }
 
+    simInProgress = false;
     cb({status: 'ok'});
 };
 
