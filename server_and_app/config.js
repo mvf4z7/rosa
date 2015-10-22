@@ -8,7 +8,7 @@ var config = {
         }
     },
     production: {
-        ledProgram: {
+        ovenControlProgram: {
             command: './build.sh',
             args: ['run'],
             options: { cwd: '../oven_control_code' }
