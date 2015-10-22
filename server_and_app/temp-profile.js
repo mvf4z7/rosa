@@ -69,7 +69,11 @@ var runSim = function(profile, cb){
 
             try {
                 data = JSON.parse(data);
-                io.emit('tempData', data);
+                if(data.type === 0) {
+                  io.emit('tempData', data);
+                } else {
+                  console.log(data.msg);
+                }
             } catch(e) {
                 console.log('error parsing JSON: ', e);
             }
