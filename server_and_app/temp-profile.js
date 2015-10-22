@@ -87,6 +87,7 @@ var runSim = function(profile, cb){
                     io.emit('tempData', data);
                 } else if(data.type=== 2) {
                     childPID = data.PID;
+                    console.log('PID received: ', data.PID);
                 } else {
                     console.log(data.msg);
                 }
