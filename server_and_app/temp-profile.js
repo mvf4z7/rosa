@@ -1,6 +1,7 @@
 var io = require('./socket-server');
-var config = require('./config');
+var fs = require('fs');
 var spawn = require('child_process').spawn;
+var config = require('./config');
 var isProduction = process.env.NODE_ENV === 'production';
 
 var generatePoint = function(lines, time) {
@@ -60,6 +61,9 @@ var runSim = function(profile, cb){
     io.emit('oven_start');
 
     if(isProduction) {
+        // Oven control software reads profile data from this file
+        fs.writeFile('profile.json', JSON.stringify(profile));
+
         // Run oven control code
         ovenControlProgram = spawn(config.ovenControlProgram.command,
             config.ovenControlProgram.args,
@@ -70,9 +74,9 @@ var runSim = function(profile, cb){
             try {
                 data = JSON.parse(data);
                 if(data.type === 0) {
-                  io.emit('tempData', data);
+                    io.emit('tempData', data);
                 } else {
-                  console.log(data.msg);
+                    console.log(data.msg);
                 }
             } catch(e) {
                 console.log('error parsing JSON: ', e);
