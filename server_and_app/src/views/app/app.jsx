@@ -21,7 +21,8 @@ ThemeManager.setTheme(theme);
 let menuItems = [
     { route: '/', text: 'home' },
     { route: '/profiles', text: 'manage profiles' },
-    { route: '/info', text: 'info' }
+    { route: '/info', text: 'info' },
+    { route: '/logout', text: 'logout'}
 ];
 
 class App extends React.Component {

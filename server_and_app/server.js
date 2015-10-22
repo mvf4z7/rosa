@@ -15,6 +15,11 @@ var session = require('client-sessions');
 var querystring = require('querystring');
 var request = require('request');
 var secrets = require('./secret');
+var google = require('googleapis');
+
+var redirect = 'http://localhost:8001/googleauth';
+var googleOAuth2 = google.auth.OAuth2;
+var googleOAuthClient = new googleOAuth2(secrets.google.id, secrets.google.secret, redirect);
 
 var oauth2 = require('simple-oauth2')({
     clientID: secrets.github.id,
@@ -47,11 +52,13 @@ app.use(session({
 }));
 
 
+
 app.get('/api/ovensim', function(req, res) {
     tempProfile.getOvenState(function(ovenState) {
         res.send({ ovenOn: ovenState });
     });
 });
+
 
 app.put('/api/ovensim', function(req, res) {
     var profile = req.body.profile;
@@ -74,7 +81,7 @@ app.get('/api/profiles', function(req, res) {
 });
 
 function requireLogin(req, res, next){
-    if(!req.user){
+    if(!req.session.token){
         res.sendFile(__dirname + '/login.html');
     }
     else{
@@ -83,7 +90,11 @@ function requireLogin(req, res, next){
 }
 
 app.use(function(req, res, next) {
-    if (req.session && req.session.user) {
+    console.log(JSON.stringify(req.session));
+    console.log('User is: ' + req.session.user);
+    if (req.session && req.session.token) {
+        console.log('Session detected');
+        /*
         database.checkUser(req.session.user, function(user){
             if(user){
                 req.user = user;
@@ -92,9 +103,11 @@ app.use(function(req, res, next) {
                 res.locals.user = user;
             }
         });
+        */
         // finishing processing the middleware and run the route
         next();
     } else {
+        console.log('No session detected');
         next();
     }
 });
@@ -102,18 +115,62 @@ app.use(function(req, res, next) {
 app.post('/', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
-    res.redirect(authorization_uri);
+    //res.redirect(authorization_uri);
+    res.redirect(google_authorization_uri);
 });
 
 app.get('/', requireLogin, function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+
 // Authorization uri definition
 var authorization_uri = oauth2.authCode.authorizeURL({
     redirect_uri: 'http://localhost:8001/callback',
     scope: 'notifications,user:email',
     state: '3(#0/!~'
+});
+
+var google_authorization_uri = googleOAuthClient.generateAuthUrl({
+    access_type: 'offline',
+    scope: 'https://www.googleapis.com/auth/userinfo.email'
+});
+// should access_type be online?
+
+app.get('/googleauth', function(req, res) {
+    var code = req.query.code;
+    googleOAuthClient.getToken(code, function(err, tokens){
+        if(!err) {
+            googleOAuthClient.setCredentials(tokens);
+            console.log('Successfully got tokens\nTokens = ' + tokens.access_token);
+
+            req.session.token = tokens.access_token;
+
+            google.oauth2('v2').userinfo.get({userId: 'me', auth: googleOAuthClient}, function(err, result){
+                if(err){
+                    console.log('Error: ' + err);
+                    res.redirect('/login');
+                }
+                else{
+                    console.log('Results: ' + result.email);
+                    req.session.user = result.email;
+                    res.redirect('/');
+                }
+            });
+        }
+        else {
+            res.sendFile(__dirname + '/login.html');
+        }
+    });
+});
+
+app.get('/logout', function(req, res){
+    req.session.reset();
+    res.redirect('/');
+});
+
+app.get('/login', function(req, res){
+    res.sendFile(__dirname + '/login.html');
 });
 
 // Callback service parsing the authorization token and asking for the access token
