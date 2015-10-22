@@ -68,6 +68,11 @@ var runSim = function(profile, cb){
         ovenControlProgram = spawn(config.ovenControlProgram.command,
             config.ovenControlProgram.args,
             config.ovenControlProgram.options);
+            
+        ovenControlProgram.stderr.on('data', function(data) {
+            console.log('ovenControlProgram stderr: ', data);
+        })
+
         ovenControlProgram.stdout.on('data', function(data) {
             data = data + ''; // convert raw bytes to string
 
