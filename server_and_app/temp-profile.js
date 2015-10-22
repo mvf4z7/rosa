@@ -65,12 +65,14 @@ var runSim = function(profile, cb){
         fs.writeFile('profile.json', JSON.stringify(profile));
 
         // Run oven control code
-        ovenControlProgram = spawn(config.ovenControlProgram.command,
+        ovenControlProgram = spawn(
+            config.ovenControlProgram.command,
             config.ovenControlProgram.args,
-            config.ovenControlProgram.options);
-            
+            config.ovenControlProgram.options
+        );
+
         ovenControlProgram.stderr.on('data', function(data) {
-            console.log('ovenControlProgram stderr: ', data);
+            console.log('ovenControlProgram stderr: ', data+'');
         })
 
         ovenControlProgram.stdout.on('data', function(data) {
@@ -88,8 +90,9 @@ var runSim = function(profile, cb){
             }
         });
 
-        ovenControlProgram.on('close', function() {
+        ovenControlProgram.on('close', function(code, signal) {
             console.log('ovenControlProgram closed');
+            console.log('code: %s    signal: %s', code, signal);
             ovenControlProgram = null;
             io.emit('oven_stop');
         });
