@@ -107,5 +107,6 @@ int main( int argc, char *argv[] )
 static void signalHandler( int signal )
 {  
     force_stop = TRUE;
+    util_print_debug( "Received kill code." );
     return;
 }
