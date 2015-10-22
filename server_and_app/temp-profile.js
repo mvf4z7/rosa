@@ -118,6 +118,7 @@ var runSim = function(profile, cb){
 var stopSim = function(cb){
 
     if(isProduction && ovenControlProgram) {
+        console.log('ovenControlProgram PID: ', ovenControlProgram.pid);
         ovenControlProgram.kill('SIGINT');
         console.log('sent SIGINT to ovenControlProgram');
     } else {
