@@ -4,13 +4,14 @@
 #include "mpu_types.h"
 #include "mpu_pid.h"
 #include "mpu_cJSON.h"
+#include "mpu_util.h"
 
-#define CON_PRO   0.5f       //Proportional constant
-#define CON_INT   0.5f       //Integral constant
-#define CON_DER   0.125f     //Derivative constant
+#define CON_PRO   0.03f       //Proportional constant
+#define CON_INT   0.0f //0.5f       //Integral constant
+#define CON_DER   0.0f //0.125f     //Derivative constant
 
 #define CON_1     ( CON_PRO + CON_INT + CON_DER )
-#define CON_2     ( -CON_PRO - ( 2 * CON_DER ) )
+#define CON_2     ( ( -1 * CON_PRO ) - ( 2 * CON_DER ) )
 #define CON_3     ( CON_DER )
 
 #define MAX_JSON_SZ 2500  //Maximum size of the JSON object.
@@ -114,16 +115,32 @@ boolean pid_init( const char * path )
 
 float pid_calc( float targ, float cur_temp )
 {
+    
     float ret_duty;
     float cur_error;
     
-    if( targ == 0 )
+    if( targ == -1 )
     { 
         return( -1 );
     }
     
     cur_error = targ - cur_temp;
-    ret_duty = s_prev_duty + ( CON_1 * cur_error ) + ( CON_2 * s_error_vals[ 0 ] ) + ( CON_3 * s_error_vals[ 1 ] );
+    //ret_duty = s_prev_duty + ( CON_1 * cur_error ) + ( CON_2 * s_error_vals[ 0 ] ) + ( CON_3 * s_error_vals[ 1 ] );
+    
+    ret_duty = cur_error * CON_PRO;
+    
+    
+    sprintf( json_string, "duty: %f", ret_duty );
+    util_print_debug( json_string );
+    
+    if( ret_duty > 1.0 )
+    {
+        ret_duty = 1.0;
+    }
+    else if( ret_duty < 0.0 )
+    {
+        ret_duty = 0.0;
+    }
     
     s_error_vals[ 1 ] = s_error_vals[ 0 ];
     s_error_vals[ 0 ] = cur_error;

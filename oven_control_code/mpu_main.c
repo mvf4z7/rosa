@@ -84,7 +84,7 @@ int main( int argc, char *argv[] )
         util_print_point( cur_time / 1000, target_temp, temp );
                
         //block for 2 seconds.
-        while( cur_time - start_time <= PWM_PERIOD_MS )
+        while( ( cur_time - start_time <= PWM_PERIOD_MS ) && !force_stop )
         {
             if( !timer_get( &cur_time ) )
             {
@@ -95,6 +95,8 @@ int main( int argc, char *argv[] )
         
         start_time = start_time + PWM_PERIOD_MS;
     }   
+    
+    pruio_pwm_setValue( io, P_OUT, -1, 0.0f );
     
     pruio_destroy(io);        /* destroy driver structure */
     
