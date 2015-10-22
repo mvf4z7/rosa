@@ -51,8 +51,6 @@ app.use(session({
     ephemeral: true
 }));
 
-
-
 app.get('/api/ovensim', function(req, res) {
     tempProfile.getOvenState(function(ovenState) {
         res.send({ ovenOn: ovenState });
@@ -108,6 +106,7 @@ app.use(function(req, res, next) {
         next();
     } else {
         console.log('No session detected');
+        // finishing processing the middleware and run the route
         next();
     }
 });
@@ -122,7 +121,6 @@ app.post('/', function(req, res) {
 app.get('/', requireLogin, function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-
 
 // Authorization uri definition
 var authorization_uri = oauth2.authCode.authorizeURL({
