@@ -37,6 +37,8 @@ boolean pid_init( const char * path )
     s_error_vals[ 1 ] = 0;
     s_prev_duty = 1.0;
     
+    util_print_debug( "Inside PID." );
+    
     fp = fopen( path, "r" );
 
     if( fp == NULL )
@@ -45,9 +47,12 @@ boolean pid_init( const char * path )
         return( FALSE );
     }
 
+    util_print_debug( "PID opened." );
+    
     //Read the JSON file into a C-string:
     done = FALSE;
     idx = 0;
+    
     while( !done )
     {
         cur_char = fgetc( fp );
@@ -67,10 +72,14 @@ boolean pid_init( const char * path )
             json_string[ idx ] = 0;
         }
     }
+    
+    util_print_debug( "File read." );
 
     //Parse the string representation of the JSON file.
     json = cJSON_Parse( json_string );
 
+    util_print_debug( "JSON parsed." );
+    
     //printf( "%s profile loaded.\n", cJSON_GetObjectItem( json, "name" )->valuestring );
 
     json = cJSON_GetObjectItem( json, "lines" );

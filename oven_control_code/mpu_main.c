@@ -31,15 +31,23 @@ int main( int argc, char *argv[] )
     float target_temp;
     char print_string[ 200 ];
     
+    util_print_procId();
+    
     force_stop = FALSE;
     
+    util_print_debug( "Starting setup." );
+    
     timer_init();
+    
+    util_print_debug( "Timer setup." );
     
     if( argc != 2 )
     {
         util_print_debug( "Error: The only argument is the path to the JSON file.\n" );
         return( -1 );
     }
+    
+    util_print_debug( "Pre - Signal setup." );
     
     //Set up signal handler:
     if( signal( SIGINT, signalHandler ) == SIG_ERR )
@@ -48,18 +56,28 @@ int main( int argc, char *argv[] )
         return( -1 );
     }
     
+    util_print_debug( "Signal setup." );
+    
+    util_print_debug( argv[ 1 ] );
+    
     if( !pid_init( argv[ 1 ] ) )
     {
         util_print_debug( "Error: There was an error loading the profile.\n" );
         return( -1 );
     }
    
+    util_print_debug( "PID setup." );
+   
     pruIo *io = pruio_new(PRUIO_DEF_ACTIVE, 0x98, 0, 1); 
 
+    util_print_debug( "PRU IO setup" );
+    
     start_time = 0;
     cur_time = 0;
     duty_cycle = 1.0;
     pruio_pwm_setValue( io, P_OUT, PWM_FREQ, duty_cycle );
+    
+    util_print_debug( "PWM setup." );
     
     if( pruio_config( io, 1, 0x1FE, 0, 4 ) ) 
     {       
@@ -67,6 +85,8 @@ int main( int argc, char *argv[] )
         util_print_debug( print_string ); 
         return( -1 );
     }
+    
+    util_print_debug( "pruio config." );
     
     while( !force_stop )
     {
