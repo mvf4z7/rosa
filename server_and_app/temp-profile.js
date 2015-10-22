@@ -108,7 +108,7 @@ var stopSim = function(cb){
     io.emit('oven_stop');
 
     if(ovenControlProgram) {
-        ovenControlProgram.kill('SIGTERM');
+        ovenControlProgram.kill('SIGINT');
         ovenControlProgram = null;
     }
 
