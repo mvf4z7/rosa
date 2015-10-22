@@ -95,6 +95,7 @@ var runSim = function(profile, cb){
 
 
     } else {
+        console.log('starting oven simulation');
         // Send simulation data
         var testLength = 240; // in seconds
         var interval = 1; // in seconds

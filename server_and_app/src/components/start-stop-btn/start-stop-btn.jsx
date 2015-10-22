@@ -46,6 +46,7 @@ class StartStopBtn extends React.Component {
     }
 
     _onClickStart = (profile) => {
+        console.log('start clicked');
         request
             .put('/api/ovensim')
             .send({ profile: profile })
@@ -57,7 +58,7 @@ class StartStopBtn extends React.Component {
     }
 
     _onClickStop = () => {
-        console.log('in onClickStop');
+        console.log('stop clicked');
         request
             .del('/api/ovensim')
             .end(function(err, res) {
