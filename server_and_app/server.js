@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
-var profiles = require('./profiles'); // mock profile data
+var profiles = require('./profiles.js'); // mock profile data
 //var database = require('./database');
 var tempProfile = require('./temp-profile');
 
