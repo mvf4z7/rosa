@@ -17,7 +17,7 @@ var overRides = {
         zoomType: 'x'
     },
     title: {
-        text: 'Click the "+" to add data points'
+        text: ''
     },
     xAxis: {
         title: {
@@ -68,6 +68,9 @@ class CreateEditHighchart extends React.Component {
 let styles = {
     chartWrapper: {
         height: '55vh',
+        '@media screen and (min-width: 64em)': {
+            height: '60vh'
+        }
     },
     highChart: {
         height: '100%'
