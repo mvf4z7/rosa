@@ -10,7 +10,7 @@ import styles from './styles';
 require('./styles.scss');
 
 // Create copy of globalChartConfig
-var chartConfig = _.assign({}, globalChartConfig);
+var chartConfig = _.clone(globalChartConfig, true);
 
 var overRides = {
     chart: {
