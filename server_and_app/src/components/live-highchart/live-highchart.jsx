@@ -8,7 +8,7 @@ import Spinner from '../spinner/spinner';
 import styles from './styles';
 require('./styles.scss');
 
-chartConfig.chart.type = 'spline';
+//chartConfig.chart.type = 'spline';
 chartConfig.chart.animation = { duration: 100, easing: 'linear' };
 chartConfig.chart.zoomType = 'x';
 chartConfig.title.text = 'Live Temperature Data';
@@ -28,7 +28,7 @@ chartConfig.yAxis.title = {
 chartConfig.legend.x = 30;
 chartConfig.tooltip = { shared: true, crosshairs: true };
 chartConfig.plotOptions = {
-    spline: {
+    line: {
         animation: false
     }
 };
