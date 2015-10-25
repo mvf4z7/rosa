@@ -5,6 +5,7 @@ import CreateProfileStore from '../../../stores/CreateProfileStore';
 import CreateProfileActions from '../../../actions/CreateProfileActions';
 
 import CreateEditHighchart from '../../../components/create-edit-highchart/create-edit-highchart';
+import DataPointCard from '../../../components/data-point-card/data-point-card';
 import { TextField } from 'material-ui';
 
 class CreateProfile extends React.Component {
@@ -12,14 +13,12 @@ class CreateProfile extends React.Component {
         super(props);
 
         this.state = {
-            profileName: CreateProfileStore.getState().profileName
+            profile: CreateProfileStore.getState().profile
         };
     }
 
     componentDidMount() {
         CreateProfileStore.listen(this._onCreateProfileStoreChange);
-
-        this.refs.textField.focus();
     }
 
     componentWillUnmount() {
@@ -29,7 +28,7 @@ class CreateProfile extends React.Component {
     render() {
         return (
             <div>
-                <CreateEditHighchart profileName={this.state.profileName}/>
+                <CreateEditHighchart profileName={this.state.profile.name}/>
                 <div style={styles.textFieldContainer}>
                     <TextField
                         ref='textField'
@@ -37,6 +36,7 @@ class CreateProfile extends React.Component {
                         onEnterKeyDown={this._updateProfileName}
                         onBlur={this._updateProfileName} />
                 </div>
+                <DataPointCard />
             </div>
         );
     }

@@ -3,7 +3,11 @@ import CreateProfileActions from '../actions/CreateProfileActions';
 
 class CreateProfileStore {
     constructor() {
-        this.profileName = '';
+        this.profile = {
+            name: '',
+            points: [],
+            lines: []
+        };
 
         this.bindListeners({
             handleSetProfileName: CreateProfileActions.SET_PROFILE_NAME
@@ -11,7 +15,7 @@ class CreateProfileStore {
     }
 
     handleSetProfileName(data) {
-        this.profileName = data.profileName;
+        this.profile.name = data.profileName;
     }
 }
 
