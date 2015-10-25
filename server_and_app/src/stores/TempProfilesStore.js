@@ -1,9 +1,6 @@
 import alt from '../alt';
 import TempProfileActions from '../actions/TempProfileActions';
 
-let router = null;
-let menuItems = null;
-
 class TempProfileStore {
     constructor() {
         this.profiles = [];

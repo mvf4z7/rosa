@@ -3,7 +3,7 @@ import Radium from 'radium';
 
 import NavigationActions from '../../actions/NavigationActions';
 
-import CreateEditHighchart from '../../components/create-edit-highchart/create-edit-highchart';
+import CreateProfile from './create-profile/create-profile';
 import { Tabs, Tab} from 'material-ui';
 
 class Profiles extends React.Component {
@@ -20,7 +20,7 @@ class Profiles extends React.Component {
             <div style={styles.container}>
                 <Tabs contentContainerStyle={styles.tabContent} inkBarStyle={styles.inkBar}>
                     <Tab label='CREATE' style={styles.tab}>
-                        <CreateEditHighchart />
+                        <CreateProfile />
                     </Tab>
                     <Tab label='EDIT'></Tab>
                 </Tabs>

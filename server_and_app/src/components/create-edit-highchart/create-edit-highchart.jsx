@@ -6,6 +6,9 @@ import globalChartConfig from '../../highcharts';
 import Highcharts from 'react-highcharts';
 import Spinner from '../spinner/spinner';
 
+// Had to deep copy config otherwise changes to the global config
+// were affecting the settings of other charts that imported
+// the global config file.
 var chartConfig = _.clone(globalChartConfig, true);
 
 var overRides = {
@@ -55,6 +58,8 @@ class CreateEditHighchart extends React.Component {
         if(this.props.loading) {
             return ( <Spinner /> );
         }
+
+        chartConfig.series[0].name = this.props.profileName === '' ? 'Enter Profile Name' : this.props.profileName;
 
         return(
             <div id='createchartwrapper' style={styles.chartWrapper}>

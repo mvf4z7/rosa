@@ -7,7 +7,7 @@
 html {
     height: 100%;
     margin: 0;
-    background-color: #353842;
+    background-color: #ECEEF4;
     box-sizing: border-box;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -17,7 +17,7 @@ body {
     height: 100%;
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #353842;
+    background-color: #ECEEF4;
     -webkit-transform: translate3d(0, 0,  0);
     transform: translate3d(0, 0, 0);
     -webkit-backface-visibility: hidden;
