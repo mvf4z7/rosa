@@ -47,7 +47,7 @@ var overRides = {
     credits: { enabled: false },
     series: [{
         name: '',
-        data: [[0, 23]]
+        data: []
     }]
 }
 
@@ -72,9 +72,9 @@ class CreateEditHighchart extends React.Component {
 
 let styles = {
     chartWrapper: {
-        height: '55vh',
-        '@media screen and (min-width: 64em)': {
-            height: '60vh'
+        height: '40vh',
+        '@media screen and (min-width: 48em)': {
+            height: '55vh'
         }
     },
     highChart: {
