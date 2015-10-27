@@ -62,7 +62,7 @@ var runSim = function(profile, cb){
 
     if(isProduction) {
         // Oven control software reads profile data from this file
-        fs.writeFile('profile.json', JSON.stringify(profile));
+        fs.writeFileSync('profile.json', JSON.stringify(profile));
 
         // Run oven control code
         ovenControlProgram = spawn(config.ovenControlProgram.command,

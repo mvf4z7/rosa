@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
+var isPsuedoProduction = process.env.NODE_ENV === 'psuedoproduction';
 var profiles = require('./profiles'); // mock profile data
 //var database = require('./database');
 var tempProfile = require('./temp-profile');
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
-if(isProduction) {
+if(isProduction || isPsuedoProduction) {
     app.use('/build', express.static(path.join(__dirname, 'build')));
 } else {
     app.use('/build', proxy(url.parse('http://localhost:3001/build')));
