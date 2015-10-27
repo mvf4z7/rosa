@@ -14,6 +14,7 @@ var chartConfig = _.clone(globalChartConfig, true);
 
 var overRides = {
     chart: {
+        type: 'line',
         animation: {
             duration: 100,
             easing: 'linear'
