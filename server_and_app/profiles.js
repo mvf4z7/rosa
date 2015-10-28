@@ -81,8 +81,37 @@ var profiles = {
           m: 0,
           b: 100
       }]
-    }],
-    defaultProfile: 'Pb'
+    }, {
+      name: 'Pb-free v2',
+      points: [[0, 20], [120, 150], [220, 200], [265, 255], [295, 255], [420, 175]],
+      lines: [{
+          start: { x: 0, y: 20 },
+          stop: { x: 120, y: 150 },
+          m: 1.083333,
+          b: 20
+      }, {
+          start: { x: 120, y: 150 },
+          stop: { x: 220, y: 200 },
+          m: 0.5,
+          b: 90
+      }, {
+          start: { x: 220, y: 200 },
+          stop: { x: 265, y: 255 },
+          m: 1.222222,
+          b: -68.8889
+      }, {
+          start: { x: 265, y: 255 },
+          stop: { x: 295, y: 255 },
+          m: 0,
+          b: 255
+      }, {
+          start: { x: 295, y: 255 },
+          stop: { x: 420, y: 175 },
+          m: -0.64,
+          b: 443.8
+      }]
+  }],
+  defaultProfile: 'Pb'
 };
 
 module.exports = profiles;

@@ -1,45 +1,59 @@
 import React from 'react';
 import Radium from 'radium';
-import Highcharts from 'react-highcharts';
-import chartConfig from '../../highcharts';
+import * as _ from 'lodash';
+import globalChartConfig from '../../highcharts';
 
+import Highcharts from 'react-highcharts';
 import Spinner from '../spinner/spinner';
 
 import styles from './styles';
 require('./styles.scss');
 
-chartConfig.chart.type = 'spline';
-chartConfig.chart.animation = { duration: 100, easing: 'linear' };
-chartConfig.chart.zoomType = 'x';
-chartConfig.title.text = 'Live Temperature Data';
-chartConfig.xAxis.title = {
-    text: 'time (s)',
-    style: {
-        'fontSize': '1rem'
+// Create copy of globalChartConfig
+var chartConfig = _.clone(globalChartConfig, true);
+
+var overRides = {
+    chart: {
+        type: 'line',
+        animation: {
+            duration: 100,
+            easing: 'linear'
+        },
+        zoomType: 'x'
     },
-    y: 20
-};
-chartConfig.yAxis.title = {
-    text: 'temperature (C)',
-    style: {
-        'fontSize': '1rem'
-    }
-};
-chartConfig.legend.x = 30;
-chartConfig.tooltip = { shared: true, crosshairs: true };
-chartConfig.plotOptions = {
-    spline: {
-        animation: false
-    }
-};
-chartConfig.credits = { enabled: false };
-chartConfig.series = [{
-    name: '',
-    data: []
+    title: { text: 'Live Temperature Data' },
+    xAxis: {
+        title: {
+            text: 'time (s)',
+            style: { 'fontSize': '1rem' },
+            y: 20
+        }
+    },
+    yAxis: {
+        title: {
+            text: 'temperature (C)',
+            style: { 'fontSize': '1rem' }
+        }
+    },
+    legend: { x: 30 },
+    toolTip: {
+        shared: true,
+        crosshairs: true
+    },
+    plotOptions: {
+        line: { animation: false }
+    },
+    credits: { enabled: false },
+    series: [{
+        name: '',
+        data: []
     }, {
-    name: 'Live Data',
-    data: []
-}];
+        name: 'Live Data',
+        data: []
+    }]
+}
+
+chartConfig = _.merge(chartConfig, overRides);
 
 class LiveHighchart extends React.Component {
     constructor(props) {
