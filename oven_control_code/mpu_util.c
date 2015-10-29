@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "mpu_types.h"
 #include "mpu_util.h"
@@ -59,4 +60,20 @@ float util_calc_temp( uint16 adc_val )
     temp = ( amp_voltage - AMP_VOLTAGE_OFST ) / VOLTS_PER_DEG;
     
     return( temp );
+}
+
+void util_print_procId()
+{
+    cJSON * root;
+    char * tmpMessage;
+    
+    root = cJSON_CreateObject();
+    cJSON_AddNumberToObject( root, "type", PROC_ID );
+    cJSON_AddNumberToObject( root, "PID", (uint32)getpid() );
+    
+    tmpMessage = cJSON_Print( root );
+    printf( "%s\n", tmpMessage );
+    fflush( stdout );
+    cJSON_Delete(root);
+    return;
 }

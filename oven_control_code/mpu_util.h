@@ -6,7 +6,8 @@
 enum
 {
     POINT,
-    DEBUG_MSG
+    DEBUG_MSG,
+    PROC_ID
 };
 
 //Function for generating a JSON string, based on the given parameter values.
@@ -16,5 +17,7 @@ void util_print_point(uint32 time, float target, float temperature);
 void util_print_debug( const char * string );
 
 float util_calc_temp( uint16 adc_val );
+
+void util_print_procId();
 
 #endif
