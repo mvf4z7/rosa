@@ -3,3 +3,5 @@
 *.out
 *.bin
 *.obj
+**npm-debug.log
+**secret.json
