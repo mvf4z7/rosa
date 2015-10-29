@@ -44,7 +44,6 @@ var getLine = function(lines, time) {
 
 var simInProgress = false;
 var ovenControlProgram = null;
-//var childPID = null;
 var timers = [];
 
 var getOvenState = function(cb) {
@@ -133,16 +132,6 @@ var stopSim = function(cb){
         console.log('ovenControlProgram PID: ', ovenControlProgram.pid);
         ovenControlProgram.kill('SIGINT');
         console.log('sent SIGINT to ovenControlProgram');
-
-        // used to kill mpu_prog.elf when child_process runs bash script
-        // try {
-        //     process.kill(childPID, 'SIGINT');
-        //     console.log('killed child process');
-        //     childPID = null;
-        // } catch(e) {
-        //     console.log('UNABLE TO KILL CHILD PROCESS: ', childPID);
-        // }
-
     } else {
         timers.forEach(function(timer) {
             clearTimeout(timer);
