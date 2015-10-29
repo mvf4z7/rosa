@@ -9,8 +9,8 @@ var config = {
     },
     production: {
         ovenControlProgram: {
-            command: './build.sh',
-            args: ['run'],
+            command: './mpu_prog.elf',
+            args: ['../server_and_app/profile.json'],
             options: { cwd: '../oven_control_code' }
         }
     }

@@ -44,7 +44,7 @@ var getLine = function(lines, time) {
 
 var simInProgress = false;
 var ovenControlProgram = null;
-var childPID = null;
+//var childPID = null;
 var timers = [];
 
 var getOvenState = function(cb) {
@@ -63,7 +63,7 @@ var runSim = function(profile, cb){
 
     if(isProduction) {
         // Oven control software reads profile data from this file
-        fs.writeFile('profile.json', JSON.stringify(profile));
+        fs.writeFileSync('profile.json', JSON.stringify(profile));
 
         // Run oven control code
         ovenControlProgram = spawn(
@@ -85,9 +85,6 @@ var runSim = function(profile, cb){
                 data = JSON.parse(data);
                 if(data.type === 0) {
                     io.emit('tempData', data);
-                } else if(data.type=== 2) {
-                    childPID = data.PID;
-                    console.log('PID received: ', data.PID);
                 } else {
                     console.log(data.msg);
                 }
@@ -134,16 +131,18 @@ var stopSim = function(cb){
 
     if(isProduction && ovenControlProgram) {
         console.log('ovenControlProgram PID: ', ovenControlProgram.pid);
+        ovenControlProgram.kill('SIGINT');
+        console.log('sent SIGINT to ovenControlProgram');
 
-        try {
-            process.kill(childPID, 'SIGINT');
-            console.log('killed child process');
-            childPID = null;
-        } catch(e) {
-            console.log('UNABLE TO KILL CHILD PROCESS: ', childPID);
-        }
-        //ovenControlProgram.kill('SIGINT');
-        //console.log('sent SIGINT to ovenControlProgram');
+        // used to kill mpu_prog.elf when child_process runs bash script
+        // try {
+        //     process.kill(childPID, 'SIGINT');
+        //     console.log('killed child process');
+        //     childPID = null;
+        // } catch(e) {
+        //     console.log('UNABLE TO KILL CHILD PROCESS: ', childPID);
+        // }
+
     } else {
         timers.forEach(function(timer) {
             clearTimeout(timer);
