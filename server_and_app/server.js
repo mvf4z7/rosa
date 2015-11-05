@@ -10,7 +10,7 @@ var io = require('./socket-server');
 var isProduction = process.env.NODE_ENV === 'production';
 var isPsuedoProduction = process.env.NODE_ENV === 'psuedoproduction';
 var profiles = require('./profiles'); // mock profile data
-//var database = require('./database');
+var database = require('./database');
 var tempProfile = require('./temp-profile');
 var session = require('client-sessions');
 var querystring = require('querystring');
@@ -18,7 +18,7 @@ var request = require('request');
 var secrets = require('./secret');
 var google = require('googleapis');
 
-var redirect = 'http://localhost:8001/googleauth';
+var redirect = 'http://' + secrets.hostname + ':8001/googleauth';
 var googleOAuth2 = google.auth.OAuth2;
 var googleOAuthClient = new googleOAuth2(secrets.google.id, secrets.google.secret, redirect);
 
@@ -46,7 +46,7 @@ app.use('/styles', express.static(path.join(__dirname, 'styles')));
 app.use(session({
     cookieName: 'session',
     secret: 'random_string_goes_here',
-    duration: 30 * 60 * 1000,
+    duration: 15 * 60 * 1000,
     activeDuration: 5 * 60 * 1000,
     httpOnly: true,
     ephemeral: true
@@ -76,7 +76,19 @@ app.delete('/api/ovensim', function(req, res) {
 });
 
 app.get('/api/profiles', function(req, res) {
-   res.send(profiles);
+    /*
+    database.getAllProfiles(function(allProfiles){
+        res.send(allProfiles);
+    });
+    */
+    res.send(profiles);
+});
+
+app.post('/api/profiles', function(req, res) {
+    var profileName = req.body.profileName;
+    var profile = req.body.profile;
+    database.createProfile(req.session.user, profileName, profile);
+    // Redirect?
 });
 
 function requireLogin(req, res, next){
@@ -89,34 +101,55 @@ function requireLogin(req, res, next){
 }
 
 app.use(function(req, res, next) {
-    console.log(JSON.stringify(req.session));
-    console.log('User is: ' + req.session.user);
     if (req.session && req.session.token) {
-        console.log('Session detected');
-        /*
         database.checkUser(req.session.user, function(user){
             if(user){
                 req.user = user;
-                delete req.user.password; // delete the password from the session
                 req.session.user = user;  //refresh the session value
                 res.locals.user = user;
+                console.log('A user logged in: ', user);
+                //console.log(JSON.stringify(res.locals));
+                next();
+            }
+            else{
+                req.session.reset();
+                res.redirect('/');
             }
         });
-        */
-        // finishing processing the middleware and run the route
-        next();
+
     } else {
-        console.log('No session detected');
-        // finishing processing the middleware and run the route
         next();
     }
+});
+
+app.post('/api/adduser', function(req, res) {
+    var new_user = req.body.user;
+    var priv = req.body.privilege;
+    database.getPrivilege(req.session.user, function(privilege){
+        if(privilege === 1){
+            database.createUser(new_user, priv);
+            // Redirect
+        }
+        else{
+            console.log('User ' + req.session.user + ' does not have rights to do this');
+            // Redirect
+        }
+    });
 });
 
 app.post('/', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
-    //res.redirect(authorization_uri);
+    res.redirect(github_authorization_uri);
+    //res.redirect(google_authorization_uri);
+});
+
+app.get('/googlelogin', function(req, res) {
     res.redirect(google_authorization_uri);
+});
+
+app.get('/githublogin', function(req, res) {
+    res.redirect(github_authorization_uri);
 });
 
 app.get('/', requireLogin, function(req, res) {
@@ -124,8 +157,8 @@ app.get('/', requireLogin, function(req, res) {
 });
 
 // Authorization uri definition
-var authorization_uri = oauth2.authCode.authorizeURL({
-    redirect_uri: 'http://localhost:8001/callback',
+var github_authorization_uri = oauth2.authCode.authorizeURL({
+    redirect_uri: 'http://localhost:8001/githubauth',
     scope: 'notifications,user:email',
     state: '3(#0/!~'
 });
@@ -134,15 +167,12 @@ var google_authorization_uri = googleOAuthClient.generateAuthUrl({
     access_type: 'offline',
     scope: 'https://www.googleapis.com/auth/userinfo.email'
 });
-// should access_type be online?
 
 app.get('/googleauth', function(req, res) {
     var code = req.query.code;
     googleOAuthClient.getToken(code, function(err, tokens){
         if(!err) {
             googleOAuthClient.setCredentials(tokens);
-            console.log('Successfully got tokens\nTokens = ' + tokens.access_token);
-
             req.session.token = tokens.access_token;
 
             google.oauth2('v2').userinfo.get({userId: 'me', auth: googleOAuthClient}, function(err, result){
@@ -151,7 +181,6 @@ app.get('/googleauth', function(req, res) {
                     res.redirect('/login');
                 }
                 else{
-                    console.log('Results: ' + result.email);
                     req.session.user = result.email;
                     res.redirect('/');
                 }
@@ -163,30 +192,21 @@ app.get('/googleauth', function(req, res) {
     });
 });
 
-app.get('/logout', function(req, res){
-    req.session.reset();
-    res.redirect('/');
-});
-
-app.get('/login', function(req, res){
-    res.sendFile(__dirname + '/login.html');
-});
-
 // Callback service parsing the authorization token and asking for the access token
-app.get('/callback', function (req, res) {
+app.get('/githubauth', function (req, res) {
     var code = req.query.code;
     var token;
     oauth2.authCode.getToken({
         code: code,
-        redirect_uri: 'http://localhost:8001/callback'
+        redirect_uri: 'http://localhost:8001/githubauth'
     }, saveToken);
 
     function saveToken(error, result) {
         if (error) {
             console.log('Access Token Error', error.message);
+            res.redirect('/login');
         }
         token = oauth2.accessToken.create(result);
-        req.session.token = token;
 
         var params = {
             'access_token': querystring.parse(token.token).access_token
@@ -202,14 +222,24 @@ app.get('/callback', function (req, res) {
         request(options, function(err, resp, body){
             if(err){
                 console.log('request error: ' + err);
+                res.redirect('/login');
             }
             var info = JSON.parse(body);
+            req.session.token = token;
             req.session.user = info.email;
+            res.redirect('/');
         });
 
     }
+});
 
-    res.sendFile(__dirname + '/index.html');
+app.get('/logout', function(req, res){
+    req.session.reset();
+    res.redirect('/');
+});
+
+app.get('/login', function(req, res){
+    res.sendFile(__dirname + '/login.html');
 });
 
 app.io = io;
