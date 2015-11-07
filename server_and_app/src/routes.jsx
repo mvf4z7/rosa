@@ -11,6 +11,7 @@ var routes = (
   <Route path='/' handler={ App }>
     <DefaultRoute name='home' handler={ Home }/>
     <Route name='info' path='/info' handler={ Info }/>
+    <Route name='profiles' path='/profiles' handler={ Profiles }/>
     <Route name='logout' path='/logout' handler={ Logout }/>
   </Route>
 );
