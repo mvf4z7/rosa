@@ -1,0 +1,4 @@
+#To start a script on bootup:
+crontab -e -u <user name>
+
+@reboot /root/desktop/git/rosa/oven_control_code/build.sh init

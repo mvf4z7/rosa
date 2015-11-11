@@ -10,6 +10,7 @@ ifconfig -a # should now see a wlan0 connection
 nano /etc/network/interfaces
 
 -add the following under the #wifi example section
+allow-hotplug wlan0
 iface wlan0 inet dhcp
 
 -and then go back to the terminal and...
