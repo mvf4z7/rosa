@@ -6,7 +6,7 @@
 #include "mpu_cJSON.h"
 #include "mpu_util.h"
 
-#define CON_PRO   0.03f       //Proportional constant
+#define CON_PRO   0.25f       //Proportional constant
 #define CON_INT   0.0f //0.5f       //Integral constant
 #define CON_DER   0.0f //0.125f     //Derivative constant
 
