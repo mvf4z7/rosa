@@ -5,7 +5,7 @@ class CreateProfileStore {
     constructor() {
         this.profile = {
             name: '',
-            points: [],
+            points: [[0,25],[30, 100], [100, 200]],
             lines: []
         };
 

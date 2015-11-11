@@ -27,16 +27,27 @@ class CreateProfile extends React.Component {
 
     render() {
         return (
-            <div>
-                <CreateEditHighchart profileName={this.state.profile.name}/>
-                <div style={styles.textFieldContainer}>
-                    <TextField
-                        ref='textField'
-                        floatingLabelText="Enter Profile Name"
-                        onEnterKeyDown={this._updateProfileName}
-                        onBlur={this._updateProfileName} />
+            <div style={styles.viewWrapper}>
+                <CreateEditHighchart profileName={this.state.profile.name} />
+                <div style={styles.scroller}>
+                    <div style={styles.textFieldContainer}>
+                        <TextField
+                            ref='textField'
+                            floatingLabelText="Profile Name"
+                            onEnterKeyDown={this._updateProfileName}
+                            onBlur={this._updateProfileName} />
+                    </div>
+                    <div style={styles.cardContainer}>
+                        {
+                            this.state.profile.points.map(function(point, index) {
+                                return ( <DataPointCard point={point} index={index+1} key={index} /> );
+                            })
+                        }
+                    </div>
                 </div>
-                <DataPointCard />
+                <div style={styles.controls}>
+                    Click me!
+                </div>
             </div>
         );
     }
@@ -50,13 +61,32 @@ class CreateProfile extends React.Component {
         textField.blur();
         CreateProfileActions.setProfileName({ profileName: textField.getValue() });
     }
-
-
 }
 
 let styles = {
+    viewWrapper: {
+
+    },
     textFieldContainer: {
         textAlign: 'center'
+    },
+    scroller: {
+        overflowY: 'auto'
+    },
+    cardContainer: {
+        display: 'flex',
+        justifyContent: 'space-around',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        alignContent: 'space-around'
+    },
+    controls: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        textAlign: 'center',
+        backgroundColor: 'red',
+        width: '100%'
     }
 }
 
