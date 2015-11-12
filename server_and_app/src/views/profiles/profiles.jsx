@@ -22,7 +22,7 @@ class Profiles extends React.Component {
                     <Tab label='CREATE' style={styles.tab}>
                         <CreateProfile />
                     </Tab>
-                    <Tab label='EDIT'></Tab>
+                    <Tab label='EDIT'>Profile Edit Page</Tab>
                 </Tabs>
             </div>
         );
