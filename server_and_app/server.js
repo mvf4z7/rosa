@@ -60,12 +60,20 @@ app.get('/api/ovensim', function(req, res) {
 
 
 app.put('/api/ovensim', function(req, res) {
-    var profile = req.body.profile;
-    console.log(req.body);
-    console.log('Starting oven sim');
-    tempProfile.runSim(profile, function(result){
-        res.send(result);
-    });
+    console.log(JSON.stringify(req.session));
+    if(req.session && req.session.token){
+        var profile = req.body.profile;
+        console.log(req.body);
+        console.log('Starting oven sim');
+        tempProfile.runSim(profile, function(result){
+            res.send(result);
+        });
+    }
+    else
+    {
+        console.log('Session expired');
+        res.send({error: 'Your session has expired. Please log back in.'});
+    }
 });
 
 app.delete('/api/ovensim', function(req, res) {
@@ -125,23 +133,31 @@ app.use(function(req, res, next) {
 app.post('/api/adduser', function(req, res) {
     var new_user = req.body.user;
     var priv = req.body.privilege;
+    console.log('Adding user: ' + new_user + '; ' + priv + ' (' + typeof priv + ')');
+
+    // Ensure that new_user is populated
+    // Add regex to check valid email address?
+    if(!new_user){
+        res.send({error: 'Email address cannot be blank!'});
+        return;
+    }
+
+    // Ensure that priv is an integer and an approved access level
+    if(isNaN(priv) || priv != parseInt(Number(priv)) || isNaN(parseInt(priv, 10)) || priv < 0 || priv > 1){
+        res.send({error: 'Could not recognize access level'});
+        return;
+    }
+
     database.getPrivilege(req.session.user, function(privilege){
         if(privilege === 1){
-            database.createUser(new_user, priv);
-            // Redirect
+            //database.createUser(new_user, priv);
+            res.send({});
         }
         else{
-            console.log('User ' + req.session.user + ' does not have rights to do this');
-            // Redirect
+            res.send({error: 'You do not have access to add users!'});
         }
     });
-});
 
-app.post('/', function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-    res.redirect(github_authorization_uri);
-    //res.redirect(google_authorization_uri);
 });
 
 app.get('/googlelogin', function(req, res) {
