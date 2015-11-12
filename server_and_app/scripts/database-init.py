@@ -10,7 +10,7 @@ if os.path.isfile(db):
 
 conn = sqlite3.connect(db)
 cur = conn.cursor()
-profileFile = open('../profile.json')
+profileFile = open('./profile.json')
 profile = profileFile.read()
 
 print('Preparing database for first time use...')
@@ -33,10 +33,35 @@ FOREIGN KEY(username) REFERENCES User(username)
 )
 ''')
 
+# Create History table
+cur.execute('''
+CREATE TABLE History (
+username VARCHAR(50),
+pname VARCHAR(20),
+date DATETIME,
+profile TEXT NOT NULL,
+PRIMARY KEY(username, pname, date),
+FOREIGN KEY(username) REFERENCES User(username),
+FOREIGN KEY(pname) REFERENCES Profile(pname)
+)
+''')
+
 # Add a default user
 cur.execute('''
 INSERT INTO User(username, privilege) VALUES (?, ?)
 ''', ('tjrg88@mst.edu', 1))
+
+cur.execute('''
+INSERT INTO User(username, privilege) VALUES (?, ?)
+''', ('jtbzqd@mst.edu', 1))
+
+cur.execute('''
+INSERT INTO User(username, privilege) VALUES (?, ?)
+''', ('jhezq7@mst.edu', 1))
+
+cur.execute('''
+INSERT INTO User(username, privilege) VALUES (?, ?)
+''', ('mvf4z7@mst.edu', 1))
 
 # Add a default temperature profile
 cur.execute('''
