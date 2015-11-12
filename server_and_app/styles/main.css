@@ -16,7 +16,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
     font-family: 'Roboto', sans-serif;
     background-color: #ECEEF4;
     -webkit-transform: translate3d(0, 0,  0);

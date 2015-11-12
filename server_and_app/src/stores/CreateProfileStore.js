@@ -5,13 +5,15 @@ class CreateProfileStore {
     constructor() {
         this.profile = {
             name: '',
-            points: [[0,25],[30, 100], [100, 200], [0,25],[30, 100], [100, 200], [0,25],[30, 100], [100, 200]],
+            points: [[1,1],[2, 2], [3, 3], [4,4]],
             lines: []
         };
 
         this.bindListeners({
             handleSetProfileName: CreateProfileActions.SET_PROFILE_NAME,
-            handleAddPoint: CreateProfileActions.ADD_POINT
+            handleAddPoint: CreateProfileActions.ADD_POINT,
+            handleDeletePoint: CreateProfileActions.DELETE_POINT,
+            handleModifyPoint: CreateProfileActions.MODIFY_POINT
         });
     }
 
@@ -20,9 +22,19 @@ class CreateProfileStore {
     }
 
     handleAddPoint(data) {
-        console.log('points before: ', this.profile.points);
         this.profile.points = this.profile.points.concat([[]]);
-        console.log('points after: ', this.profile.points);
+    }
+
+    handleDeletePoint(data) {
+        this.profile.points.splice(data.index, 1);
+        this.profile.points = this.profile.points.slice();
+    }
+
+    handleModifyPoint(data) {
+        console.log(data);
+        this.profile.points = this.profile.points.slice();
+        this.profile.points[data.index] = [data.time, data.temp];
+        console.log(JSON.stringify(this.profile.points));
     }
 }
 
