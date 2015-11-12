@@ -8,7 +8,7 @@ import CreateProfileActions from '../../../actions/CreateProfileActions';
 
 import CreateEditHighchart from '../../../components/create-edit-highchart/create-edit-highchart';
 import DataPointCard from '../../../components/data-point-card/data-point-card';
-import { TextField } from 'material-ui';
+import { FontIcon, TextField } from 'material-ui';
 
 class CreateProfile extends React.Component {
     constructor(props) {
@@ -47,13 +47,15 @@ class CreateProfile extends React.Component {
                         <div style={styles.cardContainer}>
                             {
                                 this.state.profile.points.map(function(point, index) {
-                                    return ( <DataPointCard point={point} index={index+1} key={index} /> );
+                                    return ( <DataPointCard point={point} index={index+1} key={index}/> );
                                 })
                             }
                         </div>
                         <div style={styles.empty}></div>
                         <div style={styles.controls}>
-                            <div style={styles.addPoint} onClick={this._addPoint}>+</div>
+                            <span style={styles.addPoint} onClick={this._addPoint}>
+                                <i className='material-icons' style={{fontSize: '36px'}}>add</i>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -104,23 +106,27 @@ let styles = {
         overflowY: 'auto'
     },
     empty: {
-        height: '3rem'
+        height: '3.5rem'
     },
     controls: {
         position: 'absolute',
         bottom: 0,
         left: 0,
-        textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: 'transparent',
         width: '100%',
         padding: '1rem 0'
     },
     addPoint: {
         borderRadius: '50%',
-        display: 'inline-block',
-        background: 'green',
-        height: '2rem',
-        width: '2rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'green',
+        height: '2.5rem',
+        width: '2.5rem',
         color: 'white',
         fontSize: '1.5rem',
         cursor: 'pointer'
