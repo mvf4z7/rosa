@@ -172,6 +172,23 @@ var getPrivilege = function(uname, privilegeCb){
     stmt.finalize();
 };
 
+// Sqlite date format is yyyy-MM-dd HH:mm:ss
+var saveRun = function(uname, pname, run){
+    if(!uname || !pname){
+        console.log('Username/profile name cannot be blank!');
+        return;
+    }
+
+    // date('now')
+    var stmt = db.prepare('INSERT INTO History(username, pname, date, profile) VALUES (?, ?, CURRENT_TIMESTAMP, ?)');
+    stmt.run(uname, pname, run, function(err){
+        if(err){
+            console.log(err);
+        }
+    });
+    stmt.finalize();
+};
+
 //db.close();
 module.exports = {
     createUser : createUser,
@@ -180,5 +197,6 @@ module.exports = {
     getProfile : getProfile,
     getPrivilege: getPrivilege,
     getAllProfiles: getAllProfiles,
-    getAllUserProfiles: getAllUserProfiles
+    getAllUserProfiles: getAllUserProfiles,
+    saveRun: saveRun
 };
