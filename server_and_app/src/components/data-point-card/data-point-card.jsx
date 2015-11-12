@@ -9,7 +9,7 @@ class DataPointCard extends React.Component {
     }
 
     componentDidMount() {
-        if(!this.props.point.length) {
+        if(this.props.point.length != 2) {
             return;
         }
 

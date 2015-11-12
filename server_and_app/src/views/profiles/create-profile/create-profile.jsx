@@ -2,6 +2,8 @@ import React from 'react';
 import Radium from 'radium';
 
 import CreateProfileStore from '../../../stores/CreateProfileStore';
+
+import NavigationActions from '../../../actions/NavigationActions';
 import CreateProfileActions from '../../../actions/CreateProfileActions';
 
 import CreateEditHighchart from '../../../components/create-edit-highchart/create-edit-highchart';
@@ -17,6 +19,10 @@ class CreateProfile extends React.Component {
         };
     }
 
+    static willTransitionTo() {
+        NavigationActions.setCurrentRoute({ route: '/create-profile' });
+    }
+
     componentDidMount() {
         CreateProfileStore.listen(this._onCreateProfileStoreChange);
     }
@@ -29,24 +35,27 @@ class CreateProfile extends React.Component {
         return (
             <div style={styles.viewWrapper}>
                 <CreateEditHighchart profileName={this.state.profile.name} />
-                <div style={styles.scroller}>
-                    <div style={styles.textFieldContainer}>
-                        <TextField
-                            ref='textField'
-                            floatingLabelText="Profile Name"
-                            onEnterKeyDown={this._updateProfileName}
-                            onBlur={this._updateProfileName} />
+                <div style={styles.container}>
+                    <div style={styles.scroller}>
+                        <div style={styles.textFieldContainer}>
+                            <TextField
+                                ref='textField'
+                                floatingLabelText="Profile Name"
+                                onEnterKeyDown={this._updateProfileName}
+                                onBlur={this._updateProfileName} />
+                        </div>
+                        <div style={styles.cardContainer}>
+                            {
+                                this.state.profile.points.map(function(point, index) {
+                                    return ( <DataPointCard point={point} index={index+1} key={index} /> );
+                                })
+                            }
+                        </div>
+                        <div style={styles.empty}></div>
+                        <div style={styles.controls}>
+                            <div style={styles.addPoint} onClick={this._addPoint}>+</div>
+                        </div>
                     </div>
-                    <div style={styles.cardContainer}>
-                        {
-                            this.state.profile.points.map(function(point, index) {
-                                return ( <DataPointCard point={point} index={index+1} key={index} /> );
-                            })
-                        }
-                    </div>
-                </div>
-                <div style={styles.controls}>
-                    Click me!
                 </div>
             </div>
         );
@@ -61,32 +70,60 @@ class CreateProfile extends React.Component {
         textField.blur();
         CreateProfileActions.setProfileName({ profileName: textField.getValue() });
     }
+
+    _addPoint = () => {
+        CreateProfileActions.addPoint();
+    }
 }
 
 let styles = {
     viewWrapper: {
-
+        height: '100%',
+        paddingTop: '4rem',
+        overflow: 'hidden'
     },
-    textFieldContainer: {
-        textAlign: 'center'
+    container: {
+        overflow: 'hidden'
     },
     scroller: {
-        overflowY: 'auto'
+        overflow: 'auto',
+        height: '48vh',
+        '@media screen and (min-width: 48em)': {
+            height: '38vh'
+        }
+    },
+    textFieldContainer: {
+        textAlign: 'center',
     },
     cardContainer: {
         display: 'flex',
         justifyContent: 'space-around',
         flexWrap: 'wrap',
         alignItems: 'center',
-        alignContent: 'space-around'
+        alignContent: 'space-around',
+        overflowY: 'auto'
+    },
+    empty: {
+        height: '3rem'
     },
     controls: {
         position: 'absolute',
         bottom: 0,
         left: 0,
         textAlign: 'center',
-        backgroundColor: 'red',
-        width: '100%'
+        backgroundColor: 'transparent',
+        width: '100%',
+        padding: '1rem 0'
+    },
+    addPoint: {
+        borderRadius: '50%',
+        display: 'inline-block',
+        background: 'green',
+        height: '2rem',
+        width: '2rem',
+        color: 'white',
+        fontSize: '1.5rem',
+        cursor: 'pointer'
     }
 }
 
