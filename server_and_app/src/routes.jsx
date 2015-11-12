@@ -5,6 +5,7 @@ import App from './views/app/app';
 import Home from './views/home/home';
 import Profiles from './views/profiles/profiles';
 import Info from './views/info/info';
+import Adduser from './views/adduser/adduser';
 import Logout from './views/logout/logout';
 
 var routes = (
@@ -12,6 +13,7 @@ var routes = (
     <DefaultRoute name='home' handler={ Home }/>
     <Route name='info' path='/info' handler={ Info }/>
     <Route name='profiles' path='/profiles' handler={ Profiles }/>
+    <Route name='adduser' path='/adduser' handler={ Adduser }/>
     <Route name='logout' path='/logout' handler={ Logout }/>
   </Route>
 );

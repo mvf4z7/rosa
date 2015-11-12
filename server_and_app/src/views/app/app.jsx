@@ -21,6 +21,7 @@ ThemeManager.setTheme(theme);
 let menuItems = [
     { route: '/', text: 'home' },
     { route: '/profiles', text: 'manage profiles' },
+    { route: '/adduser', text: 'add user' },
     { route: '/info', text: 'info' },
     { route: '/logout', text: 'logout'}
 ];
