@@ -35,28 +35,26 @@ class CreateProfile extends React.Component {
         return (
             <div style={styles.viewWrapper}>
                 <CreateEditHighchart profileName={this.state.profile.name} />
-                <div style={styles.container}>
-                    <div style={styles.scroller}>
-                        <div style={styles.textFieldContainer}>
-                            <TextField
-                                ref='textField'
-                                floatingLabelText="Profile Name"
-                                onEnterKeyDown={this._updateProfileName}
-                                onBlur={this._updateProfileName} />
-                        </div>
-                        <div style={styles.cardContainer}>
-                            {
-                                this.state.profile.points.map(function(point, index) {
-                                    return ( <DataPointCard point={point} index={index+1} key={index}/> );
-                                })
-                            }
-                        </div>
-                        <div style={styles.empty}></div>
-                        <div style={styles.controls}>
-                            <span style={styles.addPoint} onClick={this._addPoint}>
-                                <i className='material-icons' style={{fontSize: '36px'}}>add</i>
-                            </span>
-                        </div>
+                <div style={styles.scroller}>
+                    <div style={styles.textFieldContainer}>
+                        <TextField
+                            ref='textField'
+                            floatingLabelText="Profile Name"
+                            onEnterKeyDown={this._updateProfileName}
+                            onBlur={this._updateProfileName} />
+                    </div>
+                    <div style={styles.cardContainer}>
+                        {
+                            this.state.profile.points.map(function(point, index) {
+                                return ( <DataPointCard point={point} index={index} key={Math.random()}/> );
+                            })
+                        }
+                    </div>
+                    <div style={styles.empty}></div>
+                    <div style={styles.controls}>
+                        <span style={styles.addPoint} onClick={this._addPoint}>
+                            <i className='material-icons' style={{fontSize: '36px'}}>add</i>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -81,8 +79,7 @@ class CreateProfile extends React.Component {
 let styles = {
     viewWrapper: {
         height: '100%',
-        paddingTop: '4rem',
-        overflow: 'hidden'
+        paddingTop: '4rem'
     },
     container: {
         overflow: 'hidden'

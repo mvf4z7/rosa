@@ -8,6 +8,14 @@ class CreateProfileActions {
     addPoint() {
         this.dispatch();
     }
+
+    deletePoint(data) {
+        this.dispatch(data);
+    }
+
+    modifyPoint(data) {
+        this.dispatch(data);
+    }
 }
 
 module.exports = alt.createActions(CreateProfileActions);
