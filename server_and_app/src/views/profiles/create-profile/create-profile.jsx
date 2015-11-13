@@ -32,9 +32,11 @@ class CreateProfile extends React.Component {
     }
 
     render() {
+        let sanitizedPoints = this._removeInvalidPoints(this.state.profile.points);
+
         return (
             <div style={styles.viewWrapper}>
-                <CreateEditHighchart profileName={this.state.profile.name} />
+                <CreateEditHighchart profileName={this.state.profile.name} data={sanitizedPoints}/>
                 <div style={styles.scroller}>
                     <div style={styles.textFieldContainer}>
                         <TextField
@@ -74,6 +76,17 @@ class CreateProfile extends React.Component {
     _addPoint = () => {
         CreateProfileActions.addPoint();
     }
+
+    _removeInvalidPoints = (points) => {
+        let processed = [];
+        points.forEach(point => {
+            if(point.length === 2) {
+                processed.push(point);
+            }
+        });
+
+        return processed;
+    }
 }
 
 let styles = {
@@ -103,7 +116,7 @@ let styles = {
         overflowY: 'auto'
     },
     empty: {
-        height: '3.5rem'
+        height: '4.5rem'
     },
     controls: {
         position: 'absolute',

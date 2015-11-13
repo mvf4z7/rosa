@@ -48,10 +48,27 @@ class DataPointCard extends React.Component {
     }
 
     _updateValue = () => {
+        let time = parseInt(this.refs.time.getValue(), 10);
+        let temp = parseInt(this.refs.temp.getValue(), 10);
+
+        if(isNaN(time)) {
+            this.refs.time.setErrorText('Time must be a number value');
+            return;
+        }
+
+        if(isNaN(temp)) {
+            this.refs.temp.setErrorText('Temp must be a number value');
+            return;
+        }
+
+        // if(isNaN(time) || isNaN(temp)) {
+        //     return;
+        // }
+
         let data = {
             index: this.props.index,
-            time: this.refs.time.getValue(),
-            temp: this.refs.temp.getValue()
+            time: time,
+            temp: temp
         }
         CreateProfileActions.modifyPoint(data);
     }

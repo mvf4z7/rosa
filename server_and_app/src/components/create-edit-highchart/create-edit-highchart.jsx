@@ -60,6 +60,7 @@ class CreateEditHighchart extends React.Component {
         }
 
         chartConfig.series[0].name = this.props.profileName === '' ? 'Enter Profile Name' : this.props.profileName;
+        chartConfig.series[0].data = this.props.data ? this.props.data : [];
 
         return(
             <div id='createchartwrapper' style={styles.chartWrapper}>
