@@ -53,11 +53,14 @@ class CreateProfile extends React.Component {
                         }
                     </div>
                     <div style={styles.empty}></div>
-                    <div style={styles.controls}>
-                        <span style={styles.addPoint} onClick={this._addPoint}>
+                    <span style={styles.controls}>
+                        <span style={[styles.controlBtn, styles.addPoint]} onClick={this._addPoint}>
                             <i className='material-icons' style={{fontSize: '36px'}}>add</i>
                         </span>
-                    </div>
+                        <span style={[styles.controlBtn, styles.save]}>
+                            <i className='material-icons' style={{fontSize: '30px'}}>save</i>
+                        </span>
+                    </span>
                 </div>
             </div>
         );
@@ -116,30 +119,34 @@ let styles = {
         overflowY: 'auto'
     },
     empty: {
-        height: '4rem'
+        height: '4.5rem'
     },
     controls: {
         position: 'absolute',
         bottom: 0,
-        left: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        right: 0,
         backgroundColor: 'transparent',
-        width: '100%',
-        padding: '1rem 0'
+        padding: '1rem 0',
+        margin: '0 2rem'
     },
-    addPoint: {
+    controlBtn: {
         borderRadius: '50%',
+        float: 'left',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'green',
-        height: '2.5rem',
-        width: '2.5rem',
+        height: '3rem',
+        width: '3rem',
         color: 'white',
-        fontSize: '1.5rem',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        margin: '0 0.5rem'
+    },
+    addPoint: {
+        backgroundColor: 'green'
+    },
+    save: {
+        backgroundColor: 'blue'
     }
 }
 
