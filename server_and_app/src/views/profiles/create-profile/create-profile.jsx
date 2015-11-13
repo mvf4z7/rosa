@@ -92,17 +92,17 @@ class CreateProfile extends React.Component {
 let styles = {
     viewWrapper: {
         height: '100%',
-        paddingTop: '4rem'
+        paddingTop: '4rem',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
     },
     container: {
         overflow: 'hidden'
     },
     scroller: {
         overflow: 'auto',
-        height: '48vh',
-        '@media screen and (min-width: 48em)': {
-            height: '38vh'
-        }
+        flex: '1'
     },
     textFieldContainer: {
         textAlign: 'center',
@@ -116,7 +116,7 @@ let styles = {
         overflowY: 'auto'
     },
     empty: {
-        height: '4.5rem'
+        height: '4rem'
     },
     controls: {
         position: 'absolute',
