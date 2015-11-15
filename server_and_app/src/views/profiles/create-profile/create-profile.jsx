@@ -53,12 +53,19 @@ class CreateProfile extends React.Component {
                         }
                     </div>
                     <div style={styles.empty}></div>
-                    <span style={styles.controls}>
-                        <span style={[styles.controlBtn, styles.addPoint]} onClick={this._addPoint}>
-                            <i className='material-icons' style={{fontSize: '36px'}}>add</i>
-                        </span>
+
+                    <span style={[styles.controls, styles.controlsLeft]}>
                         <span style={[styles.controlBtn, styles.save]}>
                             <i className='material-icons' style={{fontSize: '30px'}}>save</i>
+                        </span>
+                        <span style={[styles.controlBtn, styles.clearAll]}>
+                            <span>clear</span>
+                        </span>
+                    </span>
+
+                    <span style={[styles.controls, styles.controlsRight]}>
+                        <span style={[styles.controlBtn, styles.addPoint]} onClick={this._addPoint}>
+                            <i className='material-icons' style={{fontSize: '36px'}}>add</i>
                         </span>
                     </span>
                 </div>
@@ -124,10 +131,15 @@ let styles = {
     controls: {
         position: 'absolute',
         bottom: 0,
-        right: 0,
         backgroundColor: 'transparent',
         padding: '1rem 0',
         margin: '0 2rem'
+    },
+    controlsLeft: {
+        left: 0
+    },
+    controlsRight: {
+        right: 0,
     },
     controlBtn: {
         borderRadius: '50%',
@@ -147,6 +159,12 @@ let styles = {
     },
     save: {
         backgroundColor: 'blue'
+    },
+    clearAll: {
+        textAlign: 'center',
+        backgroundColor: 'red',
+        fontSize: '1.1rem',
+        fontWeight: 'bold'
     }
 }
 
