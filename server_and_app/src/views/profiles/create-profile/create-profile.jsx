@@ -55,16 +55,16 @@ class CreateProfile extends React.Component {
                     <div style={styles.empty}></div>
 
                     <span style={[styles.controls, styles.controlsLeft]}>
-                        <span style={[styles.controlBtn, styles.save]}>
+                        <span onClick={this._saveProfile} style={[styles.controlBtn, styles.save]}>
                             <i className='material-icons' style={{fontSize: '30px'}}>save</i>
                         </span>
-                        <span style={[styles.controlBtn, styles.clearAll]}>
+                        <span onClick={this._clearPoints} style={[styles.controlBtn, styles.clearAll]}>
                             <span>clear</span>
                         </span>
                     </span>
 
                     <span style={[styles.controls, styles.controlsRight]}>
-                        <span style={[styles.controlBtn, styles.addPoint]} onClick={this._addPoint}>
+                        <span onClick={this._addPoint} style={[styles.controlBtn, styles.addPoint]}>
                             <i className='material-icons' style={{fontSize: '36px'}}>add</i>
                         </span>
                     </span>
@@ -85,6 +85,15 @@ class CreateProfile extends React.Component {
 
     _addPoint = () => {
         CreateProfileActions.addPoint();
+    }
+
+    _clearPoints = () => {
+        console.log('_clearPoints called');
+        CreateProfileActions.clearPoints();
+    }
+
+    _saveProfile = () => {
+        CreateProfileActions.saveProfile({ profile: this.state.profile });
     }
 
     _removeInvalidPoints = (points) => {

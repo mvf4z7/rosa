@@ -13,7 +13,9 @@ class CreateProfileStore {
             handleSetProfileName: CreateProfileActions.SET_PROFILE_NAME,
             handleAddPoint: CreateProfileActions.ADD_POINT,
             handleDeletePoint: CreateProfileActions.DELETE_POINT,
-            handleModifyPoint: CreateProfileActions.MODIFY_POINT
+            handleModifyPoint: CreateProfileActions.MODIFY_POINT,
+            handleClearPoints: CreateProfileActions.CLEAR_POINTS,
+            handleSaveProfile: CreateProfileActions.SAVE_PROFILE
         });
     }
 
@@ -21,7 +23,7 @@ class CreateProfileStore {
         this.profile.name = data.profileName;
     }
 
-    handleAddPoint(data) {
+    handleAddPoint() {
         this.profile.points = this.profile.points.concat([[]]);
     }
 
@@ -31,10 +33,24 @@ class CreateProfileStore {
     }
 
     handleModifyPoint(data) {
-        console.log(data);
         this.profile.points = this.profile.points.slice();
         this.profile.points[data.index] = [data.time, data.temp];
-        console.log(JSON.stringify(this.profile.points));
+    }
+
+    handleClearPoints(data) {
+        this.profile.points = [[]];
+    }
+
+    handleSaveProfile() {
+        this._clearProfile();
+    }
+
+    _clearProfile() {
+        this.profile = {
+                name: '',
+                points: [[0, 23]],
+                lines: []
+        }
     }
 }
 
