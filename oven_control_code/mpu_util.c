@@ -18,13 +18,18 @@ void util_print_point(uint32 time, float target, float temperature)
 {
     cJSON *root;
     char *tmpMessage;
+    sint32 tmp_targ;
+    sint32 tmp_temp;
+    
+    tmp_targ = (sint32)( target + 0.5 );
+    tmp_temp = (sint32)( temperature + 0.5 );
 
     root = cJSON_CreateObject();
     cJSON_AddNumberToObject( root, "type", POINT );
-    cJSON_AddNumberToObject(root, "time", time);
-    cJSON_AddNumberToObject(root, "target", target);
-    cJSON_AddNumberToObject(root, "temp", temperature);
-    tmpMessage = cJSON_Print(root);
+    cJSON_AddNumberToObject( root, "time", time );
+    cJSON_AddNumberToObject( root, "target", tmp_targ );
+    cJSON_AddNumberToObject( root, "temp", tmp_temp );
+    tmpMessage = cJSON_Print( root );
     printf( "%s\n", tmpMessage );
     fflush( stdout );
     cJSON_Delete(root);
