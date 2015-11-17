@@ -32,6 +32,22 @@ void util_print_point(uint32 time, float target, float temperature)
     return;
 }
 
+void util_print_temp( float temp )
+{
+    cJSON *root;
+    char *tmpMessage;
+
+    root = cJSON_CreateObject();
+    cJSON_AddNumberToObject( root, "type", TEMP );
+    cJSON_AddNumberToObject( root, "temp", temp );
+    tmpMessage = cJSON_Print( root );
+    printf( "%s\n", tmpMessage );
+    fflush( stdout );
+    cJSON_Delete(root);
+    
+    return;
+}
+
 void util_print_debug( const char * string )
 {
     cJSON * root;
