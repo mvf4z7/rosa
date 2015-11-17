@@ -93,10 +93,12 @@ app.get('/api/profiles', function(req, res) {
 });
 
 app.post('/api/profiles', function(req, res) {
-    var profileName = req.body.profileName;
+    console.log(res.body);
+
+    var profileName = req.body.profile.name;
     var profile = req.body.profile;
-    database.createProfile(req.session.user, profileName, profile);
-    // Redirect?
+    database.createProfile(req.session.user, profileName, JSON.stringify(profile));
+    res.send({status: 'it saved'});
 });
 
 function requireLogin(req, res, next){

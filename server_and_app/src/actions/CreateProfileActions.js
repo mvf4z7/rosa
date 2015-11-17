@@ -1,4 +1,5 @@
 import alt from '../alt';
+import request from 'superagent';
 
 class CreateProfileActions {
     setProfileName(data) {
@@ -26,6 +27,18 @@ class CreateProfileActions {
         profile.lines = pointsToLines(profile.points);
 
         console.log(profile);
+
+        request
+            .post('/api/profiles')
+            .send({ profile: profile })
+            .end((err, res) => {
+                if(err) {
+                    console.log(err);
+                } else {
+                    console.log(res);
+                }
+            });
+
         this.dispatch();
     }
 }
