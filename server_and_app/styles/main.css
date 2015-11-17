@@ -5,19 +5,20 @@
 }
 
 html {
-    height: 100%;
     margin: 0;
-    background-color: #353842;
+    padding: 0;
+    background-color: #ECEEF4;
     box-sizing: border-box;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
 }
 
 body {
-    height: 100%;
     margin: 0;
+    padding: 0;
+    overflow-x: hidden;
     font-family: 'Roboto', sans-serif;
-    background-color: #353842;
+    background-color: #ECEEF4;
     -webkit-transform: translate3d(0, 0,  0);
     transform: translate3d(0, 0, 0);
     -webkit-backface-visibility: hidden;
@@ -30,7 +31,6 @@ header, h1, h2, h3, h4, h5, div, p, a {
 }
 
 #content {
-    height: 100%;
     width: 100%;
     background-color: #353842;
 }

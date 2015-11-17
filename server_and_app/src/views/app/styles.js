@@ -3,7 +3,7 @@ let Colors = mui.Styles.Colors;
 
 let styles = {
     appWrapper: {
-        height: '100%',
+        height: '100vh',
         backgroundColor: '#ECEEF4',
         WebkitTouchCallout: 'none',
         WebkitUserSelect: 'none',

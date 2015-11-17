@@ -92,7 +92,6 @@ class Info extends React.Component {
                         </p>
                     </div>
                 </div>
-
     		</div>
         );
     }
