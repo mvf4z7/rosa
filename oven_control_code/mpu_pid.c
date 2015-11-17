@@ -15,6 +15,7 @@
 #define CON_3     ( CON_DER )
 
 #define MAX_JSON_SZ 2500  //Maximum size of the JSON object.
+#define LOOKAHEAD_TIME      20  //Lookahead time of 10 secs.
 
 static char json_string[ MAX_JSON_SZ ];
 
@@ -134,7 +135,6 @@ float pid_calc( float targ, float cur_temp )
     }
     
     cur_error = targ - cur_temp;
-    //ret_duty = s_prev_duty + ( CON_1 * cur_error ) + ( CON_2 * s_error_vals[ 0 ] ) + ( CON_3 * s_error_vals[ 1 ] );
     
     ret_duty = cur_error * CON_PRO;
     
@@ -142,6 +142,7 @@ float pid_calc( float targ, float cur_temp )
     sprintf( json_string, "duty: %f", ret_duty );
     util_print_debug( json_string );
     
+    //Modification of the duty cycle
     if( ret_duty > 1.0 )
     {
         ret_duty = 1.0;
@@ -161,7 +162,12 @@ float pid_calc( float targ, float cur_temp )
 float pid_find_target( float time )
 {
     uint16 idx;
+    uint16 next_idx;
     float ret_targ;
+    float tmp_slope;
+    float b_val;
+    float tmp_y;
+    float tmp_x;
     
     for( idx = 0; idx < s_profile.num_lines; idx++ )
     {
@@ -176,7 +182,28 @@ float pid_find_target( float time )
         return( -1 );
     }
     
-    ret_targ = s_profile.lines[ idx ].m * time + s_profile.lines[ idx ].b;
+    next_idx = idx + 1;
+    
+    
+    
+    if(     ( next_idx < s_profile.num_lines )
+            && ( s_profile.lines[ next_idx ].m > s_profile.lines[ idx ].m ) 
+            && ( s_profile.lines[ next_idx ].pts[ START ].time < time + LOOKAHEAD_TIME ) )
+    {
+        tmp_slope = ( s_profile.lines[ next_idx ].m + s_profile.lines[ idx ].m ) / 2;
+        tmp_x = (float)s_profile.lines[ next_idx ].pts[ START ].time - 20;
+        tmp_y = s_profile.lines[ idx ].m * ( tmp_x ) + s_profile.lines[ idx ].b;
+        b_val = tmp_y - ( tmp_slope * tmp_x );
+        ret_targ = time * tmp_slope + b_val;
+        
+    }
+    else
+    {
+        ret_targ = s_profile.lines[ idx ].m * time + s_profile.lines[ idx ].b;
+    }
+    
+    sprintf( json_string, "Target: %f", ret_targ );
+    util_print_debug( json_string );
     
     return( ret_targ );
 }
