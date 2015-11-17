@@ -84,12 +84,10 @@ app.delete('/api/ovensim', function(req, res) {
 });
 
 app.get('/api/profiles', function(req, res) {
-    /*
     database.getAllProfiles(function(allProfiles){
         res.send(allProfiles);
     });
-    */
-    res.send(profiles);
+    //res.send(profiles);
 });
 
 app.post('/api/profiles', function(req, res) {
