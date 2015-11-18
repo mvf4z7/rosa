@@ -1,6 +1,6 @@
-import json
 import os.path
 import sqlite3
+from datetime import datetime
 
 db = './data.db'
 
@@ -27,21 +27,17 @@ privilege TINYINT NOT NULL
 cur.execute('''
 CREATE TABLE Profile (
 pname VARCHAR(20) PRIMARY KEY,
-username VARCHAR(50) NOT NULL,
-profile TEXT NOT NULL,
-FOREIGN KEY(username) REFERENCES User(username)
+profile TEXT NOT NULL
 )
 ''')
 
 # Create History table
 cur.execute('''
 CREATE TABLE History (
-username VARCHAR(50),
 pname VARCHAR(20),
 date DATETIME,
 profile TEXT NOT NULL,
-PRIMARY KEY(username, pname, date),
-FOREIGN KEY(username) REFERENCES User(username),
+PRIMARY KEY(pname, date),
 FOREIGN KEY(pname) REFERENCES Profile(pname)
 )
 ''')
@@ -65,8 +61,13 @@ INSERT INTO User(username, privilege) VALUES (?, ?)
 
 # Add a default temperature profile
 cur.execute('''
-INSERT INTO Profile(pname, username, profile) VALUES (?, ?, ?)
-''', ('default_profile', 'tjrg88@mst.edu', profile))
+INSERT INTO Profile(pname, profile) VALUES (?, ?)
+''', ('Pb-free', profile))
+
+# Add a default temperature profile run
+cur.execute('''
+INSERT INTO History(pname, date, profile) VALUES (?, ?, ?)
+''', ('Pb-free', datetime.strptime(datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"%Y-%m-%d %H:%M:%S"), profile))
 
 
 profileFile.close()
