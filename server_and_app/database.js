@@ -1,12 +1,6 @@
 var sqlite3 = require('sqlite3').verbose();
 
 var file = "data.db";
-/*
-var exists = fs.existsSync(file);
-if(!exists){
-    fs.openSync(file, 'w');
-}
-*/
 var db = new sqlite3.Database(file);
 
 var createUser = function(uname, privilege){
@@ -24,14 +18,14 @@ var createUser = function(uname, privilege){
     stmt.finalize();
 };
 
-var createProfile = function(uname, pname, profile){
-    if(uname === '' || pname === ''){
-        console.log('username/profile name cannot be blank!');
+var createProfile = function(pname, profile){
+    if(pname === ''){
+        console.log('Profile name cannot be blank!');
         return;
     }
 
-    var stmt = db.prepare('INSERT INTO Profile(pname, username, profile) VALUES (?, ?, ?)');
-    stmt.run(pname, uname, profile, function(err){
+    var stmt = db.prepare('INSERT INTO Profile(pname, profile) VALUES (?, ?)');
+    stmt.run(pname, profile, function(err){
         if(err){
             console.log(err);
         }
@@ -64,16 +58,16 @@ var checkUser = function(uname, userCb){
     stmt.finalize();
 };
 
-var getProfile = function(uname, pname, profileCb){
+var getProfile = function(pname, profileCb){
     var json_profile = null;
-    if(uname === '' || pname === ''){
-        console.log('username/profile name cannot be blank!');
+    if(pname === ''){
+        console.log('Profile name cannot be blank!');
         profileCb(json_profile);
         return;
     }
 
-    var stmt = db.prepare('SELECT profile FROM Profile WHERE username=? AND pname=?');
-    stmt.all(uname, pname, function(err, rows){
+    var stmt = db.prepare('SELECT profile FROM Profile WHERE pname=?');
+    stmt.all(pname, function(err, rows){
         if(err){
             console.log(err);
             profileCb(json_profile);
@@ -115,34 +109,44 @@ var getAllProfiles = function(profilesCb){
     stmt.finalize();
 };
 
-var getAllUserProfiles = function(uname, profilesCb){
-    var json_profiles = null;
+var removeUser = function(uname){
     if(uname === ''){
         console.log('username cannot be blank!');
-        profilesCb(json_profiles);
         return;
     }
 
-    var stmt = db.prepare('SELECT profile FROM Profile WHERE username=?');
+    var stmt = db.prepare('DELETE FROM User WHERE username=?');
     stmt.all(uname, function(err, rows){
         if(err){
             console.log(err);
-            profilesCb(json_profiles);
-            return;
-        }
-
-        if(rows.length > 0){
-            json_profiles = {'profiles': [], 'defaultProfile': JSON.parse(rows[0]['profile']).name};
-            for(var i = 0; i < rows.length; i++){
-                json_profiles.profiles.push(JSON.parse(rows[i]['profile']));
-            }
-            profilesCb(json_profiles);
-        }
-        else{
-            profilesCb(json_profiles);
         }
     });
     stmt.finalize();
+};
+
+var removeProfile = function(pname){
+    if(pname === ''){
+        console.log('username cannot be blank!');
+        return;
+    }
+
+    db.serialize(function() {
+        var stmt = db.prepare('DELETE FROM History WHERE pname=?');
+        stmt.all(pname, function(err, rows){
+            if(err){
+                console.log(err);
+            }
+        });
+        stmt.finalize();
+
+        stmt = db.prepare('DELETE FROM Profile WHERE pname=?');
+        stmt.all(pname, function(err, rows){
+            if(err){
+                console.log(err);
+            }
+        });
+        stmt.finalize();
+    });
 };
 
 var getPrivilege = function(uname, privilegeCb){
@@ -173,15 +177,15 @@ var getPrivilege = function(uname, privilegeCb){
 };
 
 // Sqlite date format is yyyy-MM-dd HH:mm:ss
-var saveRun = function(uname, pname, run){
-    if(!uname || !pname){
-        console.log('Username/profile name cannot be blank!');
+var saveRun = function(pname, run){
+    if(!pname){
+        console.log('Profile name cannot be blank!');
         return;
     }
 
     // date('now')
-    var stmt = db.prepare('INSERT INTO History(username, pname, date, profile) VALUES (?, ?, CURRENT_TIMESTAMP, ?)');
-    stmt.run(uname, pname, run, function(err){
+    var stmt = db.prepare('INSERT INTO History(pname, date, profile) VALUES (?, CURRENT_TIMESTAMP, ?)');
+    stmt.run(pname, run, function(err){
         if(err){
             console.log(err);
         }
@@ -197,6 +201,7 @@ module.exports = {
     getProfile : getProfile,
     getPrivilege: getPrivilege,
     getAllProfiles: getAllProfiles,
-    getAllUserProfiles: getAllUserProfiles,
-    saveRun: saveRun
+    saveRun: saveRun,
+    removeUser: removeUser,
+    removeProfile: removeProfile
 };
