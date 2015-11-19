@@ -161,7 +161,8 @@ let styles = {
         width: '3rem',
         color: 'white',
         cursor: 'pointer',
-        margin: '0 0.5rem'
+        margin: '0 0.5rem',
+        boxShadow: '0px 10px 6px -6px #777',
     },
     addPoint: {
         backgroundColor: 'green'
