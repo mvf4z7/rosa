@@ -61,10 +61,6 @@ class DataPointCard extends React.Component {
             return;
         }
 
-        // if(isNaN(time) || isNaN(temp)) {
-        //     return;
-        // }
-
         let data = {
             index: this.props.index,
             time: time,
