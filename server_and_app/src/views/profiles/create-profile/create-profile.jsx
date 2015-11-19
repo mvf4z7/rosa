@@ -26,8 +26,12 @@ class CreateProfile extends React.Component {
     componentDidMount() {
         CreateProfileStore.listen(this._onCreateProfileStoreChange);
 
-        if(this.state.profile.name !== '') {
-            this.refs.textField.setValue(this.state.profile.name);
+        this.refs.textField.setValue(this.state.profile.name);
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if(this.state.profile.name != nextState.profile.name) {
+            this.refs.textField.setValue(nextState.profile.name);
         }
     }
 
@@ -78,6 +82,7 @@ class CreateProfile extends React.Component {
     }
 
     _onCreateProfileStoreChange = (state) => {
+        console.log(state);
         this.setState(state);
     }
 
@@ -97,6 +102,21 @@ class CreateProfile extends React.Component {
     }
 
     _saveProfile = () => {
+        if(!this.state.profile.name) {
+            alert('A profile cannot be saved without a name');
+            return;
+        }
+
+        let emptyPoints = this.state.profile.points.filter(function(point) {
+            return (point.length !== 2);
+        });
+        if(emptyPoints.length) {
+            let message = 'There are empty or incomplete points in your profile! ' +
+                          'Please remove these points or fill in the blanks.';
+            alert(message);
+            return;
+        }
+
         CreateProfileActions.saveProfile({ profile: this.state.profile });
     }
 
