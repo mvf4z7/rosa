@@ -167,7 +167,7 @@ app.post('/api/adduser', function(req, res) {
 
     database.getPrivilege(req.session.user, function(privilege){
         if(privilege === 1){
-            //database.createUser(new_user, priv);
+            database.createUser(new_user, priv);
             res.send({status: 'User created'});
         }
         else{
@@ -192,6 +192,17 @@ app.post('/api/removeuser', function(req, res){
         }
         else{
             res.send({error: 'You do not have access to remove users!'});
+        }
+    });
+});
+
+app.get('/api/allusers', function(req, res){
+    database.getAllUsers(function(users){
+        if(users){
+            res.send({users: users});
+        }
+        else{
+            res.send({error: 'Error getting users'});
         }
     });
 });

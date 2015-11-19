@@ -109,6 +109,30 @@ var getAllProfiles = function(profilesCb){
     stmt.finalize();
 };
 
+var getAllUsers = function(usersCb){
+    var user_list = null;
+    var stmt = db.prepare('SELECT username FROM User');
+    stmt.all(function(err, rows){
+        if(err){
+            console.log(err);
+            usersCb(user_list);
+            return;
+        }
+
+        if(rows.length > 0){
+            user_list = [];
+            for(var i = 0; i < rows.length; i++){
+                user_list.push(rows[i]['username']);
+            }
+            usersCb(user_list);
+        }
+        else{
+            usersCb(user_list);
+        }
+    });
+    stmt.finalize();
+};
+
 var removeUser = function(uname){
     if(uname === ''){
         console.log('username cannot be blank!');
@@ -201,6 +225,7 @@ module.exports = {
     getProfile : getProfile,
     getPrivilege: getPrivilege,
     getAllProfiles: getAllProfiles,
+    getAllUsers: getAllUsers,
     saveRun: saveRun,
     removeUser: removeUser,
     removeProfile: removeProfile
