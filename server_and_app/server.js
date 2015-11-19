@@ -134,15 +134,29 @@ app.post('/api/profiles', function(req, res) {
     var profileName = req.body.profile.name;
     var profile = req.body.profile;
 
-    database.createProfile(profileName, JSON.stringify(profile));
-    res.send({status: 'Saved profile'});
+    database.createProfile(profileName, JSON.stringify(profile), function(error){
+        if(error){
+            console.log(error);
+            res.send({error: error});
+        }
+        else{
+            res.send({status: 'Saved profile'});
+        }
+    });
 });
 
 app.post('/api/removeprofile', function(req, res) {
     var profileName = req.body.pname;
 
-    database.removeProfile(profileName);
-    res.send({status: 'Removed profile'});
+    database.removeProfile(profileName, function(error){
+        if(error){
+            console.log(error);
+            res.send({error: error});
+        }
+        else{
+            res.send({status: 'Removed profile'});
+        }
+    });
 });
 
 app.post('/api/adduser', function(req, res) {
@@ -167,8 +181,15 @@ app.post('/api/adduser', function(req, res) {
 
     database.getPrivilege(req.session.user, function(privilege){
         if(privilege === 1){
-            database.createUser(new_user, priv);
-            res.send({status: 'User created'});
+            database.createUser(new_user, priv, function(error){
+                if(error){
+                    console.log(error);
+                    res.send({error: error});
+                }
+                else{
+                    res.send({status: 'User created'});
+                }
+            });
         }
         else{
             res.send({error: 'You do not have access to add users!'});
@@ -182,13 +203,21 @@ app.post('/api/removeuser', function(req, res){
 
     if(!user){
         console.log('Cannot remove user: ', user);
+        res.send({error: 'Cannot remove blank user'});
         return;
     }
 
     database.getPrivilege(req.session.user, function(privilege){
         if(privilege === 1){
-            database.removeUser(user);
-            res.send({status: 'Finished removing user'});
+            database.removeUser(user, function(error){
+                if(error){
+                    console.log(error);
+                    res.send({error: error});
+                }
+                else{
+                    res.send({status: 'Finished removing user'});
+                }
+            });
         }
         else{
             res.send({error: 'You do not have access to remove users!'});

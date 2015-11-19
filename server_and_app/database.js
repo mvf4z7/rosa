@@ -3,31 +3,37 @@ var sqlite3 = require('sqlite3').verbose();
 var file = "data.db";
 var db = new sqlite3.Database(file);
 
-var createUser = function(uname, privilege){
+var createUser = function(uname, privilege, error){
     if(uname === '' || privilege === null){
-        console.log('username/privilege cannot be null!');
+        error('username/privilege cannot be null!');
         return;
     }
 
     var stmt = db.prepare('INSERT INTO User(username, privilege) VALUES (?, ?)');
     stmt.run(uname, privilege, function(err){
         if(err){
-            console.log(err);
+            error(err);
+        }
+        else{
+            error(null);
         }
     });
     stmt.finalize();
 };
 
-var createProfile = function(pname, profile){
+var createProfile = function(pname, profile, error){
     if(pname === ''){
-        console.log('Profile name cannot be blank!');
+        error('Profile name cannot be blank!');
         return;
     }
 
     var stmt = db.prepare('INSERT INTO Profile(pname, profile) VALUES (?, ?)');
     stmt.run(pname, profile, function(err){
         if(err){
-            console.log(err);
+            error(err);
+        }
+        else{
+            error(null);
         }
     });
     stmt.finalize();
@@ -133,24 +139,27 @@ var getAllUsers = function(usersCb){
     stmt.finalize();
 };
 
-var removeUser = function(uname){
+var removeUser = function(uname, error){
     if(uname === ''){
-        console.log('username cannot be blank!');
+        error('username cannot be blank!');
         return;
     }
 
     var stmt = db.prepare('DELETE FROM User WHERE username=?');
     stmt.all(uname, function(err, rows){
         if(err){
-            console.log(err);
+            error(err);
+        }
+        else{
+            error(null);
         }
     });
     stmt.finalize();
 };
 
-var removeProfile = function(pname){
+var removeProfile = function(pname, error){
     if(pname === ''){
-        console.log('username cannot be blank!');
+        error('username cannot be blank!');
         return;
     }
 
@@ -158,7 +167,7 @@ var removeProfile = function(pname){
         var stmt = db.prepare('DELETE FROM History WHERE pname=?');
         stmt.all(pname, function(err, rows){
             if(err){
-                console.log(err);
+                error(err);
             }
         });
         stmt.finalize();
@@ -166,7 +175,10 @@ var removeProfile = function(pname){
         stmt = db.prepare('DELETE FROM Profile WHERE pname=?');
         stmt.all(pname, function(err, rows){
             if(err){
-                console.log(err);
+                error(err);
+            }
+            else{
+                error(null);
             }
         });
         stmt.finalize();
@@ -201,9 +213,9 @@ var getPrivilege = function(uname, privilegeCb){
 };
 
 // Sqlite date format is yyyy-MM-dd HH:mm:ss
-var saveRun = function(pname, run){
+var saveRun = function(pname, run, error){
     if(!pname){
-        console.log('Profile name cannot be blank!');
+        error('Profile name cannot be blank!');
         return;
     }
 
@@ -211,7 +223,10 @@ var saveRun = function(pname, run){
     var stmt = db.prepare('INSERT INTO History(pname, date, profile) VALUES (?, CURRENT_TIMESTAMP, ?)');
     stmt.run(pname, run, function(err){
         if(err){
-            console.log(err);
+            error(err);
+        }
+        else{
+            error(null);
         }
     });
     stmt.finalize();
