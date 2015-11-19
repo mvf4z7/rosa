@@ -107,10 +107,10 @@ class CreateProfile extends React.Component {
             return;
         }
 
-        let emptyPoints = this.state.profile.points.filter(function(point) {
+        let invalidPoints = this.state.profile.points.filter(function(point) {
             return (point.length !== 2);
         });
-        if(emptyPoints.length) {
+        if(invalidPoints.length) {
             let message = 'There are empty or incomplete points in your profile! ' +
                           'Please remove these points or fill in the blanks.';
             alert(message);
