@@ -25,6 +25,10 @@ class CreateProfile extends React.Component {
 
     componentDidMount() {
         CreateProfileStore.listen(this._onCreateProfileStoreChange);
+
+        if(this.state.profile.name !== '') {
+            this.refs.textField.setValue(this.state.profile.name);
+        }
     }
 
     componentWillUnmount() {
