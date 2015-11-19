@@ -7,7 +7,7 @@ import NavigationActions from '../../actions/NavigationActions';
 import UserStore from '../../stores/UserStore';
 
 import LiveHighchart from '../../components/live-highchart/live-highchart';
-import { RaisedButton, TextField, SelectField, Dialog, FlatButton } from 'material-ui';
+import { RaisedButton, TextField, SelectField, Dialog, FlatButton, Snackbar } from 'material-ui';
 
 import styles from './styles';
 
@@ -19,7 +19,7 @@ class Users extends React.Component {
 
         let UserStoreState = UserStore.getState();
 
-        this._handleTouchTapAdd = this._handleTouchTapAdd.bind(this);
+        //this._handleTouchTapAdd = this._handleTouchTapAdd.bind(this);
         this._handleTouchTapRemove = this._handleTouchTapRemove.bind(this);
         this._userChange = this._userChange.bind(this);
         this._privChange = this._privChange.bind(this);
@@ -32,7 +32,8 @@ class Users extends React.Component {
             users: UserStoreState.users,
             selectedProfileIdx: UserStoreState.selectedUserIdx,
             user: '',
-            privilege: 0
+            privilege: 0,
+            autoHideDuration: 5 * 1000
         };
     }
 
@@ -55,6 +56,7 @@ class Users extends React.Component {
                 <h3 style={styles.sectionTitle}>Give a User Access to ROSA</h3>
                 <form style={styles.buttonContainer} action='/api/adduser' method='post'>
                     <TextField
+                        ref='email'
                         type='text'
                         hintText='Email address'
                         onChange={this._userChange} /><br />
@@ -65,8 +67,13 @@ class Users extends React.Component {
                         label='Add user'
                         primary={true}
                         linkButton={true}
-                        onTouchTap={this._handleTouchTapAdd}
+                        onTouchTap={this._handleTouchTapAdd.bind(this)}
                         style={styles.button} />
+                    <Snackbar
+                        ref='addsnack'
+                        bodyStyle={styles.snackbar}
+                        message='Added user to ROSA'
+                        autoHideDuration={this.state.autoHideDuration} />
                 </form>
                 <h3 style={styles.tagLine}>--- OR ---</h3>
                 <h3 style={styles.sectionTitle}>Remove a User's Access to ROSA</h3>
@@ -80,6 +87,11 @@ class Users extends React.Component {
                         linkButton={true}
                         onTouchTap={this._handleTouchTapRemove}
                         style={styles.button} />
+                    <Snackbar
+                        ref='removesnack'
+                        bodyStyle={styles.snackbar}
+                        message='Removed user from ROSA'
+                        autoHideDuration={this.state.autoHideDuration} />
                 </form>
             </div>
         );
@@ -98,33 +110,33 @@ class Users extends React.Component {
     };
 
     _handleTouchTapAdd(){
+        let snackbar = this.refs.addsnack;
+        let email = this.refs.email;
         request
             .post('/api/adduser', this.state)
             .end(function(err, res) {
                 if(res.body.error) {
-                    alert('Error: ' + res.body.error);
-                    //NavigationActions.transitionTo({ route: '/users' });
+                    alert('Error: Could not add user');
                 }
                 else{
-                    alert('Successfully added user to ROSA');
                     UserActions.fetchUsers();
-                    //NavigationActions.transitionTo({ route: '/users' });
+                    email.clearValue();
+                    snackbar.show();
                 }
             });
     }
 
     _handleTouchTapRemove(){
+        let snackbar = this.refs.removesnack;
         request
             .post('/api/removeuser', {user: this.state.users[this.state.selectedUserIdx]})
             .end(function(err, res) {
                 if(res.body.error) {
-                    alert('Error: ' + res.body.error);
-                    //NavigationActions.transitionTo({ route: '/users' });
+                    alert('Error: Could not remove user');
                 }
                 else{
-                    alert('Successfully removed user from ROSA');
                     UserActions.fetchUsers();
-                    //NavigationActions.transitionTo({ route: '/users' });
+                    snackbar.show();
                 }
             });
     }

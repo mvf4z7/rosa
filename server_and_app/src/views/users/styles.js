@@ -48,6 +48,10 @@ let styles = {
         color: '#0A5CBF',
         margin: '2rem',
         textAlign: 'center'
+    },
+    snackbar: {
+        backgroundColor: '#0A5CBF',
+        textAlign: 'center'
     }
 };
 
