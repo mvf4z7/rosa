@@ -22,7 +22,7 @@ let menuItems = [
     { route: '/', text: 'home' },
     { route: '/create-profile', text: 'create profile' },
     { route: '/profiles', text: 'manage profiles' },
-    { route: '/adduser', text: 'add user' },
+    { route: '/users', text: 'manage users' },
     { route: '/info', text: 'info' },
     { route: '/logout', text: 'logout'}
 ];

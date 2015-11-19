@@ -43,6 +43,11 @@ let styles = {
     },
     input: {
         margin: '1rem'
+    },
+    sectionTitle: {
+        color: '#0A5CBF',
+        margin: '2rem',
+        textAlign: 'center'
     }
 };
 
