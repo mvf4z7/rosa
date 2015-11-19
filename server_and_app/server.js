@@ -29,6 +29,18 @@ var oauth2 = require('simple-oauth2')({
     tokenPath: '/oauth/access_token'
 });
 
+// Authorization uri definition
+var github_authorization_uri = oauth2.authCode.authorizeURL({
+    redirect_uri: 'http://localhost:8001/githubauth',
+    scope: 'notifications,user:email',
+    state: '3(#0/!~'
+});
+
+var google_authorization_uri = googleOAuthClient.generateAuthUrl({
+    access_type: 'offline',
+    scope: 'https://www.googleapis.com/auth/userinfo.email'
+});
+
 var app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -39,6 +51,15 @@ if(isProduction || isPsuedoProduction) {
     app.use('/build', express.static(path.join(__dirname, 'build')));
 } else {
     app.use('/build', proxy(url.parse('http://localhost:3001/build')));
+}
+
+function requireLogin(req, res, next){
+    if(!req.session.token){
+        res.sendFile(__dirname + '/login.html');
+    }
+    else{
+        next();
+    }
 }
 
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
@@ -52,12 +73,32 @@ app.use(session({
     ephemeral: true
 }));
 
+app.use(function(req, res, next) {
+    if (req.session && req.session.token) {
+        database.checkUser(req.session.user, function(user){
+            if(user){
+                req.user = user;
+                req.session.user = user;  //refresh the session value
+                res.locals.user = user;
+                console.log('A user logged in: ', user);
+                next();
+            }
+            else{
+                req.session.reset();
+                res.redirect('/');
+            }
+        });
+
+    } else {
+        next();
+    }
+});
+
 app.get('/api/ovensim', function(req, res) {
     tempProfile.getOvenState(function(ovenState) {
         res.send({ ovenOn: ovenState });
     });
 });
-
 
 app.put('/api/ovensim', function(req, res) {
     console.log(JSON.stringify(req.session));
@@ -87,58 +128,34 @@ app.get('/api/profiles', function(req, res) {
     database.getAllProfiles(function(allProfiles){
         res.send(allProfiles);
     });
-    //res.send(profiles);
 });
 
 app.post('/api/profiles', function(req, res) {
-    console.log(res.body);
-
     var profileName = req.body.profile.name;
     var profile = req.body.profile;
-    database.createProfile(req.session.user, profileName, JSON.stringify(profile));
-    res.send({status: 'it saved'});
+
+    database.createProfile(profileName, JSON.stringify(profile));
+    res.send({status: 'Saved profile'});
 });
 
-function requireLogin(req, res, next){
-    if(!req.session.token){
-        res.sendFile(__dirname + '/login.html');
-    }
-    else{
-        next();
-    }
-}
+app.post('/api/removeprofile', function(req, res) {
+    var profileName = req.body.pname;
 
-app.use(function(req, res, next) {
-    if (req.session && req.session.token) {
-        database.checkUser(req.session.user, function(user){
-            if(user){
-                req.user = user;
-                req.session.user = user;  //refresh the session value
-                res.locals.user = user;
-                console.log('A user logged in: ', user);
-                //console.log(JSON.stringify(res.locals));
-                next();
-            }
-            else{
-                req.session.reset();
-                res.redirect('/');
-            }
-        });
-
-    } else {
-        next();
-    }
+    database.removeProfile(profileName);
+    res.send({status: 'Removed profile'});
 });
 
 app.post('/api/adduser', function(req, res) {
     var new_user = req.body.user;
     var priv = req.body.privilege;
-    console.log('Adding user: ' + new_user + '; ' + priv + ' (' + typeof priv + ')');
 
-    // Ensure that new_user is populated
-    // Add regex to check valid email address?
-    if(!new_user){
-        res.send({error: 'Email address cannot be blank!'});
+    // Regex to check if resembles valid email address
+    var regex = /.+@.+\..{2,}/;
+    var result = new_user.match(regex);
+
+    // Note that a better way to check email validity is to send confirmation email
+    if(!result){
+        res.send({error: 'Email address does not appear to be valid'});
         return;
     }
 
@@ -151,13 +168,32 @@ app.post('/api/adduser', function(req, res) {
     database.getPrivilege(req.session.user, function(privilege){
         if(privilege === 1){
             //database.createUser(new_user, priv);
-            res.send({});
+            res.send({status: 'User created'});
         }
         else{
             res.send({error: 'You do not have access to add users!'});
         }
     });
 
+});
+
+app.post('/api/removeuser', function(req, res){
+    var user = req.body.user;
+
+    if(!user){
+        console.log('Cannot remove user: ', user);
+        return;
+    }
+
+    database.getPrivilege(req.session.user, function(privilege){
+        if(privilege === 1){
+            database.removeUser(user);
+            res.send({status: 'Finished removing user'});
+        }
+        else{
+            res.send({error: 'You do not have access to remove users!'});
+        }
+    });
 });
 
 app.get('/googlelogin', function(req, res) {
@@ -170,18 +206,6 @@ app.get('/githublogin', function(req, res) {
 
 app.get('/', requireLogin, function(req, res) {
     res.sendFile(__dirname + '/index.html');
-});
-
-// Authorization uri definition
-var github_authorization_uri = oauth2.authCode.authorizeURL({
-    redirect_uri: 'http://localhost:8001/githubauth',
-    scope: 'notifications,user:email',
-    state: '3(#0/!~'
-});
-
-var google_authorization_uri = googleOAuthClient.generateAuthUrl({
-    access_type: 'offline',
-    scope: 'https://www.googleapis.com/auth/userinfo.email'
 });
 
 app.get('/googleauth', function(req, res) {
