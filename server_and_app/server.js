@@ -145,8 +145,8 @@ app.post('/api/profiles', function(req, res) {
     });
 });
 
-app.post('/api/removeprofile', function(req, res) {
-    var profileName = req.body.pname;
+app.delete('/api/profiles/:pname', function(req, res) {
+    var profileName = req.params.pname;
 
     database.removeProfile(profileName, function(error){
         if(error){
