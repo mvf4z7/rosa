@@ -17,6 +17,7 @@ var querystring = require('querystring');
 var request = require('request');
 var secrets = require('./secret');
 var google = require('googleapis');
+var api = require('./routes/api');
 
 var redirect = 'http://' + secrets.hostname + ':8001/googleauth';
 var googleOAuth2 = google.auth.OAuth2;
@@ -73,6 +74,8 @@ app.use(session({
     ephemeral: true
 }));
 
+app.use('/api', api);
+
 app.use(function(req, res, next) {
     if (req.session && req.session.token) {
         database.checkUser(req.session.user, function(user){
@@ -92,148 +95,6 @@ app.use(function(req, res, next) {
     } else {
         next();
     }
-});
-
-app.get('/api/ovensim', function(req, res) {
-    tempProfile.getOvenState(function(ovenState) {
-        res.send({ ovenOn: ovenState });
-    });
-});
-
-app.put('/api/ovensim', function(req, res) {
-    console.log(JSON.stringify(req.session));
-    if(req.session && req.session.token){
-        var profile = req.body.profile;
-        console.log(req.body);
-        console.log('Starting oven sim');
-        tempProfile.runSim(profile, function(result){
-            res.send(result);
-        });
-    }
-    else
-    {
-        console.log('Session expired');
-        res.send({error: 'Your session has expired. Please log back in.'});
-    }
-});
-
-app.delete('/api/ovensim', function(req, res) {
-    tempProfile.stopSim(function(result){
-        res.send(result);
-    });
-
-});
-
-app.get('/api/profiles', function(req, res) {
-    database.getAllProfiles(function(allProfiles){
-        res.send(allProfiles);
-    });
-});
-
-app.post('/api/profiles', function(req, res) {
-    var profileName = req.body.profile.name;
-    var profile = req.body.profile;
-
-    database.createProfile(profileName, JSON.stringify(profile), function(error){
-        if(error){
-            console.log(error);
-            res.send({error: error});
-        }
-        else{
-            res.send({status: 'Saved profile'});
-        }
-    });
-});
-
-app.delete('/api/profiles/:pname', function(req, res) {
-    var profileName = req.params.pname;
-
-    database.removeProfile(profileName, function(error){
-        if(error){
-            console.log(error);
-            res.send({error: error});
-        }
-        else{
-            res.send({status: 'Removed profile'});
-        }
-    });
-});
-
-app.post('/api/adduser', function(req, res) {
-    var new_user = req.body.user;
-    var priv = req.body.privilege;
-
-    // Regex to check if resembles valid email address
-    var regex = /.+@.+\..{2,}/;
-    var result = new_user.match(regex);
-
-    // Note that a better way to check email validity is to send confirmation email
-    if(!result){
-        res.send({error: 'Email address does not appear to be valid'});
-        return;
-    }
-
-    // Ensure that priv is an integer and an approved access level
-    if(isNaN(priv) || priv != parseInt(Number(priv)) || isNaN(parseInt(priv, 10)) || priv < 0 || priv > 1){
-        res.send({error: 'Could not recognize access level'});
-        return;
-    }
-
-    database.getPrivilege(req.session.user, function(privilege){
-        if(privilege === 1){
-            database.createUser(new_user, priv, function(error){
-                if(error){
-                    console.log(error);
-                    res.send({error: error});
-                }
-                else{
-                    res.send({status: 'User created'});
-                }
-            });
-        }
-        else{
-            res.send({error: 'You do not have access to add users!'});
-        }
-    });
-
-});
-
-app.post('/api/removeuser', function(req, res){
-    var user = req.body.user;
-
-    if(!user){
-        console.log('Cannot remove user: ', user);
-        res.send({error: 'Cannot remove blank user'});
-        return;
-    }
-
-    database.getPrivilege(req.session.user, function(privilege){
-        if(privilege === 1){
-            database.removeUser(user, function(error){
-                if(error){
-                    console.log(error);
-                    res.send({error: error});
-                }
-                else{
-                    res.send({status: 'Finished removing user'});
-                }
-            });
-        }
-        else{
-            res.send({error: 'You do not have access to remove users!'});
-        }
-    });
-});
-
-app.get('/api/allusers', function(req, res){
-    database.getAllUsers(function(users){
-        if(users){
-            res.send({users: users});
-        }
-        else{
-            res.send({error: 'Error getting users'});
-        }
-    });
 });
 
 app.get('/googlelogin', function(req, res) {
