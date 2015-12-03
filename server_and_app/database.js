@@ -39,6 +39,24 @@ var createProfile = function(pname, profile, error){
     stmt.finalize();
 };
 
+var updateProfile = function(pname, profile, error){
+    if(pname === ''){
+        error('Profile name cannot be blank!');
+        return;
+    }
+
+    var stmt = db.prepare('UPDATE Profile SET profile=? WHERE pname=?');
+    stmt.run(profile, pname, function(err){
+        if(err){
+            error(err);
+        }
+        else{
+            error(null);
+        }
+    });
+    stmt.finalize();
+};
+
 var checkUser = function(uname, userCb){
     var result = null;
     if(uname === ''){
@@ -242,6 +260,7 @@ module.exports = {
     getAllProfiles: getAllProfiles,
     getAllUsers: getAllUsers,
     saveRun: saveRun,
+    updateProfile: updateProfile,
     removeUser: removeUser,
     removeProfile: removeProfile
 };
