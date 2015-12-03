@@ -80,16 +80,35 @@ var runSim = function(profile, cb){
         ovenControlProgram.stdout.on('data', function(data) {
             data = data + ''; // convert raw bytes to string
 
-            try {
-                data = JSON.parse(data);
-                if(data.type === 0) {
-                    io.emit('tempData', data);
-                } else {
-                    console.log(data.msg);
+            // Issues with receiving multiple messages at a time.
+            // Attempting to split them apart and parse separately.
+            var jsonStrings = data.split('{').map(function(str) {
+                return '{' + str;
+            });
+
+            jsonStrings.forEach(function(str) {
+                try {
+                    var message = JSON.parse(str);
+                    if(message.type === 0) {
+                        io.emit('tempData', message);
+                    } else {
+                        console.log(message.msg);
+                    }
+                } catch(e) {
+                    console.log('error parsing JSON: ', e);
                 }
-            } catch(e) {
-                console.log('error parsing JSON: ', e);
-            }
+            });
+
+            // try {
+            //     data = JSON.parse(data);
+            //     if(data.type === 0) {
+            //         io.emit('tempData', data);
+            //     } else {
+            //         console.log(data.msg);
+            //     }
+            // } catch(e) {
+            //     console.log('error parsing JSON: ', e);
+            // }
         });
 
         ovenControlProgram.on('close', function(code, signal) {
