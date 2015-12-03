@@ -145,6 +145,20 @@ app.post('/api/profiles', function(req, res) {
     });
 });
 
+app.put('/api/profiles/:pname', function(req, res) {
+    var profileName = req.params.pname;
+
+    database.updateProfile(profileName, req.body.profile, function(error){
+        if(error){
+            console.log(error);
+            res.send({error: error});
+        }
+        else{
+            res.send({status: 'Updated profile'});
+        }
+    });
+});
+
 app.delete('/api/profiles/:pname', function(req, res) {
     var profileName = req.params.pname;
 
