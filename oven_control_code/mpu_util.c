@@ -30,7 +30,7 @@ void util_print_point(uint32 time, float target, float temperature)
     cJSON_AddNumberToObject( root, "target", tmp_targ );
     cJSON_AddNumberToObject( root, "temp", tmp_temp );
     tmpMessage = cJSON_Print( root );
-    printf( "%s\n", tmpMessage );
+    printf( "%s", tmpMessage );
     fflush( stdout );
     cJSON_Delete(root);
 
@@ -46,7 +46,7 @@ void util_print_temp( float temp )
     cJSON_AddNumberToObject( root, "type", TEMP );
     cJSON_AddNumberToObject( root, "temp", temp );
     tmpMessage = cJSON_Print( root );
-    printf( "%s\n", tmpMessage );
+    printf( "%s", tmpMessage );
     fflush( stdout );
     cJSON_Delete(root);
     
@@ -63,7 +63,7 @@ void util_print_debug( const char * string )
     cJSON_AddStringToObject( root, "msg", string );
     
     tmpMessage = cJSON_Print( root );
-    printf( "%s\n", tmpMessage );
+    printf( "%s", tmpMessage );
     fflush( stdout );
     cJSON_Delete(root);
     
@@ -93,7 +93,7 @@ void util_print_procId()
     cJSON_AddNumberToObject( root, "PID", (uint32)getpid() );
     
     tmpMessage = cJSON_Print( root );
-    printf( "%s\n", tmpMessage );
+    printf( "%s", tmpMessage );
     fflush( stdout );
     cJSON_Delete(root);
     return;
