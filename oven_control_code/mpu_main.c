@@ -70,8 +70,6 @@ int main( int argc, char *argv[] )
     start_time = 0;
     cur_time = 0;
     duty_cycle = 1.0;
-    pruio_pwm_setValue( io, P_OUT, PWM_FREQ, duty_cycle );
-    pruio_pwm_setValue( io, SERVO_PIN, SERVO_FREQ, SERVO_DUTY_CLOSE ); //close door
 
     if( pruio_config( io, 1, 0x1FE, 0, 4 ) )
     {
@@ -79,6 +77,9 @@ int main( int argc, char *argv[] )
         util_print_debug( print_string );
         return( -1 );
     }
+    
+    pruio_pwm_setValue( io, P_OUT, PWM_FREQ, duty_cycle );
+    pruio_pwm_setValue( io, SERVO_PIN, SERVO_FREQ, SERVO_DUTY_CLOSE ); //close door
 
     while( !force_stop )
     {
