@@ -79,12 +79,22 @@ var runSim = function(profile, cb){
 
         ovenControlProgram.stdout.on('data', function(data) {
             data = data + ''; // convert raw bytes to string
+            
+            if(data[data.length-1] === '\n') {
+                data = data.substring(0, data.length - 1);
+            }
 
             // Issues with receiving multiple messages at a time.
             // Attempting to split them apart and parse separately.
-            var jsonStrings = data.split('{').map(function(str) {
-                return '{' + str;
-            });
+        var jsonStrings = data.split('}').map(function(str) {
+            return str + '}';
+        }).filter(function(str) {
+            return str.length > 1
+        });
+        
+     
+        
+        
 
             jsonStrings.forEach(function(str) {
                 try {
