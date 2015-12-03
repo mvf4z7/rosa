@@ -79,7 +79,7 @@ var runSim = function(profile, cb){
 
         ovenControlProgram.stdout.on('data', function(data) {
             data = data + ''; // convert raw bytes to string
-
+            
             try {
                 data = JSON.parse(data);
                 if(data.type === 0) {
