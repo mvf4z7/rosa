@@ -14,10 +14,11 @@
 #define INC_INDEX( i, max );     i++; if( i >= max ) i = 0;
 
 #define P_OUT            P9_21
-#define SERVO_PIN        P9_14
+#define SERVO_PIN        P9_22
 #define SERVO_FREQ       50.0f // 50 Hz
 #define SERVO_DUTY_OPEN  0.08f
 #define SERVO_DUTY_CLOSE 0.12f
+#define SERVO_DUTY_IDLE  0.0f
 #define PWM_FREQ         0.5f
 #define PWM_PERIOD       ( 1 / PWM_FREQ )
 #define PWM_PERIOD_MS    ( PWM_PERIOD * 1000 )
@@ -84,6 +85,7 @@ int main( int argc, char *argv[] )
         temp = util_calc_temp( io->Adc->Value[ 1 ] );
         target_temp = pid_find_target( cur_time / 1000.0 );
         duty_cycle = pid_calc( target_temp, temp );
+        pruio_pwm_setValue( io, SERVO_PIN, SERVO_FREQ, SERVO_DUTY_IDLE );
 
         if( duty_cycle == -1 )
         {
@@ -94,7 +96,7 @@ int main( int argc, char *argv[] )
         if ( ( temp - target_temp) > 5.0 )
         {
           // OPEN DOOR
-            pruio_pwm_setValue( io, SERVO_PIN, SERVO_FREQ, SERVO_DUTY );
+            pruio_pwm_setValue( io, SERVO_PIN, SERVO_FREQ, SERVO_DUTY_OPEN );
             door_open = TRUE;
         }
 
@@ -122,10 +124,20 @@ int main( int argc, char *argv[] )
         start_time = start_time + PWM_PERIOD_MS;
     }
 
+    // I WISH WE COULD WAIT UNTIL THE OVEN IS AT 100 DEGREES C TO CLOSE THIS DOWN
     pruio_pwm_setValue( io, P_OUT, -1, 0.0f );
+    pruio_pwm_setValue( io, SERVO_PIN, SERVO_FREQ, SERVO_DUTY_CLOSE ); // CLOSE THE DOOR
+    
+    // STALL BEFORE SHUTTING DOWN PWM
+    timer_get( &start_time );
+    cur_time = start_time;
+    while( ( cur_time - start_time ) < 500 )
+    {
+        timer_get( &cur_time );
+    }
 
-    pruio_destroy(io);        /* destroy driver structure */
-
+    pruio_destroy(io);       /* destroy driver structure */ 
+    
     return 0;
 }
 
