@@ -15,7 +15,8 @@ class EditProfile extends React.Component {
 
         this.state = {
             profiles: TempProfilesStore.getState().profiles,
-            selectedProfileIdx: 0
+            selectedProfileIdx: 0,
+            tempProfile: null
         };
     }
 
@@ -40,10 +41,11 @@ class EditProfile extends React.Component {
     }
 
     render() {
-        let sanitizedPoints = this._removeInvalidPoints(this.state.profile.points);
+        let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
             return { text: text, payload: idx };
         });
+        let sanitizedPoints = isLoading ? [] : this._removeInvalidPoints(this.state.tempProfile);
 
         return (
             <div style={styles.viewWrapper}>
@@ -59,6 +61,7 @@ class EditProfile extends React.Component {
                         <TextField
                             ref='textField'
                             floatingLabelText="Profile Name"
+                            disabled={true}
                             onEnterKeyDown={this._updateProfileName}
                             onBlur={this._updateProfileName} />
                     </div>
