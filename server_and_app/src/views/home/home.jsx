@@ -2,11 +2,13 @@ import React from 'react';
 import request from 'superagent';
 
 import NavigationActions from '../../actions/NavigationActions';
+import HomeViewActions from '../../actions/HomeViewActions';
 import TempProfileActions from '../../actions/TempProfileActions';
 import LiveChartActions from '../../actions/LiveChartActions';
 
 import LiveChartStore from '../../stores/LiveChartStore';
 import TempProfilesStore from '../../stores/TempProfilesStore';
+import HomeViewStore from '../../stores/HomeViewStore';
 
 import mui, { Dialog, DropDownMenu, RaisedButton } from 'material-ui';
 import LiveHighchart from '../../components/live-highchart/live-highchart';
@@ -22,10 +24,12 @@ export default class Home extends React.Component {
         let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
             profiles: TempProfilesStoreState.profiles,
-            selectedProfileIdx: TempProfilesStoreState.selectedProfileIdx,
+            selectedProfileIdx: HomeViewStore.getState().selectedProfileIdx,
             defaultProfile: TempProfilesStoreState.defaultProfile,
             liveData: LiveChartStore.getState().liveData
         };
+
+        console.log('this.state.selectedProfileIdx: ', this.state.selectedProfileIdx);
 
         this.standardActions = [
           { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
@@ -40,6 +44,7 @@ export default class Home extends React.Component {
     componentDidMount() {
         LiveChartStore.listen(this._onLiveChartStoreChange);
         TempProfilesStore.listen(this._onTempProfilesStoreChange);
+        HomeViewStore.listen(this._onHomeViewStoreChange);
 
         TempProfileActions.fetchProfiles();
     }
@@ -47,6 +52,7 @@ export default class Home extends React.Component {
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);
+        HomeViewStore.unlisten(this._onHomeViewStoreChange);
     }
 
     _onDialogCancel() {
@@ -74,6 +80,7 @@ export default class Home extends React.Component {
                     <DropDownMenu
                         menuItems={menuItems}
                         disabled={isLoading}
+                        selectedIndex={this.state.selectedProfileIdx}
                         onChange={this._onDropDownChange}
                         autoWidth={true}/>
                 </div>
@@ -102,11 +109,28 @@ export default class Home extends React.Component {
     }
 
     _onTempProfilesStoreChange = (state) => {
+
+        // If there isn't a currently selected profile and we have already fetched
+        // profiles from the server then set the selected profile to the default profile.
+        if(this.state.selectedProfileIdx === null && state.defaultProfile && state.profiles) {
+            console.log('setting selectedProfile to default: ', state);
+            var defaultProfileIdx = state.profiles.map( profile => {
+                return profile.name
+            }).indexOf(state.defaultProfile);
+
+            // Was getting weird Alt.js bug if I didn't call this function without setTimeout
+            setTimeout(HomeViewActions.setSelectedProfileIdx, 0, { selectedProfileIdx: defaultProfileIdx });
+        }
+        this.setState(state);
+    }
+
+    _onHomeViewStoreChange = (state) => {
+        console.log('homeViewstorechange: ', state);
         this.setState(state);
     }
 
     _onDropDownChange = (e, selectedIdx, menuItem) => {
-        TempProfileActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
+        HomeViewActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
     }
 
     _onButtonClicked() {
