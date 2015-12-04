@@ -19,7 +19,6 @@ class TempProfileActions {
                 defaultIdx = 0;
 
                 this.actions.setProfiles({ profiles: profiles });
-                //this.actions.setSelectedProfileIdx({ selectedProfileIdx: defaultIdx });
                 this.actions.setDefaultProfile({ defaultProfile: res.body.defaultProfile });
             });
     }

@@ -1,21 +1,21 @@
 import React from 'react';
 import Radium from 'radium';
 
-import CreateProfileStore from '../../../stores/CreateProfileStore';
+import TempProfilesStore from '../../../stores/TempProfilesStore';
 
 import NavigationActions from '../../../actions/NavigationActions';
-import CreateProfileActions from '../../../actions/CreateProfileActions';
 
 import CreateEditHighchart from '../../../components/create-edit-highchart/create-edit-highchart';
 import DataPointCard from '../../../components/data-point-card/data-point-card';
-import { FontIcon, TextField } from 'material-ui';
+import { DropDownMenu, FontIcon, TextField } from 'material-ui';
 
 class EditProfile extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            profile: CreateProfileStore.getState().profile
+            profiles: TempProfilesStore.getState().profiles,
+            selectedProfileIdx: 0
         };
     }
 
@@ -41,10 +41,19 @@ class EditProfile extends React.Component {
 
     render() {
         let sanitizedPoints = this._removeInvalidPoints(this.state.profile.points);
+        let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
+            return { text: text, payload: idx };
+        });
 
         return (
             <div style={styles.viewWrapper}>
                 <CreateEditHighchart profileName={this.state.profile.name} data={sanitizedPoints}/>
+                <DropDownMenu
+                    menuItems={menuItems}
+                    disabled={isLoading}
+                    selectedIndex={this.state.selectedProfileIdx}
+                    onChange={this._onDropDownChange}
+                    autoWidth={true}/>
                 <div style={styles.scroller}>
                     <div style={styles.textFieldContainer}>
                         <TextField
@@ -118,6 +127,10 @@ class EditProfile extends React.Component {
         }
 
         CreateProfileActions.saveProfile({ profile: this.state.profile });
+    }
+
+    _onDropDownChange = (e, selectedIdx, menuItem) => {
+
     }
 
     _removeInvalidPoints = (points) => {
