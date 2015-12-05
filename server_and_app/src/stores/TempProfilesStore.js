@@ -10,6 +10,7 @@ class TempProfileStore {
         this.bindListeners({
             handleFetchProfiles: TempProfileActions.FETCH_PROFILES,
             handleSetProfiles: TempProfileActions.SET_PROFILES,
+            handleDeleteProfile: TempProfileActions.DELETE_PROFILE,
             handleSetDefaultProfile: TempProfileActions.SET_DEFAULT_PROFILE
         });
     }
@@ -21,6 +22,11 @@ class TempProfileStore {
 
     handleSetProfiles(data) {
         this.profiles = data.profiles;
+    }
+
+    handleDeleteProfile(data) {
+        this.profiles = [];
+        this.defaultProfile = null;
     }
 
     handleSetDefaultProfile(data) {

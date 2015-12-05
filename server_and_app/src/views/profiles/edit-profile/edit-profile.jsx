@@ -8,7 +8,7 @@ import TempProfileActions from '../../../actions/TempProfileActions';
 
 import CreateEditHighchart from '../../../components/create-edit-highchart/create-edit-highchart';
 import DataPointCard from '../../../components/data-point-card/data-point-card';
-import { DropDownMenu, FontIcon, TextField } from 'material-ui';
+import { DropDownMenu, FontIcon } from 'material-ui';
 
 class EditProfile extends React.Component {
     constructor(props) {
@@ -38,7 +38,7 @@ class EditProfile extends React.Component {
     }
 
     componentWillUnmount() {
-        TempProfileStore.unlisten(this._onTempProfileStoreChange);
+        TempProfileStore.unlisten(this._onTempProfilesStoreChange);
     }
 
     render() {
@@ -67,6 +67,11 @@ class EditProfile extends React.Component {
                         <span onClick={this._saveProfile} style={[styles.controlBtn, styles.save]}>
                             <i className='material-icons' style={{fontSize: '30px'}}>save</i>
                         </span>
+                        <span
+                            onClick={this._deleteProfile.bind(this, this.state.selectedProfileIdx)}
+                            style={[styles.controlBtn, styles.clearAll]}>
+                            <span>delete</span>
+                        </span>
                         <span onClick={this._clearPoints} style={[styles.controlBtn, styles.clearAll]}>
                             <span>clear</span>
                         </span>
@@ -88,6 +93,15 @@ class EditProfile extends React.Component {
         if(this.state.selectedProfileIdx === null && state.profiles.length) {
             this.setState({ selectedProfileIdx: 0 });
         }
+    }
+
+    _deleteProfile = (index) => {
+        this.setState({ selectedProfileIdx: null });
+
+        TempProfileActions.deleteProfile({
+            index: index,
+            profile: this.state.profiles[index]
+        });
     }
 
     _saveProfile = () => {

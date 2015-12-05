@@ -27,7 +27,22 @@ class TempProfileActions {
         this.dispatch(data);
     }
 
-    setSelectedProfileIdx(data) {
+    deleteProfile(data) {
+        this.dispatch();
+
+        request
+            .del('/api/profiles/' + data.profile.name)
+            .end( (err, res) => {
+                console.log('deleted profile: ', data.profile.name);
+                console.log('error: ', err);
+                console.log('response: ', res);
+
+                this.actions.profileDeleted(data);
+                this.actions.fetchProfiles();
+            });
+    }
+
+    profileDeleted(data) {
         this.dispatch(data);
     }
 
