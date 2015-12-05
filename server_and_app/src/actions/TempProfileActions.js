@@ -16,10 +16,9 @@ class TempProfileActions {
 
                 // Make default profile first in list of profiles
                 profiles = move(profiles, defaultIdx, 0);
-                defaultIdx = 0;
 
                 this.actions.setProfiles({ profiles: profiles });
-                this.actions.setDefaultProfile({ defaultProfile: res.body.defaultProfile });
+                this.actions.setDefaultProfileName({ defaultProfileName: res.body.defaultProfile });
             });
     }
 
@@ -46,7 +45,7 @@ class TempProfileActions {
         this.dispatch(data);
     }
 
-    setDefaultProfile(data) {
+    setDefaultProfileName(data) {
         this.dispatch(data);
     }
 }

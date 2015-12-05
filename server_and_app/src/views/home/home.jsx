@@ -25,7 +25,7 @@ export default class Home extends React.Component {
         this.state = {
             profiles: TempProfilesStoreState.profiles,
             selectedProfileIdx: HomeViewStore.getState().selectedProfileIdx,
-            defaultProfile: TempProfilesStoreState.defaultProfile,
+            defaultProfileName: TempProfilesStoreState.defaultProfileName,
             liveData: LiveChartStore.getState().liveData
         };
 
@@ -67,7 +67,7 @@ export default class Home extends React.Component {
         let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
         let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
         let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
-            let text = profile.name === this.state.defaultProfile ? profile.name + ' (default)' : profile.name;
+            let text = profile.name === this.state.defaultProfileName ? profile.name + ' (default)' : profile.name;
             return { text: text, payload: idx };
         });
 
@@ -112,13 +112,14 @@ export default class Home extends React.Component {
 
         // If there isn't a currently selected profile and we have already fetched
         // profiles from the server then set the selected profile to the default profile.
-        if(this.state.selectedProfileIdx === null && state.defaultProfile && state.profiles) {
+        if(this.state.selectedProfileIdx === null && state.defaultProfileName && state.profiles) {
             console.log('setting selectedProfile to default: ', state);
             var defaultProfileIdx = state.profiles.map( profile => {
                 return profile.name
-            }).indexOf(state.defaultProfile);
+            }).indexOf(state.defaultProfileName);
 
-            // Was getting weird Alt.js bug if I didn't call this function without setTimeout
+            // Was getting weird Alt.js bug if I didn't call this function without setTimeout.
+            // Look into using Alt.js defer function to fix this.
             setTimeout(HomeViewActions.setSelectedProfileIdx, 0, { selectedProfileIdx: defaultProfileIdx });
         }
         this.setState(state);

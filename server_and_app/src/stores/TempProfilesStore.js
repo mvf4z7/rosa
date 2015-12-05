@@ -5,19 +5,19 @@ class TempProfileStore {
 
     constructor() {
         this.profiles = [];
-        this.defaultProfile = null;
+        this.defaultProfileName = null;
 
         this.bindListeners({
             handleFetchProfiles: TempProfileActions.FETCH_PROFILES,
             handleSetProfiles: TempProfileActions.SET_PROFILES,
             handleDeleteProfile: TempProfileActions.DELETE_PROFILE,
-            handleSetDefaultProfile: TempProfileActions.SET_DEFAULT_PROFILE
+            handleSetDefaultProfileName: TempProfileActions.SET_DEFAULT_PROFILE_NAME
         });
     }
 
     handleFetchProfiles() {
         this.profiles = [];
-        this.defaultProfile = null;
+        this.defaultProfileName = null;
     }
 
     handleSetProfiles(data) {
@@ -26,11 +26,11 @@ class TempProfileStore {
 
     handleDeleteProfile(data) {
         this.profiles = [];
-        this.defaultProfile = null;
+        this.defaultProfileName = null;
     }
 
-    handleSetDefaultProfile(data) {
-        this.defaultProfile = data.defaultProfile;
+    handleSetDefaultProfileName(data) {
+        this.defaultProfileName = data.defaultProfileName;
     }
 }
 
