@@ -132,7 +132,7 @@ class LiveHighchart extends React.Component {
             times.push(time);
         });
 
-        let resultStr = 'time, target, clean\n';
+        let resultStr = 'time, target, actual\n';
         times.forEach( (time, idx) => {
             resultStr += `${time}, ${Math.round(calculatedTargetTemps[idx])}, ${measuredTemps[idx]}\n`
             //console.log('%s, %s, %s', time, calculatedTargetTemps[idx], measuredTemps[idx]);
