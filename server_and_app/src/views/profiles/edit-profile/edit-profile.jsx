@@ -40,7 +40,6 @@ class EditProfile extends React.Component {
         let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
             return { text: profile.name, payload: profile.name };
         });
-        //let sanitizedPoints = isLoading ? [] : this._removeInvalidPoints(this.state.tempProfile);
         let profile = isLoading ? { } : this._getProfile(this.state.selectedProfileName);
         let selectedIndex = isLoading ? 0 : this._profileNametoIndex(this.state.selectedProfileName);
 
@@ -64,22 +63,10 @@ class EditProfile extends React.Component {
                     <div style={styles.empty}></div>
 
                     <span style={[styles.controls, styles.controlsLeft]}>
-                        <span onClick={this._saveProfile} style={[styles.controlBtn, styles.save]}>
-                            <i className='material-icons' style={{fontSize: '30px'}}>save</i>
-                        </span>
                         <span
                             onClick={this._deleteProfile.bind(this, this.state.selectedProfileName)}
                             style={[styles.controlBtn, styles.clearAll]}>
                             <span>delete</span>
-                        </span>
-                        <span onClick={this._clearPoints} style={[styles.controlBtn, styles.clearAll]}>
-                            <span>clear</span>
-                        </span>
-                    </span>
-
-                    <span style={[styles.controls, styles.controlsRight]}>
-                        <span onClick={this._addPoint} style={[styles.controlBtn, styles.addPoint]}>
-                            <i className='material-icons' style={{fontSize: '36px'}}>add</i>
                         </span>
                     </span>
                 </div>
@@ -99,25 +86,6 @@ class EditProfile extends React.Component {
         this.setState({ selectedProfileName: null });
 
         TempProfileActions.deleteProfile({ profileName: profileName });
-    }
-
-    _saveProfile = () => {
-        if(!this.state.profile.name) {
-            alert('A profile cannot be saved without a name');
-            return;
-        }
-
-        let invalidPoints = this.state.profile.points.filter(function(point) {
-            return (point.length !== 2);
-        });
-        if(invalidPoints.length) {
-            let message = 'There are empty or incomplete points in your profile! ' +
-                          'Please remove these points or fill in the blanks.';
-            alert(message);
-            return;
-        }
-
-        CreateProfileActions.saveProfile({ profile: this.state.profile });
     }
 
     _onDropDownChange = (e, selectedIdx, menuItem) => {
@@ -147,17 +115,6 @@ class EditProfile extends React.Component {
         return profiles.map( profile => {
             return profile.name;
         }).indexOf(profileName);
-    }
-
-    _removeInvalidPoints = (points) => {
-        let processed = [];
-        points.forEach(point => {
-            if(point.length === 2) {
-                processed.push(point);
-            }
-        });
-
-        return processed;
     }
 }
 
