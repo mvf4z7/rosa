@@ -4,20 +4,25 @@ import TempProfileActions from '../actions/TempProfileActions';
 
 class HomeViewStore {
     constructor() {
-        this.selectedProfileIdx = null;
+        this.selectedProfileName = null;
 
         this.bindListeners({
-            handleSetSelectedProfileIdx: HomeViewActions.SET_SELECTED_PROFILE_IDX,
+            handleSetSelectedProfileName: HomeViewActions.SET_SELECTED_PROFILE_NAME,
             handleProfileDeleted: TempProfileActions.PROFILE_DELETED
         });
     }
 
-    handleSetSelectedProfileIdx(data) {
-        this.selectedProfileIdx = data.selectedProfileIdx;
-        console.log('set selectedProfileIdx: ', data.selectedProfileIdx);
+    handleSetSelectedProfileName(data) {
+        this.selectedProfileName = data.selectedProfileName;
+        console.log('set selectedProfileName: ', data.selectedProfileName);
     }
 
     handleProfileDeleted(data) {
+        if(this.selectedProfileName === data.profileName) {
+            this.selectedProfileName = null;
+        }
+
+
         if(data.index == this.selectedProfileIdx) {
             this.selectedProfileIdx = null;
         } else if(data.index < this.selectedProfileIdx) {

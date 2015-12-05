@@ -25,8 +25,8 @@ class TempProfileStore {
     }
 
     handleDeleteProfile(data) {
-        this.profiles = [];
-        this.defaultProfileName = null;
+        // this.profiles = [];
+        // this.defaultProfileName = null;
     }
 
     handleSetDefaultProfileName(data) {

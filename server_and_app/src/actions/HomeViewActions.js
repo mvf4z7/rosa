@@ -1,7 +1,7 @@
 import alt from '../alt';
 
 class HomeViewActions {
-	setSelectedProfileIdx(data) {
+	setSelectedProfileName(data) {
 		this.dispatch(data);
 	}
 }

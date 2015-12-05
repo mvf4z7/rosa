@@ -30,9 +30,9 @@ class TempProfileActions {
         this.dispatch();
 
         request
-            .del('/api/profiles/' + data.profile.name)
+            .del('/api/profiles/' + data.profileName)
             .end( (err, res) => {
-                console.log('deleted profile: ', data.profile.name);
+                console.log('deleted profile: ', data.profileName);
                 console.log('error: ', err);
                 console.log('response: ', res);
 

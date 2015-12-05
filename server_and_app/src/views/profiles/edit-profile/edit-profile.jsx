@@ -16,7 +16,7 @@ class EditProfile extends React.Component {
 
         this.state = {
             profiles: [],
-            selectedProfileIdx: null,
+            selectedProfileName: null,
             tempProfile: null
         };
     }
@@ -31,23 +31,23 @@ class EditProfile extends React.Component {
         TempProfileActions.fetchProfiles();
     }
 
-    componentWillUpdate(nextProps, nextState) {
-        // if(this.state.profile.name != nextState.profile.name) {
-        //     this.refs.textField.setValue(nextState.profile.name);
-        // }
-    }
-
     componentWillUnmount() {
         TempProfileStore.unlisten(this._onTempProfilesStoreChange);
     }
 
     render() {
-        let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
+        let isLoading = !this.state.profiles.length || this.state.selectedProfileName === null;
         let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
-            return { text: profile.name, payload: idx };
+            return { text: profile.name, payload: profile.name };
         });
         //let sanitizedPoints = isLoading ? [] : this._removeInvalidPoints(this.state.tempProfile);
-        let profile = isLoading ? { } : this.state.profiles[this.state.selectedProfileIdx];
+        let profile = isLoading ? { } : this._getProfile(this.state.selectedProfileName);
+        let selectedIndex = isLoading ? 0 : this._profileNametoIndex(this.state.selectedProfileName);
+
+        // Dropdown menu cannot have a selectedIndex of -1, even if it is disabled
+        if(selectedIndex === -1) {
+            selectedIndex = 0;
+        }
 
         return (
             <div style={styles.viewWrapper}>
@@ -56,7 +56,7 @@ class EditProfile extends React.Component {
                     <DropDownMenu
                         menuItems={menuItems}
                         disabled={isLoading}
-                        selectedIndex={this.state.selectedProfileIdx}
+                        selectedIndex={selectedIndex}
                         onChange={this._onDropDownChange}
                         autoWidth={true}/>
                 </div>
@@ -68,7 +68,7 @@ class EditProfile extends React.Component {
                             <i className='material-icons' style={{fontSize: '30px'}}>save</i>
                         </span>
                         <span
-                            onClick={this._deleteProfile.bind(this, this.state.selectedProfileIdx)}
+                            onClick={this._deleteProfile.bind(this, this.state.selectedProfileName)}
                             style={[styles.controlBtn, styles.clearAll]}>
                             <span>delete</span>
                         </span>
@@ -90,18 +90,15 @@ class EditProfile extends React.Component {
     _onTempProfilesStoreChange = (state) => {
         this.setState({ profiles: state.profiles });
 
-        if(this.state.selectedProfileIdx === null && state.profiles.length) {
-            this.setState({ selectedProfileIdx: 0 });
+        if(this.state.selectedProfileName === null && state.profiles.length) {
+            this.setState({ selectedProfileName: state.profiles[0].name });
         }
     }
 
-    _deleteProfile = (index) => {
-        this.setState({ selectedProfileIdx: null });
+    _deleteProfile = (profileName) => {
+        this.setState({ selectedProfileName: null });
 
-        TempProfileActions.deleteProfile({
-            index: index,
-            profile: this.state.profiles[index]
-        });
+        TempProfileActions.deleteProfile({ profileName: profileName });
     }
 
     _saveProfile = () => {
@@ -124,7 +121,32 @@ class EditProfile extends React.Component {
     }
 
     _onDropDownChange = (e, selectedIdx, menuItem) => {
-        this.setState({ selectedProfileIdx: selectedIdx });
+        this.setState({ selectedProfileName: menuItem.payload });
+    }
+
+    _getProfile = (profileName) => {
+        console.log('getProfile: ', profileName);
+        let idx = this.state.profiles.map( profile => {
+            return profile.name;
+        }).indexOf(profileName);
+
+        if(idx === -1) {
+            return null;
+        } else {
+            return this.state.profiles[idx];
+        }
+    }
+
+    _profileNametoIndex = (profileName) => {
+        console.log('profileNametoIndex: ', profileName);
+        let profiles = this.state.profiles;
+        if(profiles.length === 0 || !profileName) {
+            return -1;
+        }
+
+        return profiles.map( profile => {
+            return profile.name;
+        }).indexOf(profileName);
     }
 
     _removeInvalidPoints = (points) => {

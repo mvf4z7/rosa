@@ -24,12 +24,12 @@ export default class Home extends React.Component {
         let TempProfilesStoreState = TempProfilesStore.getState();
         this.state = {
             profiles: TempProfilesStoreState.profiles,
-            selectedProfileIdx: HomeViewStore.getState().selectedProfileIdx,
+            selectedProfileName: HomeViewStore.getState().selectedProfileName,
             defaultProfileName: TempProfilesStoreState.defaultProfileName,
             liveData: LiveChartStore.getState().liveData
         };
 
-        console.log('this.state.selectedProfileIdx: ', this.state.selectedProfileIdx);
+        console.log('this.state.selectedProfileName: ', this.state.selectedProfileName);
 
         this.standardActions = [
           { text: 'Cancel', onClick: this._onDialogCancel.bind(this) },
@@ -64,12 +64,18 @@ export default class Home extends React.Component {
     }
 
     render() {
-        let isLoading = !this.state.profiles.length || this.state.selectedProfileIdx === null;
-        let profile = isLoading ? null : this.state.profiles[this.state.selectedProfileIdx];
+        let isLoading = !this.state.profiles.length || this.state.selectedProfileName === null;
+        let profile = isLoading ? null : this._getProfile(this.state.selectedProfileName);
         let menuItems = isLoading ? [{text: 'LOADING...'}] : this.state.profiles.map( (profile, idx) => {
             let text = profile.name === this.state.defaultProfileName ? profile.name + ' (default)' : profile.name;
-            return { text: text, payload: idx };
+            return { text: text, payload: profile.name };
         });
+        let selectedIndex = this._profileNametoIndex(this.state.selectedProfileName);
+
+        // Dropdown menu cannot have a selectedIndex of -1, even if it is disabled
+        if(selectedIndex === -1) {
+            selectedIndex = 0;
+        }
 
         return (
     	 	<div style={styles.homeWrapper}>
@@ -80,7 +86,7 @@ export default class Home extends React.Component {
                     <DropDownMenu
                         menuItems={menuItems}
                         disabled={isLoading}
-                        selectedIndex={this.state.selectedProfileIdx}
+                        selectedIndex={selectedIndex}
                         onChange={this._onDropDownChange}
                         autoWidth={true}/>
                 </div>
@@ -112,15 +118,15 @@ export default class Home extends React.Component {
 
         // If there isn't a currently selected profile and we have already fetched
         // profiles from the server then set the selected profile to the default profile.
-        if(this.state.selectedProfileIdx === null && state.defaultProfileName && state.profiles) {
+        if(this.state.selectedProfileName === null && state.defaultProfileName && state.profiles) {
             console.log('setting selectedProfile to default: ', state);
-            var defaultProfileIdx = state.profiles.map( profile => {
-                return profile.name
-            }).indexOf(state.defaultProfileName);
+            // var defaultProfileIdx = state.profiles.map( profile => {
+            //     return profile.name
+            // }).indexOf(state.defaultProfileName);
 
             // Was getting weird Alt.js bug if I didn't call this function without setTimeout.
             // Look into using Alt.js defer function to fix this.
-            setTimeout(HomeViewActions.setSelectedProfileIdx, 0, { selectedProfileIdx: defaultProfileIdx });
+            setTimeout(HomeViewActions.setSelectedProfileName, 0, { selectedProfileName: state.defaultProfileName });
         }
         this.setState(state);
     }
@@ -131,7 +137,22 @@ export default class Home extends React.Component {
     }
 
     _onDropDownChange = (e, selectedIdx, menuItem) => {
-        HomeViewActions.setSelectedProfileIdx({ selectedProfileIdx: selectedIdx });
+        HomeViewActions.setSelectedProfileName({ selectedProfileName: menuItem.payload });
+    }
+
+    _getProfile = (profileName) => {
+        return this.state.profiles[this._profileNametoIndex(profileName)];
+    }
+
+    _profileNametoIndex = (profileName) => {
+        let profiles = this.state.profiles;
+        if(profiles.length === 0 || !profileName) {
+            return -1;
+        }
+
+        return profiles.map( profile => {
+            return profile.name;
+        }).indexOf(profileName);
     }
 
     _onButtonClicked() {
