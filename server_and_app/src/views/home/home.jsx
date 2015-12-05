@@ -49,6 +49,14 @@ export default class Home extends React.Component {
         TempProfileActions.fetchProfiles();
     }
 
+    componentWillReceiveProps(nextProps) {
+        // If the oven is switching from ON to OFF, then print
+        // the live and profile data to the console.
+        if(this.props.ovenOn && !nextProps.ovenOn) {
+            this.refs.chart.printData();
+        }
+    }
+
     componentWillUnmount() {
         LiveChartStore.unlisten(this._onLiveChartStoreChange);
         TempProfilesStore.unlisten(this._onTempProfilesStoreChange);

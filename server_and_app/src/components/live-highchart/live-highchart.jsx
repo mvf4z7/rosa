@@ -113,6 +113,35 @@ class LiveHighchart extends React.Component {
         chart.series[1].setData(data);
     }
 
+    printData = () => {
+        let chart = this.refs.chart.getChart();
+        // console.log('%s profile: %s', this.props.profile.name, chart.series[0].data);
+        // console.log('liveData: ', chart.series[1].data);
+        let targetLines = pointsToLines(this.props.profile.points);
+        let calculatedTargetTemps = [];
+        let measuredTemps = [];
+        let times = [];
+
+        chart.series[1].data.forEach( point => {
+            let time = point.x;
+            let measuredTemp = point.y;
+            let calculatedTargetTemp = getTemp(targetLines, time);
+
+            calculatedTargetTemps.push(calculatedTargetTemp);
+            measuredTemps.push(measuredTemp);
+            times.push(time);
+        });
+
+        let resultStr = 'time, target, clean\n';
+        times.forEach( (time, idx) => {
+            resultStr += `${time}, ${Math.round(calculatedTargetTemps[idx])}, ${measuredTemps[idx]}\n`
+            //console.log('%s, %s, %s', time, calculatedTargetTemps[idx], measuredTemps[idx]);
+        });
+
+        console.log(resultStr);
+
+    }
+
     _socketOnTempData  = (data) => {
         if(this.props.loading) {
             return;
@@ -133,3 +162,46 @@ LiveHighchart.contextTypes = {
 };
 
 export default Radium(LiveHighchart);
+
+function pointsToLines(points) {
+    let lines = [];
+    for(let i = 0; i < points.length-1; i++) {
+        let line = {};
+
+        line.start = { x: points[i][0], y: points[i][1] };
+        line.stop = { x: points[i+1][0], y: points[i+1][1] };
+
+        let deltaY = line.stop.y - line.start.y;
+        let deltaX = line.stop.x - line.start.x;
+        line.m = deltaY/deltaX;
+
+        line.b = calculateIntercept(line.start, line.m);
+
+        lines.push(line);
+    }
+
+    return lines;
+}
+
+var getTemp = function(lines, time) {
+    var line = getLine(lines, time);
+    var temp = line.m * time + line.b;
+    return temp;
+};
+
+function calculateIntercept(point, slope) {
+    return point.y - (slope * point.x);
+}
+
+var getLine = function(lines, time) {
+    var line = null;
+    for(var i = 0; i < lines.length; i++) {
+        var tempLine = lines[i];
+        if(time >= tempLine.start.x && time <= tempLine.stop.x) {
+            line = tempLine;
+            break;
+        }
+    }
+
+    return line;
+};
