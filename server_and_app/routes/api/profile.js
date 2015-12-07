@@ -21,6 +21,18 @@ var addProfile = function(req, res) {
     });
 };
 
+var editProfile = function(req, res, profileName) {
+    database.updateProfile(profileName, req.body.profile, function(error){
+        if(error){
+            console.log(error);
+            res.send({error: error});
+        }
+        else{
+            res.send({status: 'Updated profile'});
+        }
+    });
+};
+
 var removeProfile = function(req, res, profileName) {
     database.removeProfile(profileName, function(error){
         if(error){
@@ -36,5 +48,6 @@ var removeProfile = function(req, res, profileName) {
 module.exports = {
     getProfiles: getProfiles,
     addProfile: addProfile,
+    editProfile: editProfile,
     removeProfile: removeProfile
 };

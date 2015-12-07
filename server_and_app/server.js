@@ -68,8 +68,8 @@ app.use('/styles', express.static(path.join(__dirname, 'styles')));
 app.use(session({
     cookieName: 'session',
     secret: 'random_string_goes_here',
-    duration: 15 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000,
+    duration: 60 * 60 * 1000,
+    activeDuration: 60 * 60 * 1000,
     httpOnly: true,
     ephemeral: true
 }));

@@ -16,6 +16,7 @@ router.route('/profiles')
     .post(function(req, res) { profile.addProfile(req, res)});
 
 router.route('/profiles/:pname')
+    .put(function(req, res) { profile.editProfile(req, res, req.params.pname) })
     .delete(function(req, res) { profile.removeProfile(req, res, req.params.pname) });
 
 router.route('/allusers')
