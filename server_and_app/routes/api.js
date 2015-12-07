@@ -27,12 +27,5 @@ router.route('/adduser')
 
 router.route('/removeuser')
     .post(function(req, res) { user.removeUser(req, res) });
-    .get(function(req, res) { user.getAllUsers(req, res)});
-
-router.route('/adduser')
-    .post(function(req, res) { user.addUser(req, res)});
-
-router.route('/removeuser')
-    .post(function(req, res) { user.removeUser(req, res)});
 
 module.exports = router;
